@@ -1,0 +1,38 @@
+# Build output (download the finished apps from GitHub Releases instead)
+dist/
+web/dist/
+web/dist-test/
+connector/dist/
+android/build/
+android/apk/classes.dex
+android/apk/assets/
+android/apk/build/
+android/apk/res/mipmap-*dpi/
+android/apk/res/drawable-*dpi/
+brand/out/
+desktop/assets/
+desktop/rsrc_*.syso
+desktop/winres/tickwise/
+desktop/winres/archive/
+desktop/winres/riot/
+desktop/winres/tide/
+desktop/winres/frontier/
+desktop/winres/neon/
+node_modules/
+
+# Never commit the Android signing key (see docs/DEVELOPING.md → Signing)
+android/signing/
+*.jks
+*.keystore
+*.p12
+
+# Release files belong on the Releases page, not in the repo
+*.apk
+*.exe
+*-source.zip
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

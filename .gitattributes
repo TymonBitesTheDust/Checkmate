@@ -1,0 +1,9 @@
+# Keep line endings consistent across Windows, macOS and Linux
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+
+# Vendored and generated code: don't count it in GitHub's language stats
+third_party/** linguist-vendored
+android/stubs/** linguist-vendored
+web/package-lock.json linguist-generated

@@ -1,0 +1,19 @@
+version: 2.12.1
+apkFileName: Checkmate.apk
+usesFramework:
+  ids:
+  - 1
+  tag: null
+sdkInfo:
+  minSdkVersion: '24'
+  targetSdkVersion: '34'
+packageInfo:
+  forcedPackageId: '127'
+  renameManifestPackage: null
+versionInfo:
+  versionCode: '22'
+  versionName: 2.2.0
+sparseResources: false
+doNotCompress:
+- resources.arsc
+- png

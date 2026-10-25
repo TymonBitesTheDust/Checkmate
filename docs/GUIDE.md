@@ -1,0 +1,117 @@
+# Checkmate user guide
+
+[← Back to the README](../README.md) · Download the apps from the [latest release](https://github.com/TymonBitesTheDust/Checkmate/releases/latest).
+
+*Formerly Tickwise.* Updating keeps everything: the Android app installs over the Tickwise app, the Windows app moves its data from `%LOCALAPPDATA%\Tickwise` to `%LOCALAPPDATA%\Checkmate` the first time it opens, and sync, backups and setup codes carry on as before.
+
+A personal task manager in the spirit of Todoist, with a calendar in the spirit of Google Calendar: Inbox, Today, Upcoming, a Calendar (day, 3/4-day, week, month, year and schedule views), projects with sections and a board layout, subtasks, priorities, labels, filters, comments, files, repeating tasks and events, reminders, birthdays and a productivity view. One web app is packaged three ways, and all of them sync through your own Firebase project.
+
+| File | Runs on | Notes |
+| --- | --- | --- |
+| `Checkmate.html` | Any modern browser | Works offline straight from the file. To use it at a web address (e.g. on an iPhone), host it on any static host such as Firebase Hosting, Netlify Drop or GitHub Pages. |
+| `Checkmate.exe` | Windows 10 / 11 (64-bit) | Single file, no installer. Uses the Microsoft Edge WebView2 Runtime that ships with Windows 11 and most Windows 10 PCs. Data lives in `%LOCALAPPDATA%\Checkmate`. |
+| `Checkmate.apk` | Android 7.0+ | Sideload it. Reminders fire as notifications even when the app is closed. |
+
+## Installing
+
+**Windows.** Double-click `Checkmate.exe`. The file isn't code-signed, so Windows SmartScreen may say it "protected your PC": choose **More info → Run anyway**. Pin it to the taskbar or Start once it's open. If WebView2 is missing, Checkmate offers the free download from Microsoft.
+
+**Android.** Copy `Checkmate.apk` to the phone and open it. Allow your file manager or browser to **install unknown apps** when Android asks, then tap **Install**. Play Protect may warn that the app is from an unknown developer; choose **Install anyway**. On first reminder, allow notifications.
+
+## Setting up sync (once, about 5 minutes)
+
+Sync stores your tasks and calendar events in a free Firebase project that only you control.
+
+1. Open <https://console.firebase.google.com>, sign in with a Google account and **Create a project** (any name; Analytics can stay off).
+2. **Build → Authentication → Get started → Email/Password →** switch on and **Save**.
+3. **Build → Firestore Database → Create database**, pick a location near you, start in **production mode**.
+4. In Firestore open **Rules**, replace everything with the rules below and **Publish**:
+
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /users/{uid}/{document=**} {
+         allow read, write: if request.auth != null && request.auth.uid == uid;
+       }
+     }
+   }
+   ```
+
+5. **Project settings** (gear icon) → **Your apps** → web icon `</>` → register an app (no hosting needed) and copy the `firebaseConfig = { … }` block.
+6. In Checkmate: **Settings → Sync**, paste the block, **Connect**, then **Create account** with an email and password.
+7. On every other device: **Settings → Sync** on the first device shows a **setup code**. Paste that code on the new device, **Connect**, and **Sign in** with the same email and password.
+
+The free Firebase plan (Spark) is far more than one person needs. Changes made offline are kept on the device and upload when it's back online; if the same task is edited on two devices, the most recent edit wins.
+
+## Using Checkmate with Claude (once, about 5 minutes)
+
+Like Claude's Todoist connector, the Checkmate connector lets you ask Claude to work with your tasks and calendar: "add 'Pay rent' every month on the 1st at 9am, p1, in Home", "what's overdue? move it all to tomorrow", "turn this email into tasks", "block 9–11am every weekday next week for focus time", "what did I finish this week?". It works in Claude on the web, in the desktop app and in the phone apps, and in Claude Code. Everything Claude changes syncs to your devices within seconds, and tasks it adds say *Added by Claude*.
+
+The connector is a small program (a remote MCP server) that you run on your own free Cloudflare account. It signs in to your Firebase project as you, so your tasks never pass through anyone else's server, and it keeps no data of its own. Sync has to be set up first.
+
+1. In Checkmate open **Settings → Claude** and choose **Copy connector code** (or **Save as file**). The code already holds your Firebase project details and a private key made for you, so don't share it.
+2. Open <https://dash.cloudflare.com> and sign up or sign in (the free plan is enough). Go to **Workers & Pages** (it may be under **Compute**) → **Create** → **Start with Hello World!**, name it `checkmate` and choose **Deploy**. Then choose **Edit code**, delete everything in `worker.js`, paste the connector code and choose **Deploy**.
+3. Copy the Worker's address (it ends in `.workers.dev`), paste it into **Settings → Claude → Check it** and choose **Check**.
+4. Choose **Add to Claude**. Claude opens its **Add custom connector** dialog with the name and address filled in (or add it yourself under **Customize → Connectors → Add custom connector** with the address ending in `/mcp`). If Claude asks how to sign in, pick **Sign in now** and **Use Claude's published identity**, then **Add**.
+5. Choose **Connect** and sign in with your Checkmate email and password on the page that opens. In a chat, turn Checkmate on from **+ → Connectors**. It appears in the Claude phone apps by itself.
+
+Free Claude plans can add one custom connector; on Team and Enterprise plans an Owner adds it. Claude Code picks up connectors from your Claude account when you sign in with it; or add it directly with `claude mcp add --transport http checkmate https://checkmate.<you>.workers.dev/mcp`, then sign in from `/mcp`.
+
+**What Claude can do:** get an overview of today (overdue and due tasks, today's events, projects, labels and calendars); find tasks with the same filter syntax as the app, by project, label, date or words, including completed ones; add, change, move, complete, reopen and delete tasks (repeating tasks move on to their next date; subtasks move and finish with their parent); add comments; list and add projects and sections; find, add, change and delete calendar events, including one occurrence, this-and-following or every occurrence of a repeating event, in any time zone. Subscribed calendars stay read-only. Claude asks before deleting.
+
+**Privacy and control:** Claude only sees what it looks up while helping you, and your password goes to your Firebase project, never to Claude. **Settings → Claude** shows when Claude connected and has **Disconnect**, which cuts Claude off on every device straight away (connect again from Claude to undo it). The time zone there tells Claude what "today" means. Claude's sign-in page and tokens use OAuth with PKCE; tokens are sealed with your private key and checked against your account on every call.
+
+**If something's off:** the **Check** button explains the usual problems (a Hello World Worker, an address typo, code from another Firebase project, an older connector version — copy the code again, paste it over the old code in Cloudflare and **Deploy**). Opening the Worker's address in a browser shows whether it's running. On a very large account Cloudflare's free plan can occasionally refuse a request with *Worker exceeded resource limits* (error 1102); asking for a shorter date range helps.
+
+## Using it
+
+- **Settings → General → Language · 語言** switches the whole app between English and Traditional Chinese (繁體中文), or follows your device. In Chinese, dates and repeats read naturally (「10月17日 星期六」, 「每週一、三、五」), and quick add understands Chinese date words: `明天下午5點 打電話給阿明 p1 #工作`, `每月15號交租`, `下週五`, `3天後`, `每隔一天`. English date words keep working too. Filters accept Chinese terms such as `今天`, `逾期`, `無日期`, `7天`.
+- Type naturally when adding a task: `Pay rent every 1st at 9am p1 #Home @bills`. Dates, times, repeats, priorities (`p1`–`p4`), `#projects`, `/sections` and `@labels` are recognised as you type; tap × on a recognised part to keep it as plain text. A time you type stays in the task name (`Watch Live Aid at 12pm` is due at 12:00 and keeps its name), while day words such as *tomorrow* are taken out so the name doesn't go out of date; **Settings → General → Keep the time in the task name** turns this off.
+- **Reminders:** a task with a time reminds you when it's due, and **Settings → Reminders** changes the defaults for tasks with a time, tasks with only a date, and birthdays (the defaults are the same on all your devices). Open a task and choose **Reminders** to give it its own; besides the usual choices, **Custom…** takes any number of minutes, hours, days or weeks before (or, for date-only tasks and birthdays, any number of days before at any time). Calendar events have the same Custom… choice. On Android, reminders arrive as notifications even when the app is closed.
+- **Files:** open a task and choose **Add file** (or drop files onto it) to attach files of up to 100 MB each. They open in the app (pictures, video, audio, text and, on a computer, PDFs) and **Save** puts a copy wherever you like. With sync on, files go to your other devices through your own Firebase project: they're stored in Firestore in pieces, so the free Spark plan works (it holds 1 GB in total, shared with everything else), and another device fetches a file the first time you open it there. Removing a file removes it everywhere.
+- **Birthdays** (in the sidebar, or `G` then `B`) keeps your own birthday and your friends': you're reminded on the day (change the default in Settings → Reminders, or per birthday), see how old everyone is turning when you add their year, and find them on the calendar, Today and Upcoming. 29 February birthdays fall on 28 February in other years. **Settings → Calendar → Lunar birthdays (農曆)** lets you add a birthday by its lunar date; it lands on the right day every year (1900–2100).
+- The task name box shows a different example each time: on certain days of the year it has one of its own (13 July: `Watch Live Aid at 12pm p1`), and on other days it picks one of a few at random. Every example is something quick add understands, so typing it in sets the date, time and priority.
+- Shortcuts: `Q` add task, `/` search, `G` then `T`/`I`/`U`/`L`/`B` for Today/Inbox/Upcoming/Calendar/Birthdays, `M` toggle the sidebar, `?` all shortcuts.
+- **Calendar** works like Google Calendar. Switch between Day, 4 days (3 on a phone), Week, Month, Year and Schedule with the view button or the keys `D` `X` `W` `M` `Y` `A`; `T` goes to today, `J`/`K` (or the arrows) move forward and back, `C` creates an event and `/` searches events. On a phone, swipe left or right to change the period.
+  - **Making events:** click an empty time to make a one-hour event, or drag down to choose its length; in the month view, click a day (or drag across several days) for an all-day event. The quick card reads what you type: `Lunch with Sam fri 12:30-1:30pm`, `Standup every weekday 9am for 15 min`, `Trip to Melbourne next sat all day`, `明天下午3點到5點 開會`, `每週一上午10時至下午12時 主席`. Switch the card to **Task** to add a task instead, or choose **More options** for the full editor (start and end dates and times, all day, time zone, repeat, location, notifications, calendar, colour and description).
+  - **Changing events:** drag an event to another time or day, or drag its bottom edge to change its length. Click an event to see its details, edit, duplicate, delete or export it. Every change has Undo.
+  - **Repeats** offer Google's choices (daily, weekly on a day, monthly on the third Sunday or on day 18, annually, every weekday) and **Custom…** (every N days/weeks/months/years, chosen weekdays, ending on a date or after N times). Changing or deleting a repeating event asks whether it's for **this event**, **this and following events** or **all events**.
+  - **Calendars:** the sidebar shows a mini month and your calendars with tick boxes to show or hide each one (⋯ → *Display this only*). Add calendars of your own with their own colour and default notifications. **Tasks** with a date appear on the calendar too: timed tasks in the grid, others along the top; tick them off there or drag them to reschedule. Today and Upcoming list each day's events above the tasks.
+  - **Notifications** arrive 10 minutes before each event by default (change it per calendar or per event, including "the day before at 9:00" for all-day events). On Android they fire with the app closed, like task reminders.
+  - **Your Google Calendar:** in Google Calendar on a computer, open Settings → *Settings for my calendars* → your calendar → *Integrate calendar* and copy the **Secret address in iCal format**. In Checkmate, open **Settings → Calendar → Subscribe to a calendar**, paste it and choose **Subscribe**. Its events appear read-only and are checked again every 30 minutes (or 15, 60, or only when you ask). Any other `.ics` or `webcal://` link works too, and **Holidays** adds Google's public holiday calendars (Hong Kong, Australia, Taiwan and more). A browser can't read Google's links itself, so the Windows and Android apps read them and the events sync to the browser through Firebase. Changes flow one way, from Google into Checkmate; edit those events in Google Calendar.
+  - **Import and export:** bring in an `.ics` file exported from Google Calendar, Outlook or Apple Calendar (importing the same file again updates rather than duplicates), and export any calendar, or all of them, as an `.ics` file. Events keep their own time zone, so a 10:00 Hong Kong meeting shows at 13:00 in Sydney.
+- Drag the handle beside a task to reorder it or move it to another section; in Upcoming, drag a task to another day. On a phone, press and hold a task to drag it.
+- Filters use queries such as `(today | overdue) & p1`, `#Work & !@waiting`, `7 days`, `no date`.
+- **Settings → Theme** holds everything about the look: the style, its app icon, light or dark, and the theme colour.
+- **Settings → Theme → Style** switches between six looks, each with light and dark variants: the default Checkmate look; NieR: Automata (parchment and ink, square markers, ruled headings); Persona 5 (red, black and white, slanted menus, cut-out titles, a sweeping transition between pages, and a starburst with a "CLEAR!" stamp and its own sound when you finish a task); Persona 3 (an underwater blue gradient with drifting light, a big italic command menu, tilted black task rows that slide out white when selected, a moon-phase date and Done/Left stat bars on Today, and glass shards with a "COMPLETE" label when you finish a task); Red Dead Redemption 2 (an 1899 journal: aged paper or a dark campfire night, woodtype headings over Caslon text, ledger lines with a red margin, a painted brush stroke behind the selected item, a tear-off almanac date and tally marks on Today, an ink brush sweeping across between pages, and a red "SETTLED" stamp when you finish a task); and Cyberpunk 2077 (black on street yellow or red, cyan and yellow on night blue, condensed type, corners cut at 45°, faint scanlines, page titles that glitch into place, a bracketed date readout and segmented stat bars on Today, glitch slices between pages, and a "GIG COMPLETE" flash when you finish a task).
+- Sound effects are made in the app, and each style has its own set: soft tones for Checkmate, terminal blips for NieR: Automata, punchy hits and whooshes for Persona 5, glassy bells and bubbles for Persona 3, plucked guitar, a register bell, a rubber stamp and rustling paper for Red Dead Redemption 2, and digital blips, synth zaps and glitches for Cyberpunk 2077. They play for finishing, adding and deleting tasks, opening panels, changing pages, dropping a dragged task, undo, errors, reminders and a fanfare when you reach your daily goal or clear Today. **Settings → General → Sound effects** sets Off, Actions, or Everything (adds a soft tick as you move through menus), plus a volume slider and buttons to try each sound.
+- Each style has its own app icon and, on a computer, its own mouse cursor (Checkmate keeps the normal system cursor). The icon changes in the app, the browser tab, the Windows title bar and taskbar, Checkmate's shortcuts on the desktop, in Start and pinned to the taskbar (straight away), `Checkmate.exe` itself (when you close Checkmate: a copy with the new icon takes its place, and the old one is removed the next time it starts), and the Android home-screen icon (after you leave the app; some launchers move the home-screen shortcut back to the app drawer when it changes, so you may need to add it again). **Settings → Theme → Change the app icon with the style** turns this off and keeps the original icon outside the app. If Windows still shows the old icon somewhere, it's the icon cache: signing out and in again refreshes it.
+- **Settings → Theme → Theme colour** recolours buttons, highlights and the logo: the default is Checkmate orange (#F46B25); pick one of 12 presets (Pine, the old default, is still there) or any custom colour (colour wheel or a code like `#2f6fd6`). It's adjusted slightly in light and dark mode so text stays readable, and it's saved per device.
+- **Settings → Sidebar** chooses which pages appear at the top of the sidebar (Search, Inbox, Today, Upcoming, Calendar, Birthdays, Filters & labels, Completed, Productivity) and whether task counts are shown next to them and your projects. Hidden pages still open with their keyboard shortcuts. These choices are kept per device.
+- **Settings → About** shows the version and who made Checkmate: Tymon Ng, built with Claude AI, proudly made in Australia. **Settings → Donate** has a PayID for anyone who'd like to support it, with a copy button.
+- **Settings → What’s new** lists the changes in every version.
+- **Settings → Backup** saves or restores a JSON backup of everything on the device (task files aren't in the backup; they stay on the device and in sync).
+- **Settings → Docs & Sheets** turns a Google Doc or Google Sheet into a project of tasks and keeps it up to date (one way, from the doc into Checkmate). Share the file with “Anyone with the link”, paste its link and choose **Link and sync**. In a Sheet each row is a task; headings such as Task, Done, Due, Time, Priority, Labels, Section, Notes and ID (or 任務、完成、日期、優先級、標籤、分類、備註) are recognised. In a Doc each bullet or checklist line is a task, headings become sections, indented bullets become subtasks, and ticked or struck-through lines are completed. Dates, priorities and @labels in the text are read the same way as quick add. Checkmate checks for changes every 15 minutes (or 5, 60, or only when you ask) and whenever the app opens; a row that hasn't changed in the doc leaves your edits in Checkmate alone. The link syncs to your other devices like any project. Sheets work everywhere; Docs work in the Windows and Android apps as they are, while the browser version needs a Google API key with the Drive API turned on (the guide in that tab explains how). You can also start from a project's ⋯ menu: **Sync from a Google Doc or Sheet…**
+
+## Building from source
+
+`build.sh` produces all three files in `dist/`. It needs Node 18+, Go 1.22+, JDK 17+, Python 3 with Pillow and cairosvg, and four build tools whose download links are at the top of the script (Apktool, uber-apk-signer, the `dx` jar from dex2jar 2.1, and go-winres). `desktop/go.mod` points `golang.org/x/sys` at the copy in `third_party/sys` (v0.33.0); delete the `replace` line to fetch it from the Go module proxy instead. `test/run-all.sh` runs every test, and [`DEVELOPING.md`](DEVELOPING.md) has developer notes: how the code is laid out, the release checklist and signing.
+
+```
+web/        the app (Preact + Firebase), bundled to one HTML file by build.mjs
+desktop/    Windows host: Go + WebView2, serves the app on 127.0.0.1:47821
+android/    Android host: Java WebView wrapper, reminders via AlarmManager
+            stubs/ are compile-only stand-ins for Android classes (never packaged)
+            signing/ is where the maintainer keeps the release key (git-ignored, never committed)
+connector/  the Claude connector: a Cloudflare Worker (OAuth + MCP over Streamable HTTP) that runs the
+            app's own task and calendar code against Firestore's REST API; build.mjs bundles it to
+            dist/checkmate-connector.js, which the web build embeds for Settings → Claude
+brand/      icon generator
+test/       browser tests: UI smoke test, drag and drop, two-device sync against a fake Firestore,
+            each style, Chinese, Docs & Sheets against stand-in Google responses, the calendar
+            (calendar.cjs, calendar-styles.cjs, and recur.mjs for repeats, time zones and .ics files),
+            and Claude: connector.cjs (OAuth and every tool, in Node or `RUNTIME=workerd` in the
+            Workers runtime via Wrangler, against fake-google.cjs), connector-tz.mjs, and claude.cjs
+            (the app and the connector together through one fake Firestore)
+```
