@@ -829,7 +829,6 @@ export default {
   About: '關於',
   Donate: '捐款支持',
   'Version {v} · {where}': '版本 {v} · {where}',
-  'A to-do list and calendar in the spirit of Todoist and Google Calendar, with six styles to play with and sync across all your devices.': '一個參考 Todoist 和 Google 日曆而設計的待辦清單和日曆，有六種風格可選，並可在你所有裝置之間同步。',
   'Created by': '製作者',
   'Built with': '製作工具',
   'Made in': '產地',

@@ -95,7 +95,6 @@ export function AboutPanel() {
           <span class="muted">{tr('Version {v} · {where}', { v: VERSION, where })}</span>
         </div>
       </div>
-      <p class="lead">{tr('A to-do list and calendar in the spirit of Todoist and Google Calendar, with six styles to play with and sync across all your devices.')}</p>
       <div class="ab-card">
         <div class="ab-row">
           <span class="ab-ic"><Icon name="user" size={22} /></span>
