@@ -5,7 +5,17 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright');
 const path = require('path');
 const fs = require('fs');
 const assert = require('assert');
-const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
+// Served over http: headless Chromium sometimes starts a reloaded file:// page with empty
+// localStorage, which made the "choosing Pine again sticks" check fail now and then.
+const http = require('http');
+const appServer = http.createServer((q, s) => {
+  fs.readFile(path.resolve(__dirname, '../web/dist/Checkmate.html'), (e, d) => {
+    if (e) return s.writeHead(404), s.end();
+    s.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    s.end(d);
+  });
+});
+let url;
 const OUT = process.argv[2] || '/tmp/shots';
 fs.mkdirSync(OUT, { recursive: true });
 const pass = (m) => console.log('  ✓ ' + m);
@@ -15,6 +25,8 @@ const NOW = '2026-10-24T09:30:00';
 const at = (s) => new Date(s).getTime();
 
 (async () => {
+  await new Promise((r) => appServer.listen(0, '127.0.0.1', r));
+  url = `http://127.0.0.1:${appServer.address().port}/Checkmate.html`;
   const b = await chromium.launch();
   const errs = [];
   async function open({ prefs, lang, width = 1280, height = 860, clock = true } = {}) {
@@ -88,11 +100,11 @@ const at = (s) => new Date(s).getTime();
       const svg = document.querySelector('.logo svg');
       const paths = [...svg.querySelectorAll('path')];
       const moon = paths.find((x) => (x.getAttribute('fill') || '').toLowerCase() === '#effbff');
-      const tick = paths.find((x) => x.getAttribute('stroke') === '#ffffff');
+      const tick = paths.find((x) => x.getAttribute('stroke') === '#050816');
       const a = moon.getBoundingClientRect();
       const t = tick.getBoundingClientRect();
-      // the tick's stroke reaches 3.5 units past its path; the logo is 28px for 64 units
-      const pad = (3.5 * a.width) / 7 / 2;
+      // the tick's stroke reaches 3.75 units past its path
+      const pad = (3.75 * svg.getBoundingClientRect().width) / 64;
       return { moonLeft: a.left, moonBottom: a.bottom, tickRight: t.right + pad, tickTop: t.top - pad };
     });
     assert(gap.moonLeft > gap.tickRight - 0.5 || gap.moonBottom < gap.tickTop + 0.5, JSON.stringify(gap));
@@ -283,7 +295,7 @@ const at = (s) => new Date(s).getTime();
   // ---------- Chinese ----------
   {
     const p = await open({ lang: 'zh-Hant' });
-    const english = async () => ((await p.innerText('.settings-panel')).match(/[A-Za-z]{3,}/g) || []).filter((w) => !['Checkmate', 'Live', 'Aid', 'Claude', 'Firebase', 'Persona', 'Tickwise', 'Google', 'Docs', 'Sheets', 'ics', 'Sam', 'Tymon', 'Windows', 'Android'].includes(w));
+    const english = async () => ((await p.innerText('.settings-panel')).match(/[A-Za-z]{3,}/g) || []).filter((w) => !['Checkmate', 'Live', 'Aid', 'Claude', 'Firebase', 'Persona', 'Tickwise', 'Google', 'Docs', 'Sheets', 'ics', 'Sam', 'Tymon', 'Windows', 'Android', 'Calling', 'Card', 'NieR', 'Automata', 'Red', 'Dead', 'Redemption', 'Cyberpunk'].includes(w));
     await settings(p, 'reminders');
     assert.deepStrictEqual(await english(), []);
     await p.click('.settings-tabs button[data-tab="whatsnew"]');
@@ -317,6 +329,7 @@ const at = (s) => new Date(s).getTime();
 
   assert.deepStrictEqual(errs, []);
   await b.close();
+  appServer.close();
   console.log('v22 OK');
 })().catch((e) => {
   console.error(e);

@@ -1,6 +1,8 @@
 # Developing Checkmate
 
-**Current version: 2.2.0** (Android versionCode 22). Last updated 25 October 2026.
+**Current version: 3.0.0** (Android versionCode 30). Last updated 26 October 2026.
+
+**3.0.0:** the Persona 5 style is now the Calling Card design (always dark; in Settings → Theme it shows Animations and Show the star field instead of light/dark), and the other game styles were redesigned after reference material: Persona 3 after the Persona 3 Reload pause menu (Montserrat italic, a tilted command stack with a triangle cursor and the current page in white, a page-name ribbon at ≥1320px whose font size comes from `--len` = `ribbonEms(title)` in `tide.jsx` so long names fit the window's height, wallet boxes, a Command help line from `KeyHints({view})`), NieR: Automata after the YoRHa menus (Manrope, wiping plates with sliding lines), Red Dead Redemption 2 after the native menu (ink-roller sidebar, red brush frame, `MenuCounter` in `frontier.jsx`), and Cyberpunk 2077 after the settings menus (red rows, cut corners, cyan selection). New app icons for Persona 5, NieR, Persona 3 and Red Dead: `brand-icons.js` gained `rng`/`roughRect` for brush edges, and `iconSvg` gives each icon unique gradient and clip ids. In Chinese, the Persona 3 ribbon stacks one character per line (horizontal text) because upright vertical text depends on the font's vertical metrics.
 
 Checkmate (formerly Tickwise) is a personal to-do app in the spirit of Todoist, with a calendar in the spirit of Google Calendar. It was created by **Tymon Ng**, built with Claude AI and proudly made in Australia. One web app is shipped three ways, and all three sync through the user's own Firebase project:
 
@@ -137,7 +139,7 @@ checkmate/
 | Tab | Holds |
 | --- | --- |
 | general | Language, start page, week start, time format, date order, sounds |
-| theme | Style, app icon follows style, light/dark, theme colour |
+| theme | Style, app icon follows style, light/dark (Persona 5: Animations and Show the star field instead), theme colour |
 | sidebar | Which pages show in the sidebar, and task counts |
 | reminders | Default reminders for timed tasks, date-only tasks and birthdays |
 | sync | Firebase setup and account |
@@ -165,11 +167,11 @@ Each style has its id, its own CSS, sounds, icon and cursor, and sometimes its o
 | id | Name | Files |
 | --- | --- | --- |
 | tickwise | Checkmate (default) | `styles.css` |
-| archive | NieR: Automata | `skin-archive.css` |
-| riot | Persona 5 | `skin-riot.css`, `riot.jsx` (StyledTitle cut-out letters, wipe) |
-| tide | Persona 3 Reload | `skin-tide.css`, `tide.jsx` (moon date, stat bars, shatter) |
-| frontier | Red Dead Redemption 2 | `skin-frontier.css`, `frontier.jsx` (almanac, tally) |
-| neon | Cyberpunk 2077 | `skin-neon.css`, `neon.jsx` (date readout) |
+| archive | NieR: Automata (YoRHa menus; Manrope) | `skin-archive.css` |
+| riot | Persona 5 (the Calling Card design, always dark) | `skin-riot.css` (loaded last, after `cal.css`), `riot.jsx`: `Ransom`/`StyledTitle` cut-out letters, `Shards` (red and cyan highlight), `Stamp`, `DateBox`, `HeroCount`, `StarField`, `RiotDate`, `PageWipe` (wipe + `.shake`), `reducedMotion()` from `prefs.motion`. Each returns nothing in other styles |
+| tide | Persona 3 Reload (pause menu; Montserrat italic) | `skin-tide.css`, `tide.jsx` (moon date, wallet-box stats, shatter, `KeyHints` help line, `ribbonEms` for the page-name ribbon; `test/tide.cjs` checks long names fit in English and Chinese) |
+| frontier | Red Dead Redemption 2 (native menu) | `skin-frontier.css`, `frontier.jsx` (almanac, tally, `MenuCounter` "3 of 9") |
+| neon | Cyberpunk 2077 (settings menus) | `skin-neon.css`, `neon.jsx` (date readout) |
 
 `cal.css` styles the calendar. `sound.js` synthesises every sound with WebAudio, with a set per style. **Every UI change has to look right in all six styles, in light and dark, and at phone width (390px).**
 
@@ -193,7 +195,7 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
   - A task is `{title, desc, projectId ('inbox' by default), sectionId, parentId, priority 1–4 (4 = none), labels[], due {date, time, recur}, done, order, reminders (null = defaults, or a minute list), files [{id, name, size, type, addedAt}]}`.
   - A birthday is `{name, month, day, year (optional), lunar, me, note, reminders}`. Lunar birthdays keep the lunar month and day.
   - Seed items `inbox` and `cal-main` have `updatedAt: 1` and never upload.
-- **Prefs.** These are device-local and never synced: `tickwise.prefs.v1`, read with `store.getPrefs()` and written with `store.setPrefs()`. They include the style, theme, accent, sidebar choices, sound, calendar view and the Firebase config.
+- **Prefs.** These are device-local and never synced: `tickwise.prefs.v1`, read with `store.getPrefs()` and written with `store.setPrefs()`. They include the style, theme, accent, the Persona 5 `motion` (system/full/reduced) and `stars` choices, sidebar choices, sound, calendar view and the Firebase config.
 - **Firestore.**
   - Documents live at `users/{uid}/items/{id}`. Each write adds `srv` = the server timestamp.
   - Task files live outside the items, so they aren't streamed to every device: `users/{uid}/files/{fileId}` `{name, size, type, parts, done}` and `users/{uid}/files/{fileId}/parts/{n}` `{i, data: Bytes}` (768 KB pieces, 8 per commit to stay under Firestore's 1 MiB document and 10 MiB request limits). Cloud Storage isn't used because it needs the paid Blaze plan. The bytes are also kept in IndexedDB (`checkmate-files`); queues are in localStorage (`tickwise.filequeue.v1`, `tickwise.filedelete.v1`). A file whose task is gone is cleaned up after 3 days (Undo can bring the task back).
@@ -321,6 +323,8 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 
 **Known noise**
 
+- Tests that reload a `file://` page can lose localStorage in headless Chromium (it sometimes starts the reloaded page empty). `claude.cjs` and `v22.cjs` serve the app over http for that reason.
+
 - `chinese` always reports FAIL (exit code 2) because of two expected English leftovers: "Language, English" in General and the Firestore rules code in Sync. Anything else it lists is a real miss.
 - `claude` can time out once when the whole suite runs under load. Rerun it alone.
 
@@ -379,5 +383,6 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | 2.1.6 | Task name examples by date, otherwise random. English and Chinese, with an ellipsis on phones |
 | 2.1.7 | New Settings → Theme tab (style, app icon switch, light/dark, theme colour) |
 | 2.2.0 | Birthdays (optional lunar dates), task files up to 100 MB, reminder timing (per task, defaults, custom), the typed time stays in task names, Checkmate orange (#F46B25) default colour, Persona 3 icon fix, Settings → What’s new |
+| 3.0.0 | Persona 5 becomes the Calling Card design (star field, cut-out menu and titles, highlight, CLEAR! stamp, wipe and shake, new sounds; Settings → Theme: Animations and the star field), Persona 3, NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 redesigned after their games, new icons for Persona 5, NieR, Persona 3 and Red Dead |
 
 Earlier releases built the core: tasks, projects, filters, the calendar, sync, six styles, sounds, Traditional Chinese, Docs & Sheets, and the rename from Tickwise to Checkmate.

@@ -67,6 +67,33 @@ const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
   await mp.click('.topbar .icon-btn');
   await mp.waitForTimeout(400);
   await mp.screenshot({ path: `${OUT}/tide-10-m-drawer.png` });
+
+  // the page name on the ribbon fits the window, even a long one, in English and Chinese,
+  // and the page you're on reads white on the red cursor
+  const assert = require('assert');
+  for (const [lang, w, h] of [['en', 1400, 900], ['en', 1366, 680], ['zh-Hant', 1366, 680]]) {
+    const c = await b.newContext({ viewport: { width: w, height: h } });
+    await c.addInitScript((lang) => localStorage.setItem('tickwise.prefs.v1', JSON.stringify({ language: lang, skin: 'tide' })), lang);
+    const rp = await c.newPage();
+    rp.on('pageerror', (e) => errs.push('ribbon ' + e.message));
+    await rp.goto(url);
+    await rp.waitForSelector('.view-title');
+    for (const v of ['productivity', 'filters', 'completed', 'today']) {
+      await rp.evaluate((v) => (location.hash = '#/' + v), v);
+      await rp.waitForTimeout(500);
+      const r = await rp.evaluate(() => {
+        const g = document.querySelector('.ghost-title');
+        const on = document.querySelector('.nav > .nav-item.on');
+        return { text: g.textContent, sh: g.scrollHeight, ch: g.clientHeight, color: on && getComputedStyle(on).color };
+      });
+      // the name runs down the window; it must not run past it (italic letters may lean a little over the side)
+      assert(r.sh <= r.ch + 1, `${lang} ${w}x${h} ${v}: “${r.text}” is cut off ${JSON.stringify(r)}`);
+      assert.strictEqual(r.color, 'rgb(255, 255, 255)', `${v}: the page you're on is white`);
+    }
+    await rp.screenshot({ path: `${OUT}/tide-11-ribbon-${lang}-${h}.png` });
+    await c.close();
+  }
+  console.log('  ✓ the ribbon fits long page names (English and Chinese) and the current page is white');
   console.log(errs.length ? 'ERRORS ' + errs.join('\n') : 'no page errors');
   await b.close();
 })().catch((e) => { console.error('FAILED', e.message); process.exit(1); });

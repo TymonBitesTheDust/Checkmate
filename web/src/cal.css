@@ -384,56 +384,37 @@ body.cal-dragging, body.cal-dragging * { cursor: grabbing !important; user-selec
    ========================================================================== */
 
 /* ---------- NieR: Automata — parchment tiles, square markers ---------- */
-[data-skin="archive"] { --now: #48443a; }
-[data-skin="archive"] .cal-create { border-radius: 0; box-shadow: 4px 4px 0 rgba(72, 68, 58, 0.25); }
+[data-skin="archive"] { --now: var(--ink-2); }
+[data-skin="archive"] .cal-create { border-radius: 0; background: var(--accent); color: var(--accent-ink); box-shadow: 4px 4px 0 var(--na-shadow); text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; }
+[data-skin="archive"] .cal-create:hover { background: var(--accent-strong); }
 [data-skin="archive"] .cal-today, [data-skin="archive"] .cal-viewbtn { border-radius: 0 !important; }
-[data-skin="archive"] .cal-bar .view-title.cal-title { font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; font-size: 21px; }
-[data-skin="archive"] .tg-dayhead .dnum, [data-skin="archive"] .mg-num, [data-skin="archive"] .mini-day, [data-skin="archive"] .sched-date .dnum { border-radius: 0 !important; font-family: var(--display); }
-[data-skin="archive"] .tg-dayhead.today .dnum, [data-skin="archive"] .mg-cell.today .mg-num, [data-skin="archive"] .mini-day.today, [data-skin="archive"] .sched-day.today .dnum { background: var(--ink); color: var(--raise); }
+[data-skin="archive"] .cal-today { background: var(--na-row); border: 0; text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+[data-skin="archive"] .cal-today::before { content: ""; width: 9px; height: 9px; background: currentColor; }
+[data-skin="archive"] .cal-today:hover { background: var(--accent); color: var(--accent-ink); }
+[data-skin="archive"] .cal-viewbtn { background: var(--na-row); border-color: transparent; font-weight: 600; }
+[data-skin="archive"] .cal-bar .view-title.cal-title { font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; font-size: 21px; text-shadow: 3px 3px 0 var(--na-shadow); }
+[data-skin="archive"] .tg-dayhead .dow, [data-skin="archive"] .mg-dows span { text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; }
+[data-skin="archive"] .tg-dayhead .dnum, [data-skin="archive"] .mg-num, [data-skin="archive"] .mini-day, [data-skin="archive"] .sched-date .dnum { border-radius: 0 !important; font-family: var(--display); font-weight: 600; }
+[data-skin="archive"] .tg-dayhead.today .dnum, [data-skin="archive"] .mg-cell.today .mg-num, [data-skin="archive"] .mini-day.today, [data-skin="archive"] .sched-day.today .dnum { background: var(--accent); color: var(--accent-ink); box-shadow: 3px 3px 0 var(--na-shadow); }
 [data-skin="archive"] .ev-block, [data-skin="archive"] .ad-bar, [data-skin="archive"] .mg-item.mg-bar {
   border-radius: 0; background: var(--raise); color: var(--ink);
-  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--ev) 55%, var(--ink)), 0 0 0 1px var(--line-strong);
+  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--ev) 55%, var(--ink)), inset 0 0 0 1px var(--line-strong), 3px 3px 0 var(--na-shadow);
 }
-[data-skin="archive"] .ev-block .ev-title, [data-skin="archive"] .ad-bar .ev-title { letter-spacing: 0.03em; }
+[data-skin="archive"] .ev-block .ev-title, [data-skin="archive"] .ad-bar .ev-title { letter-spacing: 0.03em; font-weight: 600; }
 [data-skin="archive"] .ev-block.past:not(.task), [data-skin="archive"] .ad-bar.past:not(.task), [data-skin="archive"] .mg-item.mg-bar.past:not(.task) { background: color-mix(in srgb, var(--raise) 55%, var(--bg)); color: var(--muted); }
-[data-skin="archive"] .ev-block:hover, [data-skin="archive"] .ad-bar:hover { background: var(--ink); color: var(--raise); }
+[data-skin="archive"] .ev-block:hover, [data-skin="archive"] .ad-bar:hover, [data-skin="archive"] .mg-item.mg-bar:hover { background: var(--accent); color: var(--accent-ink); }
 [data-skin="archive"] .ev-dot, [data-skin="archive"] .evc-sq { border-radius: 0; background: color-mix(in srgb, var(--ev) 55%, var(--ink)); }
-[data-skin="archive"] .now-line { height: 1px; background: var(--ink); }
-[data-skin="archive"] .now-line::before { border-radius: 0; transform: rotate(45deg) scale(0.75); background: var(--ink); }
+[data-skin="archive"] .now-line { height: 2px; background: var(--ink-2); }
+[data-skin="archive"] .now-line::before { border-radius: 0; transform: rotate(45deg) scale(0.75); background: var(--ink-2); }
 [data-skin="archive"] .cal-check { border-radius: 0; border-color: color-mix(in srgb, var(--c) 55%, var(--ink)); }
 [data-skin="archive"] .cal-check:checked { background: color-mix(in srgb, var(--c) 55%, var(--ink)); }
-[data-skin="archive"] .agenda-row { border-radius: 0; background: var(--raise); box-shadow: inset 0 0 0 1px var(--line); }
+[data-skin="archive"] .agenda-row { border-radius: 0; background: var(--na-row); box-shadow: none; }
+[data-skin="archive"] .agenda-row:hover { background: var(--accent); color: var(--accent-ink); }
 [data-skin="archive"] .agenda-row .ev-bar { border-radius: 0; background: color-mix(in srgb, var(--ev) 55%, var(--ink)); }
 [data-skin="archive"] .mini-day.in:not(.today) { background: var(--accent-soft); }
-[data-skin="archive"] .tg-top { box-shadow: 0 1px 0 var(--line-strong); }
+[data-skin="archive"] .tg-top { box-shadow: 0 1px 0 var(--ink-2); }
 
-/* ---------- Persona 5 — black slabs on white, red cut corners ---------- */
-[data-skin="riot"] { --now: #d2152a; }
-[data-skin="riot"] .app.on-cal .content { padding: 0 22px 0 26px; }
-[data-skin="riot"] .cal-view.view { margin: 14px 0 22px; padding: 14px 22px 16px; }
-[data-skin="riot"] .cal-bar .view-title.cal-title { font-size: 30px; transform: rotate(-2deg); font-weight: 400; }
-[data-skin="riot"] .cal-create { border-radius: 0; background: #141414; color: #ffffff; clip-path: polygon(0 0, 100% 6%, 96% 100%, 3% 92%); box-shadow: none; }
-[data-skin="riot"] .cal-today, [data-skin="riot"] .cal-viewbtn { border-radius: 0 !important; border: 2px solid #141414 !important; }
-[data-skin="riot"] .tg, [data-skin="riot"] .mg { margin: 0 -10px; }
-[data-skin="riot"] .tg-dayhead .dnum, [data-skin="riot"] .mg-num, [data-skin="riot"] .sched-date .dnum { border-radius: 0; font-family: var(--display); font-weight: 400; }
-[data-skin="riot"] .tg-dayhead.today .dnum, [data-skin="riot"] .mg-cell.today .mg-num, [data-skin="riot"] .sched-day.today .dnum {
-  background: #d2152a; color: #ffffff; transform: rotate(-6deg); clip-path: polygon(6% 0, 100% 8%, 92% 100%, 0 90%);
-}
-[data-skin="riot"] .mini-day.today { background: #d2152a; color: #ffffff; border-radius: 0; transform: rotate(-5deg); }
-[data-skin="riot"] .ev-block, [data-skin="riot"] .ad-bar, [data-skin="riot"] .mg-item.mg-bar {
-  border-radius: 0; background: #141414; color: #ffffff; box-shadow: inset 4px 0 0 var(--ev), 0 0 0 1px #ffffff;
-}
-[data-skin="riot"] .ev-block { clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%); }
-[data-skin="riot"] .ev-block:hover, [data-skin="riot"] .ad-bar:hover, [data-skin="riot"] .mg-item.mg-bar:hover { background: #d2152a; box-shadow: inset 4px 0 0 #141414; }
-[data-skin="riot"] .ev-block.past:not(.task), [data-skin="riot"] .ad-bar.past:not(.task), [data-skin="riot"] .mg-item.mg-bar.past:not(.task) { background: #5e5e5e; color: #ffffff; }
-[data-skin="riot"] .ev-block .ev-title, [data-skin="riot"] .ad-bar .ev-title { font-family: var(--display); font-weight: 400; letter-spacing: 0.02em; font-size: 13px; }
-[data-skin="riot"] .now-line { height: 3px; box-shadow: 0 0 0 1px #141414; }
-[data-skin="riot"] .now-line::before { border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); width: 14px; height: 14px; left: -7px; top: -6px; }
-[data-skin="riot"] .evc-sq, [data-skin="riot"] .ev-dot { border-radius: 0; transform: rotate(45deg) scale(0.85); }
-[data-skin="riot"] .agenda-row { border-radius: 0; background: #141414; color: #ffffff; clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
-[data-skin="riot"] .agenda-row .agenda-time, [data-skin="riot"] .agenda-row .agenda-loc { color: #d9d9d9; }
-[data-skin="riot"] .agenda-row:hover { background: #d2152a; }
-[data-skin="riot"] .cal-check { border-radius: 0; }
+/* Persona 5's calendar look is in skin-riot.css (the Calling Card design). */
 
 /* ---------- Persona 3 — dark glass slabs, cyan edges, gold now ---------- */
 [data-skin="tide"] { --now: #ffd93b; }
@@ -461,54 +442,74 @@ body.cal-dragging, body.cal-dragging * { cursor: grabbing !important; user-selec
 [data-skin="tide"] .agenda-row:hover .agenda-time, [data-skin="tide"] .agenda-row:hover .agenda-loc { color: #04123a; }
 [data-skin="tide"] .mg-cell:hover, [data-skin="tide"] .ad-cell:hover { background: rgba(255, 255, 255, 0.06); }
 
-/* ---------- Red Dead Redemption 2 — paper slips, red ink ---------- */
-[data-skin="frontier"] { --now: #a81f19; }
+/* ---------- Red Dead Redemption 2 — native menu boxes, the red brush frame ---------- */
+[data-skin="frontier"] { --now: #cc0000; }
 [data-skin="frontier"] .app.on-cal .content { background: none; }
-[data-skin="frontier"] .cal-bar .view-title.cal-title { font-weight: 400; font-size: 26px; letter-spacing: 0.02em; }
-[data-skin="frontier"] .cal-create { border-radius: 4px; background: var(--accent); font-variant: small-caps; letter-spacing: 0.04em; font-size: 15px; }
-[data-skin="frontier"] .cal-today, [data-skin="frontier"] .cal-viewbtn { border-radius: 4px !important; font-variant: small-caps; letter-spacing: 0.04em; }
+[data-skin="frontier"] .cal-bar .view-title.cal-title { font-weight: 400; font-size: 24px; letter-spacing: 0.02em; padding: 8px 26px 7px 22px; margin-left: 0; }
+[data-skin="frontier"] .cal-create { border-radius: 1px; background: #b3120c; color: #f7ecd4; font-variant: small-caps; letter-spacing: 0.04em; font-size: 15px; box-shadow: inset 0 0 0 1px rgba(255, 240, 210, 0.22), 0 2px 0 rgba(30, 5, 2, 0.4); }
+[data-skin="frontier"] .cal-create:hover { background: #cc0000; }
+[data-skin="frontier"] .cal-today, [data-skin="frontier"] .cal-viewbtn { border-radius: 1px !important; font-variant: small-caps; letter-spacing: 0.04em; }
 [data-skin="frontier"] .tg-dayhead .dow, [data-skin="frontier"] .mg-dows span, [data-skin="frontier"] .sched-date .dow { font-variant: small-caps; text-transform: lowercase; letter-spacing: 0.06em; font-size: 13px; }
 [data-skin="frontier"] .tg-dayhead .dnum, [data-skin="frontier"] .sched-date .dnum { font-family: var(--display); font-weight: 400; }
 [data-skin="frontier"] .tg-dayhead.today .dnum, [data-skin="frontier"] .mg-cell.today .mg-num, [data-skin="frontier"] .sched-day.today .dnum, [data-skin="frontier"] .mini-day.today {
-  background: transparent; color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); transform: rotate(-6deg);
+  background: transparent; color: var(--accent); box-shadow: inset 0 0 0 2px #cc0000; transform: rotate(-6deg);
 }
-[data-skin="frontier"] .tg-hours { box-shadow: inset -1px 0 0 var(--margin, rgba(155, 29, 22, 0.35)); }
+[data-skin="frontier"] .tg-hours { box-shadow: inset -1px 0 0 var(--line-strong); }
 [data-skin="frontier"] .ev-block, [data-skin="frontier"] .ad-bar, [data-skin="frontier"] .mg-item.mg-bar {
-  border-radius: 2px; background: var(--raise); color: var(--ink);
+  border-radius: 1px; background: var(--raise); color: var(--ink);
   box-shadow: inset 4px 0 0 color-mix(in srgb, var(--ev) 70%, #4a2c12), 0 0 0 1px var(--line-strong), 1px 2px 0 rgba(60, 35, 10, 0.18);
+}
+[data-skin="frontier"][data-theme="dark"] .ev-block, [data-skin="frontier"][data-theme="dark"] .ad-bar, [data-skin="frontier"][data-theme="dark"] .mg-item.mg-bar {
+  background: var(--fr-streak-faint), rgba(58, 56, 52, 0.72); color: #f5f5f5;
+  box-shadow: inset 4px 0 0 color-mix(in srgb, var(--ev) 80%, #ffffff), 0 0 0 1px rgba(245, 245, 245, 0.16);
 }
 [data-skin="frontier"] .ev-block .ev-title, [data-skin="frontier"] .ad-bar .ev-title { font-weight: 700; }
 [data-skin="frontier"] .ev-block.past:not(.task), [data-skin="frontier"] .ad-bar.past:not(.task), [data-skin="frontier"] .mg-item.mg-bar.past:not(.task) { background: color-mix(in srgb, var(--raise) 50%, var(--bg)); color: var(--muted); }
-[data-skin="frontier"] .ev-block:hover, [data-skin="frontier"] .ad-bar:hover { box-shadow: inset 4px 0 0 var(--accent), 0 0 0 1px var(--accent), 1px 2px 0 rgba(60, 35, 10, 0.18); }
+[data-skin="frontier"] .ev-block:hover, [data-skin="frontier"] .ad-bar:hover { box-shadow: inset 4px 0 0 #cc0000, 0 0 0 2px #cc0000; }
 [data-skin="frontier"] .ev-dot, [data-skin="frontier"] .evc-sq { background: color-mix(in srgb, var(--ev) 70%, #4a2c12); }
-[data-skin="frontier"] .agenda-row { background: var(--raise); box-shadow: 0 0 0 1px var(--line); border-radius: 2px; }
+[data-skin="frontier"][data-theme="dark"] .ev-dot, [data-skin="frontier"][data-theme="dark"] .evc-sq { background: color-mix(in srgb, var(--ev) 85%, #ffffff); }
+[data-skin="frontier"] .agenda-row { background: var(--fr-streak-faint), var(--box); box-shadow: none; border-radius: 1px; }
+[data-skin="frontier"] .agenda-row:hover { box-shadow: 0 0 0 2px #cc0000; }
 [data-skin="frontier"] .agenda-row .ev-bar { background: color-mix(in srgb, var(--ev) 70%, #4a2c12); }
-[data-skin="frontier"] .now-line::before { border-radius: 50%; box-shadow: 0 0 0 2px var(--bg); }
+@media (max-width: 640px) { [data-skin="frontier"] .cal-bar .view-title.cal-title { font-size: 19px; padding: 6px 14px 5px 12px; } }
+[data-skin="frontier"] .now-line { background: #cc0000; }
+[data-skin="frontier"] .now-line::before { border-radius: 50%; background: #cc0000; box-shadow: 0 0 0 2px var(--bg); }
 
-/* ---------- Cyberpunk 2077 — chamfered HUD blocks, neon edges ---------- */
+/* ---------- Cyberpunk 2077 — framed blocks, red hairlines, cyan for today ---------- */
 [data-skin="neon"] { --now: var(--hot); }
-[data-skin="neon"] .cal-bar .view-title.cal-title { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; font-size: 24px; }
-[data-skin="neon"] .cal-create { border-radius: 0; clip-path: var(--chamfer-sm); text-transform: uppercase; letter-spacing: 0.1em; box-shadow: none; }
-[data-skin="neon"] .cal-today, [data-skin="neon"] .cal-viewbtn { border-radius: 0 !important; clip-path: var(--chamfer-sm); text-transform: uppercase; letter-spacing: 0.08em; }
-[data-skin="neon"] .tg-dayhead .dow, [data-skin="neon"] .mg-dows span { letter-spacing: 0.14em; }
+[data-skin="neon"] .cal-bar .view-title.cal-title { text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; font-size: 24px; }
+[data-skin="neon"] .cal-create { border-radius: 0; clip-path: var(--cut-tr-sm); text-transform: uppercase; letter-spacing: 0.12em; box-shadow: none; background: var(--hot); color: #07080d; }
+[data-skin="neon"] .cal-create:hover { background: var(--cy); color: #021417; }
+[data-skin="neon"]:not([data-theme="dark"]) .cal-create { background: #000000; color: #fcee0a; box-shadow: inset -4px 0 0 var(--hot); }
+[data-skin="neon"] .cal-today, [data-skin="neon"] .cal-viewbtn { border-radius: 0 !important; clip-path: var(--cut-tr-sm); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; border-color: var(--line-strong) !important; color: var(--ink); }
+[data-skin="neon"] .tg-dayhead .dow, [data-skin="neon"] .mg-dows span { letter-spacing: 0.16em; font-weight: 700; color: var(--muted); }
 [data-skin="neon"] .tg-dayhead .dnum, [data-skin="neon"] .mg-num, [data-skin="neon"] .sched-date .dnum, [data-skin="neon"] .mini-day { border-radius: 0 !important; font-variant-numeric: tabular-nums; }
-[data-skin="neon"] .tg-dayhead.today .dnum, [data-skin="neon"] .mg-cell.today .mg-num, [data-skin="neon"] .sched-day.today .dnum, [data-skin="neon"] .mini-day.today { clip-path: var(--chamfer-sm); }
+[data-skin="neon"] .tg-dayhead .dnum { font-weight: 700; color: var(--ink); }
+[data-skin="neon"] .tg-dayhead.today .dnum, [data-skin="neon"] .mg-cell.today .mg-num, [data-skin="neon"] .sched-day.today .dnum, [data-skin="neon"] .mini-day.today {
+  clip-path: var(--cut-tr-sm); background: var(--sel-fill); color: var(--sel); box-shadow: inset 0 0 0 1px var(--sel);
+}
+[data-skin="neon"]:not([data-theme="dark"]) .tg-dayhead.today .dnum, [data-skin="neon"]:not([data-theme="dark"]) .mg-cell.today .mg-num,
+[data-skin="neon"]:not([data-theme="dark"]) .sched-day.today .dnum { background: #000000; color: #fcee0a; box-shadow: inset 0 -3px 0 var(--hot); }
+[data-skin="neon"] .tg-dayhead.today .dow { color: var(--sel); }
+[data-skin="neon"]:not([data-theme="dark"]) .tg-dayhead.today .dow { color: #000000; }
 [data-skin="neon"] .ev-block, [data-skin="neon"] .ad-bar, [data-skin="neon"] .mg-item.mg-bar {
-  border-radius: 0; clip-path: var(--chamfer-sm); background: #000000; color: var(--yl);
+  border-radius: 0; clip-path: var(--cut-tr-sm); background: #000000; color: var(--yl);
   box-shadow: inset 3px 0 0 var(--ev);
 }
 [data-skin="neon"] .ev-block .ev-title, [data-skin="neon"] .ad-bar .ev-title, [data-skin="neon"] .mg-item .ev-title { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
 [data-skin="neon"] .ev-block:hover, [data-skin="neon"] .ad-bar:hover { background: var(--ev); color: #000000; }
 [data-skin="neon"] .ev-block.past:not(.task), [data-skin="neon"] .ad-bar.past:not(.task), [data-skin="neon"] .mg-item.mg-bar.past:not(.task) { background: rgba(0, 0, 0, 0.55); color: rgba(252, 238, 10, 0.75); }
 [data-skin="neon"][data-theme="dark"] .ev-block, [data-skin="neon"][data-theme="dark"] .ad-bar, [data-skin="neon"][data-theme="dark"] .mg-item.mg-bar {
-  background: color-mix(in srgb, var(--ev) 18%, #0c0d17); color: #ffffff; box-shadow: inset 3px 0 0 var(--ev), inset 0 0 0 1px color-mix(in srgb, var(--ev) 60%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ev) 26%, #0a0b11), color-mix(in srgb, var(--ev) 12%, #0a0b11)); color: #ffe9e6;
+  box-shadow: inset 3px 0 0 var(--ev), inset 0 0 0 1px color-mix(in srgb, var(--ev) 55%, transparent);
 }
 [data-skin="neon"][data-theme="dark"] .ev-block:hover, [data-skin="neon"][data-theme="dark"] .ad-bar:hover { background: var(--ev); color: #000000; }
-[data-skin="neon"][data-theme="dark"] .ev-block.past:not(.task), [data-skin="neon"][data-theme="dark"] .ad-bar.past:not(.task) { background: #12131f; color: var(--muted); }
+[data-skin="neon"][data-theme="dark"] .ev-block.past:not(.task), [data-skin="neon"][data-theme="dark"] .ad-bar.past:not(.task) { background: #10121b; color: var(--muted); }
 [data-skin="neon"] .ev-dot, [data-skin="neon"] .evc-sq { border-radius: 0; }
 [data-skin="neon"] .now-line { box-shadow: 0 0 6px var(--hot), 0 0 12px var(--hot); }
 [data-skin="neon"] .now-line::before { border-radius: 0; clip-path: polygon(0 0, 100% 50%, 0 100%); }
-[data-skin="neon"] .agenda-row { border-radius: 0; clip-path: var(--chamfer-sm); }
+[data-skin="neon"] .agenda-row { border-radius: 0; clip-path: var(--cut-tr-sm); }
+[data-skin="neon"] .agenda-row:hover { background: var(--fr-fill); box-shadow: inset 0 0 0 1px var(--fr); }
 [data-skin="neon"] .cal-check { border-radius: 0; }
 
 /* ---------- Traditional Chinese ---------- */

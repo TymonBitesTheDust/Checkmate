@@ -16,7 +16,9 @@
     try {
       var p = JSON.parse(localStorage.getItem('tickwise.prefs.v1') || '{}');
       var t = p.theme || 'system';
-      var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      var dark = p.skin === 'riot' || t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      var m = p.motion || 'system';
+      document.documentElement.dataset.motion = m === 'reduced' || (m === 'system' && matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'reduced' : 'full';
       document.documentElement.dataset.theme = dark ? 'dark' : 'light';
       if (p.skin && p.skin !== 'tickwise') document.documentElement.dataset.skin = p.skin;
       var l = p.language || 'system';

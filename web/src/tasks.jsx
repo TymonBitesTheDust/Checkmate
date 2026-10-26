@@ -7,6 +7,7 @@ import { Menu, Linkify } from './ui.jsx';
 import { TaskEditor, DuePicker, PriorityPicker, ProjectPicker, LabelPicker } from './editor.jsx';
 import { dueLabel, today, addDays } from './dates.js';
 import { Shatter } from './tide.jsx';
+import { Stamp, Shards, isRiot, reducedMotion } from './riot.jsx';
 import { play } from './sound.js';
 import { tr } from './i18n.js';
 
@@ -264,10 +265,11 @@ export function TaskRow({ task: t, depth = 0, showProject = false, showParent = 
     }
     setCompleting(true);
     play(completionSound(t));
+    // Persona 5 waits for the slash and the stamp to land
     setTimeout(() => {
       A.completeTask(t.id);
       setCompleting(false);
-    }, 380);
+    }, isRiot() ? (reducedMotion() ? 200 : 520) : 380);
   };
 
   const open = (e) => {
@@ -307,7 +309,9 @@ export function TaskRow({ task: t, depth = 0, showProject = false, showParent = 
       onClick={open}
       {...lp}
     >
+      <Shards />
       {completing && <Shatter />}
+      {completing && <Stamp repeat={!!(t.due && t.due.recur)} />}
       {/* the strip left of the row (handle and arrow) counts as the row, so hovering there is steady */}
       <span class="row-gutter" aria-hidden="true" />
       {draggable && (

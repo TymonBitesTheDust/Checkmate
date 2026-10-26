@@ -171,71 +171,63 @@ const archive = {
   },
 };
 
-const kick = (at = 0, vol = 0.12) => tone({ f: 160, to: 45, sweep: 0.12, at, len: 0.16, vol, attack: 0.002 });
-const snap = (at = 0, vol = 0.03) => noise({ at, len: 0.04, vol, type: 'highpass', f: 3000 });
-const stab = (list, at = 0, vol = 0.02, len = 0.09) => chord(list, { type: 'square', at, len, vol, filter: 'lowpass', fc: 3200 });
+// Persona 5 (the Calling Card design): short square-wave blips, filtered-noise whooshes
+// and a kick, after the Persona 5 menu.
+const p5Kick = (at = 0, vol = 0.2) => tone({ f: 160, to: 38, sweep: 0.2, at, len: 0.24, vol, attack: 0.002 });
+const p5Blip = (at = 0, vol = 0.022) => {
+  tone({ f: 1500, to: 1050, sweep: 0.045, type: 'square', at, len: 0.045, vol });
+  tone({ f: 3000, to: 2200, sweep: 0.03, type: 'triangle', at, len: 0.03, vol: vol / 2 });
+};
+const p5Ping = (at = 0, vol = 0.032) => {
+  tone({ f: 660, to: 1320, sweep: 0.06, type: 'square', at, len: 0.06, vol });
+  tone({ f: 1320, to: 1980, sweep: 0.08, type: 'square', at: at + 0.05, len: 0.08, vol: vol * 0.8 });
+  noise({ at, len: 0.05, vol: vol * 1.1, type: 'highpass', f: 3500 });
+};
 const riot = {
-  hover: () => {
-    tone({ f: 2400, type: 'triangle', len: 0.02, vol: 0.018 });
-    noise({ len: 0.015, vol: 0.01, type: 'highpass', f: 5000 });
-  },
-  select: () => {
-    noise({ len: 0.05, vol: 0.03, type: 'highpass', f: 2500 });
-    tone({ f: 1046.5, type: 'square', len: 0.05, vol: 0.022, filter: 'lowpass', fc: 4000 });
-  },
-  pop: () => {
-    snap(0, 0.025);
-    tone({ f: 1568, type: 'triangle', len: 0.03, vol: 0.025 });
-  },
-  open: () => {
-    noise({ len: 0.18, vol: 0.035, f: 5000, to: 9000, q: 1 });
-    notes([1046.5, 1568], { type: 'square', step: 0.04, len: 0.06, vol: 0.025, filter: 'lowpass', fc: 4000 });
-  },
-  close: () => {
-    noise({ len: 0.12, vol: 0.03, f: 7000, to: 3000, q: 1 });
-    tone({ f: 784, type: 'square', len: 0.05, vol: 0.022, filter: 'lowpass', fc: 3000 });
-  },
+  hover: () => p5Blip(0, 0.012),
+  select: () => p5Blip(0, 0.022),
+  pop: () => p5Blip(0, 0.018),
+  open: () => p5Ping(0, 0.028),
+  close: () => tone({ f: 880, to: 420, sweep: 0.09, type: 'square', len: 0.09, vol: 0.026 }),
+  // changing page: the menu's whoosh and p5Kick
   nav: () => {
-    noise({ len: 0.22, vol: 0.05, f: 300, to: 3500, q: 0.8 });
-    kick(0.17, 0.09);
+    noise({ len: 0.32, vol: 0.06, type: 'bandpass', f: 260, to: 3800, q: 0.8 });
+    p5Kick(0.28, 0.16);
   },
+  // a task cleared: slash, cymbal p5Ping and a p5Kick
   complete: () => {
-    kick(0, 0.14);
-    stab([523.25, 659.25, 783.99], 0.01, 0.018, 0.1);
-    tone({ f: 1046.5, type: 'square', at: 0.06, len: 0.16, vol: 0.028, filter: 'lowpass', fc: 4500 });
-    tone({ f: 1568, type: 'square', at: 0.12, len: 0.22, vol: 0.028, filter: 'lowpass', fc: 4500 });
-    noise({ at: 0.02, len: 0.35, vol: 0.028, type: 'highpass', f: 6000 });
+    noise({ len: 0.16, vol: 0.08, type: 'highpass', f: 1400, to: 9000 });
+    tone({ f: 1760, type: 'triangle', at: 0.04, len: 0.32, vol: 0.032 });
+    tone({ f: 2637, type: 'triangle', at: 0.08, len: 0.28, vol: 0.02 });
+    p5Kick(0, 0.2);
   },
   uncomplete: () => {
-    kick(0, 0.08);
-    stab([392, 466.16], 0.01, 0.02, 0.1);
+    tone({ f: 880, to: 420, sweep: 0.09, type: 'square', len: 0.09, vol: 0.026 });
+    p5Kick(0, 0.1);
   },
   add: () => {
-    kick(0, 0.1);
-    stab([659.25, 783.99, 987.77], 0.01, 0.018, 0.08);
-    snap(0.01);
+    p5Ping(0, 0.028);
+    p5Kick(0, 0.12);
   },
   delete: () => {
-    noise({ len: 0.16, vol: 0.05, f: 8000, to: 600, q: 1.5 });
-    kick(0.1, 0.12);
+    noise({ len: 0.16, vol: 0.06, type: 'bandpass', f: 8000, to: 600, q: 1.5 });
+    p5Kick(0.1, 0.16);
   },
   drop: () => {
-    kick(0, 0.12);
-    snap(0, 0.02);
+    p5Kick(0, 0.16);
+    noise({ len: 0.03, vol: 0.04, type: 'lowpass', f: 2400 });
   },
-  error: () => chord([233.08, 246.94], { type: 'square', len: 0.2, vol: 0.026, filter: 'lowpass', fc: 1800 }),
-  reminder: () => [0, 0.15, 0.3].forEach((at) => {
-    kick(at, 0.08);
-    stab([783.99, 987.77, 1174.66], at, 0.018, 0.08);
-  }),
+  error: () => tone({ f: 170, to: 120, sweep: 0.18, type: 'sawtooth', len: 0.18, vol: 0.03 }),
+  reminder: () => [0, 0.16, 0.32].forEach((at) => p5Ping(at, 0.028)),
   goal: () => {
+    riot.complete();
     [[523.25, 659.25, 783.99], [698.46, 880, 1046.5], [783.99, 987.77, 1174.66], [1046.5, 1318.5, 1568]].forEach((c, i) => {
-      kick(i * 0.14, 0.1);
-      stab(c, i * 0.14, 0.018, i === 3 ? 0.5 : 0.11);
+      p5Kick(0.18 + i * 0.13, 0.12);
+      chord(c, { type: 'square', at: 0.18 + i * 0.13, len: i === 3 ? 0.5 : 0.11, vol: 0.016, filter: 'lowpass', fc: 3400 });
     });
-    noise({ at: 0.42, len: 0.6, vol: 0.03, type: 'highpass', f: 6000 });
   },
 };
+
 
 const bubble = (at, f0, vol) => tone({ f: f0, to: f0 * 2.6, sweep: 0.05, at, len: 0.07, vol });
 const tide = {
@@ -392,7 +384,7 @@ const neon = {
 
 const BANKS = { tickwise, archive, riot, tide, frontier, neon };
 // Evens out loudness between styles.
-const BANK_GAIN = { tickwise: 1, archive: 1.7, riot: 0.9, tide: 1.1, frontier: 1.1, neon: 1.2 };
+const BANK_GAIN = { tickwise: 1, archive: 1.7, riot: 1, tide: 1.1, frontier: 1.1, neon: 1.2 };
 const ALIAS = { undo: 'uncomplete' };
 
 // Louder, more important sounds briefly mute quieter ones so they don't pile up.

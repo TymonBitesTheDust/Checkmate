@@ -14,7 +14,9 @@ const ALLOWED = new Set(['MB', 'KB', 'Live', 'Aid', 'Claude', 'Docs', 'Sheets', 
   'GMT', 'ics', 'iCal', 'Outlook', 'Apple', 'calendar', 'Settings', 'for', 'my', 'calendars', 'Integrate', 'Secret', 'address', 'format', 'webcal', 'https',
   'D', 'X', 'W', 'Y', 'A', 'J', 'K', 'L',
   // Claude connector: product names
-  'Claude', 'Todoist', 'Cloudflare']);
+  'Claude', 'Todoist', 'Cloudflare',
+  // the Persona 5 design's name, in What's new
+  'Calling', 'Card']);
 
 function leftovers(text) {
   const words = text.match(/[A-Za-z]{2,}/g) || [];

@@ -6,6 +6,18 @@ import { tr, isZh } from './i18n.js';
 
 export const isTide = () => store.getPrefs().skin === 'tide';
 
+// ---------- the page name on the ribbon ----------
+
+// How long a page name runs in Montserrat Black Italic, in em (measured letter by letter, with
+// the ribbon's -0.04em tracking; Chinese characters stand upright at about 1.1em each). The
+// ribbon divides the window's height by this, so a long name like PRODUCTIVITY shrinks to fit.
+const EM = { A: 0.8, B: 0.73, C: 0.68, D: 0.79, E: 0.63, F: 0.6, G: 0.73, H: 0.76, I: 0.31, J: 0.53, K: 0.73, L: 0.58, M: 0.91, N: 0.76, O: 0.81, P: 0.69, Q: 0.81, R: 0.71, S: 0.62, T: 0.62, U: 0.73, V: 0.75, W: 1.16, X: 0.72, Y: 0.68, Z: 0.65, '&': 0.74, ' ': 0.25, '/': 0.33, '-': 0.36 };
+export function ribbonEms(text) {
+  let n = 0;
+  for (const c of String(text || '').toUpperCase()) n += EM[c] ?? (/[\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef]/.test(c) ? 1.1 : /[0-9]/.test(c) ? 0.62 : 0.72);
+  return Math.max(1, +(n * 1.04).toFixed(2));
+}
+
 // ---------- moon phase ----------
 
 const SYNODIC = 29.530588853;
@@ -108,11 +120,28 @@ export function Shatter() {
   );
 }
 
-// Keyboard guide in the sidebar, styled like on-screen button prompts.
-export function KeyHints() {
+// What each page is for, shown above the button prompts like the pause menu's help line.
+const PAGE_HELP = {
+  today: 'View / Clear today’s tasks',
+  inbox: 'Sort new tasks',
+  upcoming: 'Plan the days ahead',
+  calendar: 'View / Change events',
+  birthdays: 'Remember birthdays',
+  filters: 'View / Edit filters and labels',
+  completed: 'Look back at finished tasks',
+  productivity: 'View stats / Set a daily goal',
+  search: 'Find a task',
+  project: 'View / Organize a project',
+  label: 'Tasks with this label',
+  filter: 'Tasks that match this filter',
+};
+
+// The Command help line with button prompts (bottom right in Persona 3).
+export function KeyHints({ view }) {
   return (
     <div class="key-hints" aria-hidden="true">
-      <span class="kh-label">{tr('What will you do today?')}</span>
+      <span class="kh-label">{tr(PAGE_HELP[view] || 'What will you do today?')}</span>
+      <span class="kh-cmd">{tr('Command')}</span>
       <span class="kh-keys">
         <span><kbd>Q</kbd>{tr('Add')}</span>
         <span><kbd>/</kbd>{tr('Search')}</span>

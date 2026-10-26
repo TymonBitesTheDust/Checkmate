@@ -6,7 +6,7 @@ import { Icon } from './icons.jsx';
 import { MenuButton, Menu, confirmDialog, toast } from './ui.jsx';
 import { TaskTree, TaskRow, InlineAdder } from './tasks.jsx';
 import { StyledTitle, RiotDate, isRiot, textOf } from './riot.jsx';
-import { TideDate, TideStats, isTide } from './tide.jsx';
+import { TideDate, TideStats, isTide, ribbonEms } from './tide.jsx';
 import { FrontierDate, Tally, isFrontier } from './frontier.jsx';
 import { NeonDate, isNeon } from './neon.jsx';
 import { compileFilter } from './filters.js';
@@ -63,7 +63,7 @@ export function ViewHeader({ title, subtitle, actions, children, badge }) {
     <header class="view-head">
       <div class="view-head-row">
         <h1 class="view-title"><StyledTitle>{title}</StyledTitle></h1>
-        <span class="ghost-title" aria-hidden="true">{textOf(title)}</span>
+        <span class="ghost-title" aria-hidden="true" style={{ '--len': ribbonEms(textOf(title)) }}>{textOf(title)}</span>
         {badge}
         <div class="view-actions">{actions}</div>
       </div>
@@ -107,7 +107,7 @@ function Group({ id, title, count, right, children, defaultOpen = true, zone }) 
   const collapsed = prefs.collapsed[key] ?? !defaultOpen;
   if (!title) return <div class="group-body" {...(zone || {})}>{children}</div>;
   return (
-    <section class={`group ${collapsed ? 'collapsed' : ''}`}>
+    <section class={`group ${collapsed ? 'collapsed' : ''}`} data-group={id}>
       <div class="group-head">
         <button
           type="button"
@@ -283,7 +283,7 @@ export function UpcomingView() {
           const rel = diff === 0 ? tr('Today') : diff === 1 ? tr('Tomorrow') : dayName(d.getDay());
           const list = sortToday(byDate[dte] || [], 'time');
           return (
-            <section class="day" key={dte} data-day={dte}>
+            <section class={`day ${dte === ref ? 'is-today' : ''}`} key={dte} data-day={dte}>
               <h2 class="day-head">
                 <span class="day-date">{shortDate(dte, ref)}</span>
                 <span class="day-rel">{rel}</span>

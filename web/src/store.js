@@ -79,6 +79,9 @@ const DEFAULT_PREFS = {
   accentVars: null,
   // the app's own icon (Windows shortcuts and .exe, Android home screen) follows the style
   iconFollowsStyle: true,
+  // Persona 5 style: animations ('system' follows the device, 'full' or 'reduced') and the star field
+  motion: 'system',
+  stars: true,
   startView: 'today',
   weekStart: 1,
   timeFormat: guessTimeFormat(),

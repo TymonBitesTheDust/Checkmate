@@ -1,5 +1,6 @@
 // Pieces used only by the Red Dead Redemption 2 style (id "frontier"): the
-// almanac page on Today and the tally of tasks done today. Other styles hide them.
+// almanac page on Today, the tally of tasks done today and the menu's "3 of 9"
+// counter. Other styles hide or skip them.
 import * as store from './store.js';
 import { parseYmd, dayName, monthName } from './dates.js';
 import { tr } from './i18n.js';
@@ -46,4 +47,13 @@ export function Tally({ done, goal }) {
       <span class="fr-tally-text" aria-hidden="true">{label}</span>
     </div>
   );
+}
+
+// The native menu's counter under the list: which page is selected, of how many.
+// on: one flag per page shown in the menu, true for the current page.
+export function MenuCounter({ on }) {
+  if (!isFrontier()) return null;
+  const i = on.indexOf(true);
+  if (i < 0) return null;
+  return <div class="fr-counter" aria-hidden="true">{tr('{n} of {total}', { n: i + 1, total: on.length })}</div>;
 }

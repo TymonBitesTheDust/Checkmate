@@ -1,6 +1,18 @@
 // What changed in each version, newest first (Settings → What’s new). [English, 繁體中文]
 export const CHANGELOG = [
   {
+    v: '3.0.0',
+    date: '2026-10',
+    notes: [
+      ['Persona 5 has a new look, the Calling Card design: a blood-red page over a field of pulsing stars, menu words and page titles in cut-out letters, a red and cyan highlight that wiggles behind what you pick, black menus and white paper dialogs.', '女神異聞錄 5 風格換上新造型，名為 Calling Card 的設計：血紅色的畫面配上一片脈動的星星，選單和頁面標題用剪貼字母，選中的項目背後有紅色和青色的高光晃動，黑色選單和白紙對話框。'],
+      ['In Persona 5, the menu shows today’s date and how many tasks are due. Finishing a task slashes it in red and stamps it “Clear!”, changing page sweeps a wipe across and shakes the screen, and new sounds follow the Persona 5 menu.', '在女神異聞錄 5 風格中，選單會顯示今天的日期和到期任務的數目。完成任務時會劃上一道紅線並蓋上「搞定！」印章，切換頁面時畫面會掃過一道轉場並震動一下，新的音效仿照女神異聞錄 5 的選單。'],
+      ['New app icons to match the new looks: Persona 5 is a red star with a white tick on black; NieR: Automata is the picked menu plate with its square marker between thin rules; Persona 3 is the red and white cursor under a black tick on deep water, with the moon; Red Dead Redemption 2 is a rough red brush frame round an ink tick. They show in the app, the browser tab, and on Windows and Android when the icon follows the style.', '配合新造型的應用程式圖示：女神異聞錄 5 是黑底上一顆紅星和白色剔號；NieR: Automata 是夾在細線之間、帶方形標記的選中選單板；女神異聞錄 3 是深藍水面上的紅白游標和黑色剔號，旁邊有月亮；Red Dead Redemption 2 是一個粗糙的紅色筆刷框圍著墨色剔號。圖示用於應用程式內、瀏覽器分頁，以及圖示跟隨風格時的 Windows 和 Android。'],
+      ['Settings → Theme, with Persona 5 picked: choose how much moves (Match device, Full or Reduced) and turn the star field on or off. Persona 5 is always dark.', '「設定 → 主題」（選了女神異聞錄 5 時）：選擇動畫多少（跟隨裝置、完整或減少），並可開關星空。女神異聞錄 5 風格一律使用深色。'],
+      ['Persona 3 now follows the Persona 3 Reload pause menu: light dancing on the water’s surface, a tilted stack of command words with the page you’re on in white over the red and white cursor, the page name standing huge on a white ribbon (long names shrink to fit), white boxes for today’s numbers and a help line with button prompts.', '女神異聞錄 3 風格改為參照重製版女神異聞錄 3 的暫停選單：水面上跳動的光影、傾斜疊放的指令文字，目前頁面以白色顯示在紅白游標上、頁面名稱以巨大字體豎立在白色緞帶上（較長的名稱會縮小以完整顯示）、以白色方框顯示今天的數字，還有附按鍵提示的說明列。'],
+      ['NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 look more like their games: NieR’s beige menu plates that fill dark from the left with lines above and below; Red Dead’s black ink-roller menu with brush banners, a red brush frame around the chosen item and a “3 of 9” counter; Cyberpunk’s salmon-red rows on black with cut-corner frames, cyan for what’s chosen and “‹ ON ›” switches.', 'NieR: Automata、Red Dead Redemption 2 和 Cyberpunk 2077 風格更接近各自的遊戲：NieR 的米色選單板，由左至右填滿深色並在上下滑出細線；Red Dead 的黑色墨輥選單，配上筆刷標題、選中項目的紅色筆刷框和「第 3 項，共 9 項」計數；Cyberpunk 的黑底鮭紅色列、切角框、以青色標示選中項目和「‹ 開 ›」開關。'],
+    ],
+  },
+  {
     v: '2.2.0',
     date: '2026-10',
     notes: [

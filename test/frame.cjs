@@ -82,7 +82,8 @@ const pass = (m) => console.log('  ✓ ' + m);
   await p.waitForSelector('.cal-view');
   await p.addStyleTag({ content: '.app { overflow: hidden !important; }' });
   await p.evaluate(() => (document.querySelector('.app').scrollTop = 120));
-  await p.waitForTimeout(100);
+  // the guard runs on the scroll event; give a busy machine up to a second
+  await p.waitForFunction(() => document.querySelector('.app').scrollTop === 0, null, { timeout: 1000 }).catch(() => {});
   assert.strictEqual(await p.evaluate(() => document.querySelector('.app').scrollTop), 0, 'guard puts the frame back');
   pass('without overflow: clip (older WebViews) the scroll guard puts the frame back');
   assert.deepStrictEqual(errs, []);

@@ -10,7 +10,17 @@ const assert = require('assert');
 const H = require('./connector-harness.cjs');
 const { createFakeGoogle } = require('./fake-google.cjs');
 
-const url = 'file://' + path.resolve(__dirname, '../web/dist-test/Checkmate.html');
+// The app is served over http, like the Windows app serves it: headless Chromium sometimes
+// starts a file:// page with empty localStorage after a reload, which loses the sync setup.
+const http = require('http');
+const appServer = http.createServer((q, s) => {
+  fs.readFile(path.resolve(__dirname, '../web/dist-test/Checkmate.html'), (e, d) => {
+    if (e) return s.writeHead(404), s.end();
+    s.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    s.end(d);
+  });
+});
+let url;
 const OUT = process.argv[2] || '/tmp/shots';
 fs.mkdirSync(OUT, { recursive: true });
 const server = { users: {}, docs: {}, clock: 1_000_000, listeners: {} };
@@ -100,6 +110,8 @@ async function openSettings(page, tabText) {
 }
 
 (async () => {
+  await new Promise((r) => appServer.listen(0, '127.0.0.1', r));
+  url = `http://127.0.0.1:${appServer.address().port}/Checkmate.html`;
   const g = createFakeGoogle({ server, apiKey: 'AIzaFakeKey', project: 'checkmate-test', deliver });
   const gbase = await g.listen();
   const browser = await chromium.launch();
@@ -233,6 +245,9 @@ async function openSettings(page, tabText) {
     await A.reload();
     await A.waitForSelector('.view-title');
     await openSettings(A, 'Claude');
+    // once Claude has been connected the guide starts folded; open it
+    await A.waitForSelector('.cl-guide');
+    if (!(await A.$eval('.cl-guide', (d) => d.open))) await A.click('.cl-guide > summary');
     await A.waitForSelector('.cl-steps');
     const zh = await A.textContent('.cl-panel');
     assert(/複製連接器程式碼/.test(zh) && /放到 Cloudflare/.test(zh) && /新增到 Claude/.test(zh), zh.slice(0, 300));
@@ -260,6 +275,8 @@ async function openSettings(page, tabText) {
       await A.reload();
       await A.waitForSelector('.view-title');
       await openSettings(A, 'Claude');
+      await A.waitForSelector('.cl-guide');
+      if (!(await A.$eval('.cl-guide', (d) => d.open))) await A.click('.cl-guide > summary');
       await A.waitForSelector('.cl-steps');
       await A.waitForTimeout(250);
       await A.screenshot({ path: `${OUT}/claude-style-${skin}-${theme}.png` });
@@ -278,6 +295,7 @@ async function openSettings(page, tabText) {
   } finally {
     if (worker) worker.stop();
     g.close();
+    appServer.close();
     await browser.close();
   }
   process.exit(0);

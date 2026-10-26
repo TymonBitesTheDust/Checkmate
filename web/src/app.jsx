@@ -20,8 +20,9 @@ import { birthdayReminders } from './birthdays.js';
 import { setSystemBars, scheduleReminders, hasNativeReminders, nativeNotify, platform, setAppIcon } from './native.js';
 import { iconSvg } from './brand-icons.js';
 import { applyAccent, parseHex, contrast, accentHex } from './theme.js';
-import { StyledTitle, PageWipe } from './riot.jsx';
+import { StyledTitle, PageWipe, Ransom, Shards, StarField, DateBox, HeroCount, reducedMotion } from './riot.jsx';
 import { KeyHints } from './tide.jsx';
+import { MenuCounter } from './frontier.jsx';
 import { play } from './sound.js';
 import { tr, lang } from './i18n.js';
 import { seedTexts } from './seeds.js';
@@ -82,13 +83,16 @@ function contextDefaults(r) {
 // ---------------------------------------------------------------------------
 
 function applyTheme(pref, accent, skin) {
-  const dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  // Persona 5 (the Calling Card design) is always dark.
+  const dark = skin === 'riot' || pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const root = document.documentElement;
   root.dataset.theme = dark ? 'dark' : 'light';
   // Tide is dark-surfaced in both variants, so native pickers should be dark too.
   root.style.colorScheme = dark || skin === 'tide' ? 'dark' : 'light';
   if (skin && skin !== 'tickwise') root.dataset.skin = skin;
   else delete root.dataset.skin;
+  // Settings → Theme → Animations (shown for Persona 5): Match device, Full or Reduced
+  root.dataset.motion = reducedMotion() ? 'reduced' : 'full';
   // Archive and Riot bring their own colours, so the theme colour only applies to the default style.
   applyAccent(skin && skin !== 'tickwise' ? null : accent, dark);
   const css = getComputedStyle(root);
@@ -200,12 +204,16 @@ function useReminders(version) {
 // sidebar
 // ---------------------------------------------------------------------------
 
-function NavItem({ href, icon, label, count, active, onNav, children }) {
+// cut: Persona 5 shows the page names as cut-out letters (the plain name stays for screen readers)
+function NavItem({ href, icon, label, count, active, onNav, children, cut = false }) {
   const showCount = store.getPrefs().sidebarCounts !== false;
   return (
-    <a href={href} class={`nav-item ${active ? 'on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onNav}>
+    <a href={href} class={`nav-item ${active ? 'on' : ''} ${cut ? 'cut' : ''} ${cut && [...label].length > 11 ? 'long' : ''}`} aria-current={active ? 'page' : undefined} onClick={onNav}>
+      <Shards />
       {icon}
-      <span class="nav-label">{label}</span>
+      <span class="nav-label">
+        {cut ? <><span class="title-normal">{label}</span><Ransom text={label} seed="nav" /></> : label}
+      </span>
       {showCount && count > 0 && <span class="nav-count">{count}</span>}
       {children}
     </a>
@@ -276,13 +284,14 @@ function Sidebar({ route, onNav, onHide }) {
       <div class="sb-top">
         <a class="brand" href="#/today" onClick={onNav}>
           <Logo size={26} />
-          <span><StyledTitle>Checkmate</StyledTitle></span>
+          <span><StyledTitle firstRed={false}>Checkmate</StyledTitle></span>
         </a>
         <SyncBadge />
         <button type="button" class="icon-btn sb-hide" aria-label={tr('Hide sidebar')} title={tr('Hide sidebar (M)')} onClick={onHide}>
           <Icon name="left" size={20} />
         </button>
       </div>
+      <DateBox />
       <button type="button" class="sb-add" onClick={() => (onNav(), ui.quickAdd())}>
         <span class="sb-add-plus"><Icon name="plus" size={16} /></span>
         {tr('Add task')}
@@ -297,9 +306,11 @@ function Sidebar({ route, onNav, onHide }) {
             count={it.key === 'inbox' ? inboxCount : it.key === 'today' ? todayCount : 0}
             active={it.key === 'inbox' ? key === 'inbox' || key === 'project/inbox' : route.view === it.key}
             onNav={onNav}
+            cut={prefs.skin === 'riot'}
           />
         ))}
       </nav>
+      <MenuCounter on={NAV_ITEMS.filter((it) => !hiddenNav[it.key]).map((it) => (it.key === 'inbox' ? key === 'inbox' || key === 'project/inbox' : route.view === it.key))} />
 
       {route.view === 'calendar' && <CalendarSidebar onNav={onNav} />}
 
@@ -368,7 +379,8 @@ function Sidebar({ route, onNav, onHide }) {
       </div>
 
       <div class="sb-foot">
-        <KeyHints />
+        <KeyHints view={route.view} />
+        <HeroCount due={todayCount} late={open.filter((t) => t.due && t.due.date < ref).length} />
         <button type="button" class="nav-item" onClick={() => (onNav(), ui.openSettings('general'))}>
           <Icon name="settings" />
           <span class="nav-label">{tr('Settings')}</span>
@@ -432,10 +444,17 @@ export function App() {
   useEffect(() => {
     applyTheme(prefs.theme, prefs.accent, prefs.skin);
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const mm = window.matchMedia('(prefers-reduced-motion: reduce)');
     const fn = () => applyTheme(store.getPrefs().theme, store.getPrefs().accent, store.getPrefs().skin);
-    mq.addEventListener ? mq.addEventListener('change', fn) : mq.addListener(fn);
-    return () => (mq.removeEventListener ? mq.removeEventListener('change', fn) : mq.removeListener(fn));
-  }, [prefs.theme, prefs.accent, prefs.skin, narrow]);
+    const on = (q) => (q.addEventListener ? q.addEventListener('change', fn) : q.addListener(fn));
+    const off = (q) => (q.removeEventListener ? q.removeEventListener('change', fn) : q.removeListener(fn));
+    on(mq);
+    on(mm);
+    return () => {
+      off(mq);
+      off(mm);
+    };
+  }, [prefs.theme, prefs.accent, prefs.skin, prefs.motion, narrow]);
 
   // interface language
   useEffect(() => {
@@ -557,6 +576,7 @@ export function App() {
 
   return (
     <div class={`app ${drawer ? 'drawer-open' : ''} ${sidebarHidden ? 'sb-hidden' : ''} ${scrolled ? 'scrolled' : ''} ${route.view === 'calendar' ? 'on-cal' : ''}`} data-platform={platform()}>
+      <StarField />
       <Sidebar route={route} onNav={() => setDrawer(false)} onHide={toggleSidebar} />
       <div class="scrim" onClick={() => setDrawer(false)} aria-hidden="true" />
       <main class="main" ref={mainRef} id="main" onScroll={(e) => {

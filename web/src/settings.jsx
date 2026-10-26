@@ -32,7 +32,7 @@ const SKINS = [
   { id: 'frontier', name: 'Red Dead Redemption 2' },
   { id: 'neon', name: 'Cyberpunk 2077' },
 ];
-const THEME_NAMES = { archive: ['Parchment', 'Ink'], riot: ['Red', 'Black'], tide: ['Surface', 'Depths'], frontier: ['Journal', 'Campfire'], neon: ['Yellow', 'Neon'] };
+const THEME_NAMES = { archive: ['Parchment', 'Ink'], tide: ['Surface', 'Depths'], frontier: ['Journal', 'Campfire'], neon: ['Yellow', 'Neon'] };
 const OWN_COLOURS = {
   archive: 'NieR: Automata uses its own ink-and-parchment colours.',
   riot: 'Persona 5 uses its own red, black and white.',
@@ -147,7 +147,8 @@ function General() {
   );
 }
 
-// Settings → Theme: the style, its app icon, light or dark, and the theme colour.
+// Settings → Theme: the style, its app icon, light or dark (Persona 5: animations and the
+// star field instead), and the theme colour.
 function ThemePanel() {
   const p = store.getPrefs();
   return (
@@ -182,9 +183,22 @@ function ThemePanel() {
           </span>
         </div>
       )}
-      <Field group label={tr('Theme')}>
-        <Seg label={tr('Theme')} value={p.theme} onChange={(v) => store.setPrefs({ theme: v })} options={[['system', tr('Match device')], ['light', tr((THEME_NAMES[p.skin] || ['Light'])[0])], ['dark', tr((THEME_NAMES[p.skin] || [0, 'Dark'])[1])]]} />
-      </Field>
+      {p.skin === 'riot' ? (
+        // Persona 5 (the Calling Card design) is always dark; instead it chooses how much moves.
+        <>
+          <Field group label={tr('Animations')}>
+            <Seg label={tr('Animations')} value={p.motion || 'system'} onChange={(v) => store.setPrefs({ motion: v })} options={[['system', tr('Match device')], ['full', tr('Full')], ['reduced', tr('Reduced')]]} />
+            <span class="field-hint">{tr('Reduced turns off the screen shake, the page wipe and the moving stars.')}</span>
+          </Field>
+          <div class="field">
+            <Switch label={tr('Show the star field')} checked={p.stars !== false} onChange={(v) => store.setPrefs({ stars: v })} />
+          </div>
+        </>
+      ) : (
+        <Field group label={tr('Theme')}>
+          <Seg label={tr('Theme')} value={p.theme} onChange={(v) => store.setPrefs({ theme: v })} options={[['system', tr('Match device')], ['light', tr((THEME_NAMES[p.skin] || ['Light'])[0])], ['dark', tr((THEME_NAMES[p.skin] || [0, 'Dark'])[1])]]} />
+        </Field>
+      )}
       {OWN_COLOURS[p.skin] ? (
         <Field group label={tr('Theme colour')}>
           <p class="accent-locked">{tr(OWN_COLOURS[p.skin])} {tr('Switch the style to Checkmate to choose a theme colour.')}</p>

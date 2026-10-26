@@ -16,12 +16,12 @@ const CURSORS = {
   },
   riot: {
     arrow: svg(
-      `<path d="${ARROW}" fill="#d2152a" transform="translate(2.5 2.5)"/>` +
+      `<path d="${ARROW}" fill="#e5191c" transform="translate(2.5 2.5)"/>` +
         `<path d="${ARROW}" fill="#0d0d0d" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="miter"/>`,
     ),
     pointer: svg(
       `<path d="${ARROW}" fill="#0d0d0d" transform="translate(2.5 2.5)"/>` +
-        `<path d="${ARROW}" fill="#d2152a" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="miter"/>` +
+        `<path d="${ARROW}" fill="#e5191c" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="miter"/>` +
         '<path d="M24 17l1.8 5.2L31 24l-5.2 1.8L24 31l-1.8-5.2L17 24l5.2-1.8z" fill="#ffffff" stroke="#0d0d0d" stroke-width="1.2"/>',
     ),
   },
