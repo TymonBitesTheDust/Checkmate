@@ -29,12 +29,14 @@ Checkmate (formerly Tickwise) is a personal to-do app in the spirit of Todoist, 
 ```
 checkmate/
   README.md            short introduction, downloads and screenshots
+  CHANGELOG.md         the update history, newest first (made from web/src/changelog.js; don't edit by hand)
   docs/GUIDE.md        the full user guide (keep it in step with features)
   docs/DEVELOPING.md   this file
   docs/images/         screenshots used by the README
   build.sh             builds dist/Checkmate.html, .exe and .apk
   web/                 the app: Preact + Firebase, bundled by esbuild into ONE html file
     build.mjs          bundles; MOCK_FIREBASE=1 builds web/dist-test (fake Firestore, used by test/sync.cjs)
+    changelog-md.mjs   writes CHANGELOG.md from src/changelog.js (node web/changelog-md.mjs)
     src/               all the app code (see section 3)
   connector/           the Claude connector: a remote MCP server for Cloudflare Workers
     src/worker.js      routing, OAuth 2.1 (DCR + CIMD + PKCE), MCP JSON-RPC at /mcp, CONFIG markers
@@ -269,7 +271,7 @@ KEYSTORE=/path/to/tickwise-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # 
 1. Update `web/src/version.js`.
 2. Update `desktop/winres/winres.json`. The version appears 5 times; `sed -i 's/2\.2\.0/2.2.1/g'` covers them all.
 3. In `android/apk/apktool.yml`, update `versionName` and add 1 to `versionCode`.
-4. Add the release to `web/src/changelog.js` (English and Chinese).
+4. Add the release to `web/src/changelog.js` (English and Chinese), then run `node web/changelog-md.mjs` to update `CHANGELOG.md`.
 
 ---
 
@@ -310,6 +312,7 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Docs & Sheets | `docs` (against fake Google responses) |
 | Sync | `sync` (two devices, fake Firestore) |
 | Calendar | `calendar`, `calendar-styles`, `recur.mjs` |
+| Versions | `changelog.mjs` (`CHANGELOG.md` matches What’s new, newest first, and the app, exe and APK carry the same version) |
 | Claude connector | `connector.cjs` (OAuth and every tool; also `RUNTIME=workerd` via wrangler), `connector-tz.mjs`, `claude.cjs` (app and connector together through one fake Firestore) |
 | Windows host | `go test` in `desktop/` |
 
@@ -335,7 +338,7 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 1. Read the relevant code, make the change and add or extend a test.
 2. Screenshot all six styles, light and dark, at desktop and phone width, and look at them.
 3. Add zh-Hant strings, and update `README.md` if the feature is user-visible.
-4. Bump the version and add a `changelog.js` entry.
+4. Bump the version, add a `changelog.js` entry and run `node web/changelog-md.mjs`.
 5. Run `build.sh` and the MOCK build, then the whole suite.
 6. Check the packages:
    - The APK's `assets/index.html` equals `dist/Checkmate.html`.

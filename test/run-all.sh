@@ -25,6 +25,7 @@ run() {
   fi
 }
 run recur node test/recur.mjs
+run changelog node test/changelog.mjs
 run go bash -c 'cd desktop && GOOS=linux go test ./... 2>&1'
 run connector-tz node test/connector-tz.mjs
 run connector-node node test/connector.cjs
