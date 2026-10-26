@@ -1,6 +1,15 @@
 // What changed in each version, newest first (Settings → What’s new). [English, 繁體中文]
 export const CHANGELOG = [
   {
+    v: '3.0.1',
+    date: '2026-10',
+    notes: [
+      ['Settings → General → Hide completed tasks: ticked tasks leave your projects, even ones set to show completed tasks. They stay on the Completed page.', '「設定 → 一般 → 隱藏已完成的任務」：勾選完成的任務會從專案中消失，即使該專案設定為顯示已完成的任務。它們仍會留在「已完成」頁面。'],
+      ['Settings → General → Hide completed subtasks: ticked subtasks leave the task panel and your project lists, while counts such as 3/5 still include them.', '「設定 → 一般 → 隱藏已完成的子任務」：勾選完成的子任務會從任務面板和專案清單中消失，3/5 這類計數仍會把它們算在內。'],
+      ['A task whose subtasks are all hidden no longer shows an arrow that opens nothing.', '子任務全部被隱藏的任務，不再顯示一個打開後空無一物的箭咀。'],
+    ],
+  },
+  {
     v: '3.0.0',
     date: '2026-10',
     notes: [

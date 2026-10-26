@@ -4,6 +4,20 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 <!-- Made from web/src/changelog.js by `node web/changelog-md.mjs`. Edit that file, then run the script. -->
 
+## [3.0.1](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.1) — October 2026
+
+- Settings → General → Hide completed tasks: ticked tasks leave your projects, even ones set to show completed tasks. They stay on the Completed page.
+- Settings → General → Hide completed subtasks: ticked subtasks leave the task panel and your project lists, while counts such as 3/5 still include them.
+- A task whose subtasks are all hidden no longer shows an arrow that opens nothing.
+
+<details><summary>繁體中文</summary>
+
+- 「設定 → 一般 → 隱藏已完成的任務」：勾選完成的任務會從專案中消失，即使該專案設定為顯示已完成的任務。它們仍會留在「已完成」頁面。
+- 「設定 → 一般 → 隱藏已完成的子任務」：勾選完成的子任務會從任務面板和專案清單中消失，3/5 這類計數仍會把它們算在內。
+- 子任務全部被隱藏的任務，不再顯示一個打開後空無一物的箭咀。
+
+</details>
+
 ## [3.0.0](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.0) — October 2026
 
 - Persona 5 has a new look, the Calling Card design: a blood-red page over a field of pulsing stars, menu words and page titles in cut-out letters, a red and cyan highlight that wiggles behind what you pick, black menus and white paper dialogs.

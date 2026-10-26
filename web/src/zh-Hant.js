@@ -319,6 +319,11 @@ export default {
   'Colour code': '色碼',
   'Keep the time in the task name': '在任務名稱中保留時間',
   'Typing a time such as “at 5pm” still sets when the task is due. Day words such as “tomorrow” are always taken out of the name.': '輸入「下午5點」等時間仍會設定任務的到期時間。「明天」等日子字詞一律會從名稱中移除。',
+  'Hide completed subtasks': '隱藏已完成的子任務',
+  'Ticked tasks leave your projects, even ones set to show completed tasks. They stay on the Completed page. The calendar has its own switch in Settings → Calendar.':
+    '勾選完成的任務會從專案中消失，即使該專案設定為顯示已完成的任務。它們仍會留在「已完成」頁面。日曆另有自己的開關，位於「設定 → 日曆」。',
+  'Ticked subtasks leave the task panel and your project lists. Counts such as 3/5 still include them.':
+    '勾選完成的子任務會從任務面板和專案清單中消失。3/5 這類計數仍會把它們算在內。',
   'Reset to Checkmate orange': '重設為 Checkmate 橙',
   'Use a colour code like #2f6fd6.': '請使用 #2f6fd6 這樣的色碼。',
   'Open the app on': '開啟應用程式時顯示',

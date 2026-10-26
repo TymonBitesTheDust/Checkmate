@@ -315,11 +315,14 @@ function projectMenu(p) {
   const items = [];
   if (!p.isInbox) items.push({ label: tr('Edit project'), icon: 'edit', onSelect: () => ui.editProject(p.id) });
   items.push({ label: tr('Add section'), icon: 'section', onSelect: () => ui.editSection(null, p.id) });
-  items.push({
-    label: p.showCompleted ? tr('Hide completed tasks') : tr('Show completed tasks'),
-    icon: 'done',
-    onSelect: () => store.patch(p.id, { showCompleted: !p.showCompleted }),
-  });
+  // with Settings → General → Hide completed tasks on, no project shows them, so the switch goes
+  if (!store.getPrefs().hideDoneTasks) {
+    items.push({
+      label: p.showCompleted ? tr('Hide completed tasks') : tr('Show completed tasks'),
+      icon: 'done',
+      onSelect: () => store.patch(p.id, { showCompleted: !p.showCompleted }),
+    });
+  }
   items.push(...projectMenuItems(p));
   if (!p.isInbox) {
     items.push({ label: p.favorite ? tr('Remove from favourites') : tr('Add to favourites'), icon: 'star', onSelect: () => store.patch(p.id, { favorite: !p.favorite }) });
@@ -356,7 +359,9 @@ export function ProjectView({ id }) {
   }
   const sort = p.sort || 'manual';
   const board = p.view === 'board';
-  const showDone = !!p.showCompleted;
+  const prefs = store.getPrefs();
+  const showDone = !!p.showCompleted && !prefs.hideDoneTasks;
+  const showDoneSubs = showDone && !prefs.hideDoneSubtasks;
   const secs = A.sections(id);
   const top = A.tasks().filter((t) => t.projectId === id && !t.parentId && (showDone || !t.done));
   const bySec = (sid) => A.sortTasks(top.filter((t) => (t.sectionId || null) === sid), sort).sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
@@ -391,10 +396,10 @@ export function ProjectView({ id }) {
       {board ? (
         <div class="board">
           {(secs.length === 0 || bySec(null).length > 0) && (
-            <Column project={p} section={null} tasks={bySec(null)} draggable={draggable} showDone={showDone} />
+            <Column project={p} section={null} tasks={bySec(null)} draggable={draggable} showDoneSubs={showDoneSubs} />
           )}
           {secs.map((s) => (
-            <Column key={s.id} project={p} section={s} tasks={bySec(s.id)} draggable={draggable} showDone={showDone} />
+            <Column key={s.id} project={p} section={s} tasks={bySec(s.id)} draggable={draggable} showDoneSubs={showDoneSubs} />
           ))}
           <div class="board-col add-col">
             <button type="button" class="add-row" onClick={() => ui.editSection(null, id)}>
@@ -407,7 +412,7 @@ export function ProjectView({ id }) {
         <>
           <div class="zone" data-zone="section" data-project={id} data-section="">
             <div class="task-list">
-              <TaskTree list={bySec(null)} draggable={draggable} showCompleted={showDone} />
+              <TaskTree list={bySec(null)} draggable={draggable} showCompleted={showDoneSubs} />
             </div>
             <InlineAdder defaults={{ projectId: id, sectionId: null }} />
           </div>
@@ -424,7 +429,7 @@ export function ProjectView({ id }) {
               >
                 <div class="zone" data-zone="section" data-project={id} data-section={s.id}>
                   <div class="task-list">
-                    <TaskTree list={list} draggable={draggable} showCompleted={showDone} />
+                    <TaskTree list={list} draggable={draggable} showCompleted={showDoneSubs} />
                   </div>
                   <InlineAdder defaults={{ projectId: id, sectionId: s.id }} />
                 </div>
@@ -474,7 +479,7 @@ function sectionMenu(s) {
   ];
 }
 
-function Column({ project, section, tasks, draggable, showDone }) {
+function Column({ project, section, tasks, draggable, showDoneSubs }) {
   const open = tasks.filter((t) => !t.done).length;
   return (
     <div class="board-col">
@@ -486,7 +491,7 @@ function Column({ project, section, tasks, draggable, showDone }) {
       </div>
       <div class="col-body zone" data-zone="section" data-project={project.id} data-section={section ? section.id : ''}>
         <div class="task-list cards">
-          <TaskTree list={tasks} draggable={draggable} showCompleted={showDone} />
+          <TaskTree list={tasks} draggable={draggable} showCompleted={showDoneSubs} />
         </div>
         <InlineAdder defaults={{ projectId: project.id, sectionId: section ? section.id : null }} />
       </div>

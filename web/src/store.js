@@ -96,6 +96,10 @@ const DEFAULT_PREFS = {
   collapsed: {},
   todaySort: 'priority',
   showCompleted: false,
+  // Settings → General: finished tasks leave every project list and board (even where a
+  // project's ⋯ menu shows them); finished subtasks leave the task panel and project lists
+  hideDoneTasks: false,
+  hideDoneSubtasks: false,
   sound: true,
   soundLevel: null,
   soundVolume: 0.6,

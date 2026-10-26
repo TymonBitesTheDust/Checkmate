@@ -242,7 +242,7 @@ function useLongPress(task, enabled) {
 // Task row
 // ---------------------------------------------------------------------------
 
-export function TaskRow({ task: t, depth = 0, showProject = false, showParent = false, draggable = false, childCount = 0, doneChildCount = 0, collapsed = false }) {
+export function TaskRow({ task: t, depth = 0, showProject = false, showParent = false, draggable = false, childCount = 0, doneChildCount = 0, collapsed = false, canExpand = childCount > 0 }) {
   const prefs = store.getPrefs();
   const [completing, setCompleting] = useState(false);
   const [pop, setPop] = useState(null);
@@ -319,7 +319,7 @@ export function TaskRow({ task: t, depth = 0, showProject = false, showParent = 
           <Icon name="grip" size={16} />
         </button>
       )}
-      {childCount > 0 ? (
+      {canExpand ? (
         <button
           type="button"
           class={`twisty ${collapsed ? '' : 'open'}`}
@@ -444,13 +444,15 @@ export function TaskRow({ task: t, depth = 0, showProject = false, showParent = 
   );
 }
 
-// Nested list of tasks with their subtasks.
+// Nested list of tasks with their subtasks. showCompleted decides whether finished subtasks
+// are listed; the "2/5" count on a row always counts all of them. A row gets its expand
+// arrow only when it has subtasks to show.
 export function TaskTree({ list, depth = 0, draggable = false, showCompleted = false, showProject = false }) {
   return (
     <>
       {list.map((t) => {
-        const kids = A.children(t.id).filter((k) => showCompleted || !k.done);
         const allKids = A.children(t.id);
+        const kids = allKids.filter((k) => showCompleted || !k.done);
         const collapsed = !!t.collapsed;
         return (
           <div class="task-node" key={t.id}>
@@ -461,6 +463,7 @@ export function TaskTree({ list, depth = 0, draggable = false, showCompleted = f
               showProject={showProject}
               childCount={allKids.length}
               doneChildCount={allKids.filter((k) => k.done).length}
+              canExpand={kids.length > 0}
               collapsed={collapsed}
             />
             {!collapsed && kids.length > 0 && (

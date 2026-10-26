@@ -31,7 +31,7 @@ run connector-tz node test/connector-tz.mjs
 run connector-node node test/connector.cjs
 run connector-workerd env RUNTIME=workerd node test/connector.cjs
 run claude node test/claude.cjs "$OUT/shots"
-for t in frame settings-more examples v22 files smoke dnd accent archive riot tide icons sound docs frontier neon sync calendar chinese; do
+for t in frame settings-more examples v22 hide-done files smoke dnd accent archive riot tide icons sound docs frontier neon sync calendar chinese; do
   run $t node test/$t.cjs "$OUT/shots"
 done
 run calendar-styles node test/calendar-styles.cjs "$OUT/shots"

@@ -1,6 +1,8 @@
 # Developing Checkmate
 
-**Current version: 3.0.0** (Android versionCode 30). Last updated 26 October 2026.
+**Current version: 3.0.1** (Android versionCode 31). Last updated 27 October 2026.
+
+**3.0.1:** Settings → General has **Hide completed tasks** (`prefs.hideDoneTasks`) and **Hide completed subtasks** (`prefs.hideDoneSubtasks`), both off by default and kept per device. `ProjectView` works out `showDone` (the project's own ⋯ → Show completed tasks, unless Hide completed tasks is on, which also drops that menu item) and `showDoneSubs` (`showDone` unless Hide completed subtasks is on) for the list and board. The task panel lists finished subtasks unless Hide completed subtasks is on; its "Subtasks 1/3" heading and each row's "2/4" still count every subtask. `TaskRow` takes `canExpand`: `TaskTree` passes it only when a task has subtasks left to show, so a task whose subtasks are all hidden gets no empty arrow. The calendar keeps its own switch (`calShowDone`, Settings → Calendar). Tested by `test/hide-done.cjs`.
 
 **3.0.0:** the Persona 5 style is now the Calling Card design (always dark; in Settings → Theme it shows Animations and Show the star field instead of light/dark), and the other game styles were redesigned after reference material: Persona 3 after the Persona 3 Reload pause menu (Montserrat italic, a tilted command stack with a triangle cursor and the current page in white, a page-name ribbon at ≥1320px whose font size comes from `--len` = `ribbonEms(title)` in `tide.jsx` so long names fit the window's height, wallet boxes, a Command help line from `KeyHints({view})`), NieR: Automata after the YoRHa menus (Manrope, wiping plates with sliding lines), Red Dead Redemption 2 after the native menu (ink-roller sidebar, red brush frame, `MenuCounter` in `frontier.jsx`), and Cyberpunk 2077 after the settings menus (red rows, cut corners, cyan selection). New app icons for Persona 5, NieR, Persona 3 and Red Dead: `brand-icons.js` gained `rng`/`roughRect` for brush edges, and `iconSvg` gives each icon unique gradient and clip ids. In Chinese, the Persona 3 ribbon stacks one character per line (horizontal text) because upright vertical text depends on the font's vertical metrics.
 
@@ -307,6 +309,7 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Settings | `settings-more` (Theme, Sidebar, About, Donate, all styles, phone) |
 | Task name hint | `examples` (dated, random, Chinese, phone ellipsis) |
 | 2.2.0 features | `v22` (orange default, Persona 3 icon, time kept in names, reminders and custom times, birthdays and lunar dates, What’s new, Chinese, phone) |
+| Completed tasks | `hide-done` (Settings → General → Hide completed tasks and Hide completed subtasks: task panel, project list and board, the project menu, Chinese, phone) |
 | Task files | `files` (two devices through the fake Firestore: pieces, download on open, save, removal, the 100 MB limit) |
 | Language | `chinese` |
 | Docs & Sheets | `docs` (against fake Google responses) |
@@ -387,5 +390,6 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | 2.1.7 | New Settings → Theme tab (style, app icon switch, light/dark, theme colour) |
 | 2.2.0 | Birthdays (optional lunar dates), task files up to 100 MB, reminder timing (per task, defaults, custom), the typed time stays in task names, Checkmate orange (#F46B25) default colour, Persona 3 icon fix, Settings → What’s new |
 | 3.0.0 | Persona 5 becomes the Calling Card design (star field, cut-out menu and titles, highlight, CLEAR! stamp, wipe and shake, new sounds; Settings → Theme: Animations and the star field), Persona 3, NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 redesigned after their games, new icons for Persona 5, NieR, Persona 3 and Red Dead |
+| 3.0.1 | Settings → General: Hide completed tasks and Hide completed subtasks; no expand arrow when every subtask is hidden |
 
 Earlier releases built the core: tasks, projects, filters, the calendar, sync, six styles, sounds, Traditional Chinese, Docs & Sheets, and the rename from Tickwise to Checkmate.

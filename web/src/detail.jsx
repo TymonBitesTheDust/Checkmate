@@ -74,6 +74,9 @@ export function TaskDetail({ id, onClose, addSub }) {
   const lbls = (t.labels || []).map((x) => store.get(x)).filter(Boolean);
   const kids = A.children(t.id);
   const doneKids = kids.filter((k) => k.done).length;
+  // Settings → General → Hide completed subtasks: the heading still counts them all
+  const showDoneKids = !prefs.hideDoneSubtasks;
+  const shownKids = showDoneKids ? kids : kids.filter((k) => !k.done);
   const comments = A.comments(t.id);
   const open = (kind) => (e) => setPop({ kind, anchor: e.currentTarget });
 
@@ -186,7 +189,7 @@ export function TaskDetail({ id, onClose, addSub }) {
               </div>
             )}
             <div class="task-list">
-              <TaskTree list={A.sortTasks(kids)} showCompleted draggable />
+              <TaskTree list={A.sortTasks(shownKids)} showCompleted={showDoneKids} draggable />
             </div>
             <SubAdder task={t} autoOpen={addSub} />
           </section>

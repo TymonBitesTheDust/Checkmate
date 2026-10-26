@@ -142,6 +142,14 @@ function General() {
         <Switch label={tr('Keep the time in the task name')} checked={p.keepTimeInName !== false} onChange={(v) => store.setPrefs({ keepTimeInName: v })} />
         <span class="field-hint">{tr('Typing a time such as “at 5pm” still sets when the task is due. Day words such as “tomorrow” are always taken out of the name.')}</span>
       </div>
+      <div class="field">
+        <Switch label={tr('Hide completed tasks')} checked={!!p.hideDoneTasks} onChange={(v) => store.setPrefs({ hideDoneTasks: v })} />
+        <span class="field-hint">{tr('Ticked tasks leave your projects, even ones set to show completed tasks. They stay on the Completed page. The calendar has its own switch in Settings → Calendar.')}</span>
+      </div>
+      <div class="field">
+        <Switch label={tr('Hide completed subtasks')} checked={!!p.hideDoneSubtasks} onChange={(v) => store.setPrefs({ hideDoneSubtasks: v })} />
+        <span class="field-hint">{tr('Ticked subtasks leave the task panel and your project lists. Counts such as 3/5 still include them.')}</span>
+      </div>
       <SoundSettings />
     </div>
   );
