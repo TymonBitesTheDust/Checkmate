@@ -9,7 +9,7 @@ const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
 const ALLOWED = new Set(['MB', 'KB', 'Live', 'Aid', 'Claude', 'Docs', 'Sheets', 'B', 'Checkmate', 'checkmate', 'Tickwise', 'NieR', 'Automata', 'Persona', 'Firebase', 'Firestore', 'Authentication', 'Database', 'Google', 'Analytics',
   'API', 'Windows', 'Android', 'TW', 'or', 'const', 'firebaseConfig', 'apiKey', 'Q', 'G', 'T', 'I', 'U', 'F', 'C', 'M', 'Enter', 'Ctrl', 'Esc',
   'p', 'P', 'Hosting', 'Create', 'a', 'project', 'Build', 'Get', 'started', 'Email', 'Password', 'database', 'production', 'mode', 'Rules', 'Publish',
-  'Project', 'overview', 'settings', 'Your', 'apps', 'console', 'firebase', 'google', 'com', 'tickwise', 'sync', 'Sign', 'in', 'method', 'ok', 'Drive', 'Red', 'Dead', 'Redemption', 'Cyberpunk',
+  'Project', 'overview', 'settings', 'Your', 'apps', 'console', 'firebase', 'google', 'com', 'tickwise', 'sync', 'Sign', 'in', 'method', 'ok', 'Drive', 'Red', 'Dead', 'Redemption', 'Cyberpunk', 'Chrome', 'Edge', 'Alt', 'Shift',
   // calendar: Google's own menu names in the setup steps, file types and keys
   'GMT', 'ics', 'iCal', 'Outlook', 'Apple', 'calendar', 'Settings', 'for', 'my', 'calendars', 'Integrate', 'Secret', 'address', 'format', 'webcal', 'https',
   'D', 'X', 'W', 'Y', 'A', 'J', 'K', 'L',
