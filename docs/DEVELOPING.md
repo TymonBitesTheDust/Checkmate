@@ -1,18 +1,23 @@
 # Developing Checkmate
 
-**Current version: 3.0.1** (Android versionCode 31). Last updated 27 October 2026.
+**Current version: 3.1.0** (Android versionCode 32). Last updated 27 October 2026.
+
+**3.1.0:** two additions.
+- **Start screen (起始畫面).** `index.html` has a `#splash` block followed by `splash-boot.js`, which runs before the app's script: it reads the prefs, puts the style's icon in (build.mjs fills in every style's icon from `iconParts` with `sp<style>` ids, so they never clash with the app's own icons, plus the theme colours so the Checkmate icon takes a custom colour) and shows it. `splash.css` gives each style its own look (Persona 5's black slash on red, Persona 3's moving water, NieR's sliding rules and stepped bar, Red Dead's brush stroke, Cyberpunk's glitch). `main.jsx` calls `hideSplash()` (`splash.js`) after the first render: it stays until about 1.15 s after the page started (0.35 s with reduced motion), then fades. It has `pointer-events: none`, removes itself after 10 s if the app never starts, is off with **Settings → Theme → Start screen** (`prefs.splash`), and is skipped when `navigator.webdriver` is set unless a test sets `window.__cmSplash`, so the other browser tests aren't affected. The head script that applies the theme moved to `boot.js` (still inlined). Tested by `test/splash.cjs`.
+- **Chrome/Edge extension (Manifest V3).** `extension/build.mjs` packs `extension/dist/Checkmate` and `dist/Checkmate-extension.zip`. The app page is `app.html`, made by `web/build.mjs` into `web/dist-ext/`: extension pages can't run inline scripts, so `boot.js`, `splash.js` and `app.js` are files and the fonts are `fonts.css` (shared with the popup). That bundle swaps `firebase/auth` for `src/ext-auth.js` (Firebase's web-extension build, which has no code that loads Google's scripts from the web). In the app, `native.js` reports `platform() === 'extension'`: reminders go to the service worker (`chrome.alarms` + `chrome.notifications`), Google/Outlook/iCloud links are fetched directly (host permissions in the manifest), and the toolbar icon follows the style. `ext.js` lets the popup change tasks through the open Checkmate tab (`window.__checkmateExt.apply`), opens `app.html?task=<id>`, and answers the service worker's `checkmate:open-task`. The popup (`extension/src/popup.jsx`) is quick add (`web/src/quick.js`, the same parsing as the Add task box) and today's tasks; with no Checkmate tab open it writes the store itself (the changes are left dirty and sync when the app next opens). `background.js` keeps the reminders, and opens the app on install, from a notification and with Alt+Shift+O. Tested by `test/extension.cjs` (loads the unpacked extension in Chromium).
 
 **3.0.1:** Settings → General has **Hide completed tasks** (`prefs.hideDoneTasks`) and **Hide completed subtasks** (`prefs.hideDoneSubtasks`), both off by default and kept per device. `ProjectView` works out `showDone` (the project's own ⋯ → Show completed tasks, unless Hide completed tasks is on, which also drops that menu item) and `showDoneSubs` (`showDone` unless Hide completed subtasks is on) for the list and board. The task panel lists finished subtasks unless Hide completed subtasks is on; its "Subtasks 1/3" heading and each row's "2/4" still count every subtask. `TaskRow` takes `canExpand`: `TaskTree` passes it only when a task has subtasks left to show, so a task whose subtasks are all hidden gets no empty arrow. The calendar keeps its own switch (`calShowDone`, Settings → Calendar). Tested by `test/hide-done.cjs`.
 
 **3.0.0:** the Persona 5 style is now the Calling Card design (always dark; in Settings → Theme it shows Animations and Show the star field instead of light/dark), and the other game styles were redesigned after reference material: Persona 3 after the Persona 3 Reload pause menu (Montserrat italic, a tilted command stack with a triangle cursor and the current page in white, a page-name ribbon at ≥1320px whose font size comes from `--len` = `ribbonEms(title)` in `tide.jsx` so long names fit the window's height, wallet boxes, a Command help line from `KeyHints({view})`), NieR: Automata after the YoRHa menus (Manrope, wiping plates with sliding lines), Red Dead Redemption 2 after the native menu (ink-roller sidebar, red brush frame, `MenuCounter` in `frontier.jsx`), and Cyberpunk 2077 after the settings menus (red rows, cut corners, cyan selection). New app icons for Persona 5, NieR, Persona 3 and Red Dead: `brand-icons.js` gained `rng`/`roughRect` for brush edges, and `iconSvg` gives each icon unique gradient and clip ids. In Chinese, the Persona 3 ribbon stacks one character per line (horizontal text) because upright vertical text depends on the font's vertical metrics.
 
-Checkmate (formerly Tickwise) is a personal to-do app in the spirit of Todoist, with a calendar in the spirit of Google Calendar. It was created by **Tymon Ng**, built with Claude AI and proudly made in Australia. One web app is shipped three ways, and all three sync through the user's own Firebase project:
+Checkmate (formerly Tickwise) is a personal to-do app in the spirit of Todoist, with a calendar in the spirit of Google Calendar. It was created by **Tymon Ng**, built with Claude AI and proudly made in Australia. One web app is shipped four ways, and all four sync through the user's own Firebase project:
 
 | Output | Platform | What it is |
 | --- | --- | --- |
 | `dist/Checkmate.html` | Any browser | The whole app in one offline HTML file |
 | `dist/Checkmate.exe` | Windows 10/11 x64 | A Go program that shows the HTML in WebView2 |
 | `dist/Checkmate.apk` | Android 7+ | A Java WebView wrapper with native reminders |
+| `dist/Checkmate-extension.zip` | Chrome / Edge 116+ | A Manifest V3 extension: the app in a tab, a quick-add popup, reminders as notifications |
 
 `README.md` is the short introduction and [`docs/GUIDE.md`](GUIDE.md) is the full user guide: install, sync setup, the Claude connector setup and every feature. This file is for whoever develops the app next.
 
@@ -35,11 +40,14 @@ checkmate/
   docs/GUIDE.md        the full user guide (keep it in step with features)
   docs/DEVELOPING.md   this file
   docs/images/         screenshots used by the README
-  build.sh             builds dist/Checkmate.html, .exe and .apk
+  build.sh             builds dist/Checkmate.html, .exe, .apk and -extension.zip
   web/                 the app: Preact + Firebase, bundled by esbuild into ONE html file
-    build.mjs          bundles; MOCK_FIREBASE=1 builds web/dist-test (fake Firestore, used by test/sync.cjs)
+    build.mjs          bundles; MOCK_FIREBASE=1 builds web/dist-test (fake Firestore, used by test/sync.cjs);
+                       also writes web/dist-ext (the extension's app page, scripts as files)
     changelog-md.mjs   writes CHANGELOG.md from src/changelog.js (node web/changelog-md.mjs)
     src/               all the app code (see section 3)
+  extension/           the Chrome/Edge extension: src/manifest.json, background.js (service worker),
+                       popup.html/.jsx/.css; build.mjs packs extension/dist/Checkmate and the zip
   connector/           the Claude connector: a remote MCP server for Cloudflare Workers
     src/worker.js      routing, OAuth 2.1 (DCR + CIMD + PKCE), MCP JSON-RPC at /mcp, CONFIG markers
     src/tools.js       the 16 MCP tools (get-overview, find/add/update/complete/reopen/delete-tasks,
@@ -143,7 +151,7 @@ checkmate/
 | Tab | Holds |
 | --- | --- |
 | general | Language, start page, week start, time format, date order, sounds |
-| theme | Style, app icon follows style, light/dark (Persona 5: Animations and Show the star field instead), theme colour |
+| theme | Style, app icon follows style, start screen, light/dark (Persona 5: Animations and Show the star field instead), theme colour |
 | sidebar | Which pages show in the sidebar, and task counts |
 | reminders | Default reminders for timed tasks, date-only tasks and birthdays |
 | sync | Firebase setup and account |
@@ -235,6 +243,13 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 - Reminders use AlarmManager and survive reboots.
 - `GoogleFetch` reads Google links for calendar subscriptions and Docs.
 
+**Browser extension**
+
+- Manifest V3, Chrome or Edge 116+ (`chrome.runtime.getContexts`). The version comes from `web/src/version.js`.
+- Permissions: `alarms`, `notifications`, `storage`, and host permissions for the calendar and Docs hosts that `desktop/fetch.go` allows.
+- One Checkmate tab: the popup and service worker look for it and focus it rather than opening another, so only one copy of the store is writing.
+- Not on the Chrome Web Store yet: install with Developer mode → Load unpacked. Loading it from another folder gives it a new extension id, and so empty storage (sync brings the data back).
+
 ---
 
 ## 6. Building
@@ -262,7 +277,8 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 ```
 cd checkmate
 (cd web && npm install)
-TOOLS=~/tools ./build.sh                      # → dist/Checkmate.html, .exe, .apk (dev-signed APK)
+TOOLS=~/tools ./build.sh                      # → dist/Checkmate.html, .exe, .apk (dev-signed APK), -extension.zip
+node extension/build.mjs                      # just the extension (after node web/build.mjs)
 KEYSTORE=/path/to/tickwise-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # release-signed APK
 (cd web && MOCK_FIREBASE=1 node build.mjs)    # → web/dist-test, needed by test/sync.cjs
 (cd web && node build.mjs)                    # quick rebuild of just the HTML while working
@@ -315,6 +331,8 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Docs & Sheets | `docs` (against fake Google responses) |
 | Sync | `sync` (two devices, fake Firestore) |
 | Calendar | `calendar`, `calendar-styles`, `recur.mjs` |
+| Start screen | `splash` (every style, theme colour, reduced motion, the Settings switch, phone) |
+| Browser extension | `extension` (install, popup quick add / complete / undo with and without the app open, reminders to alarms, opening a task, style and Chinese; needs `extension/dist`) |
 | Versions | `changelog.mjs` (`CHANGELOG.md` matches What’s new, newest first, and the app, exe and APK carry the same version) |
 | Claude connector | `connector.cjs` (OAuth and every tool; also `RUNTIME=workerd` via wrangler), `connector-tz.mjs`, `claude.cjs` (app and connector together through one fake Firestore) |
 | Windows host | `go test` in `desktop/` |
@@ -345,11 +363,12 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 5. Run `build.sh` and the MOCK build, then the whole suite.
 6. Check the packages:
    - The APK's `assets/index.html` equals `dist/Checkmate.html`.
+   - The extension zip's `manifest.json` has the new version, and `test/extension.cjs` passes.
    - The exe contains the HTML.
    - The versions are correct.
    - The signing certificate matches.
 7. Commit (`.gitignore` keeps `dist/`, build folders, generated icons and the key out), then tag the release: `git tag v2.2.1 && git push --tags`.
-8. On GitHub, **Releases → Draft a new release**, pick the tag, paste the `changelog.js` entry as the notes, and attach `Checkmate.exe`, `Checkmate.apk` and `Checkmate.html` from `dist/`. GitHub adds the source zip by itself.
+8. On GitHub, **Releases → Draft a new release**, pick the tag, paste the `changelog.js` entry as the notes, and attach `Checkmate.exe`, `Checkmate.apk`, `Checkmate.html` and `Checkmate-extension.zip` from `dist/`. GitHub adds the source zip by itself.
 
 ---
 
@@ -390,6 +409,8 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | 2.1.7 | New Settings → Theme tab (style, app icon switch, light/dark, theme colour) |
 | 2.2.0 | Birthdays (optional lunar dates), task files up to 100 MB, reminder timing (per task, defaults, custom), the typed time stays in task names, Checkmate orange (#F46B25) default colour, Persona 3 icon fix, Settings → What’s new |
 | 3.0.0 | Persona 5 becomes the Calling Card design (star field, cut-out menu and titles, highlight, CLEAR! stamp, wipe and shake, new sounds; Settings → Theme: Animations and the star field), Persona 3, NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 redesigned after their games, new icons for Persona 5, NieR, Persona 3 and Red Dead |
+| 3.0.1 | Settings → General: Hide completed tasks and Hide completed subtasks |
+| 3.1.0 | A start screen in every style (Settings → Theme → Start screen), and the Chrome/Edge extension (the app in a tab, a quick-add popup, reminders as notifications) |
 | 3.0.1 | Settings → General: Hide completed tasks and Hide completed subtasks; no expand arrow when every subtask is hidden |
 
 Earlier releases built the core: tasks, projects, filters, the calendar, sync, six styles, sounds, Traditional Chinese, Docs & Sheets, and the rename from Tickwise to Checkmate.

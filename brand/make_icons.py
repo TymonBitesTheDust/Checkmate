@@ -1,5 +1,5 @@
 # Rasterises the icon SVGs (from export-svgs.mjs) into every size the
-# Windows and Android builds need, one set per style.
+# Windows, Android and browser extension builds need, one set per style.
 import os, sys, io
 import cairosvg
 from PIL import Image
@@ -37,6 +37,10 @@ for style in STYLES:
         a = int(108 * f)
         save(render(f'{style}-fg', a), f'{OUT}/android/res/mipmap-{d}/ic_launcher{suffix}_foreground.png')
         save(render(f'{style}-bg', a), f'{OUT}/android/res/mipmap-{d}/ic_launcher{suffix}_background.png')
+
+# the browser extension (toolbar, extensions page, notifications)
+for s in (16, 32, 48, 128):
+    save(render('tickwise', s), f'{OUT}/ext/icon{s}.png')
 
 for d, f in dens.items():
     save(render('notify', int(24 * f)), f'{OUT}/android/res/drawable-{d}/ic_stat_tick.png')

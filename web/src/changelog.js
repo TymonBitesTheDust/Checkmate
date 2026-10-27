@@ -1,6 +1,15 @@
 // What changed in each version, newest first (Settings → What’s new). [English, 繁體中文]
 export const CHANGELOG = [
   {
+    v: '3.1.0',
+    date: '2026-10',
+    notes: [
+      ['A start screen: Checkmate opens with your style’s icon and name for a moment, in that style’s look (Persona 5’s red slash, Persona 3’s moonlit water, NieR’s plates, Red Dead’s brush stroke, Cyberpunk’s glitch). Turn it off in Settings → Theme → Start screen.', '起始畫面：開啟 Checkmate 時會短暫顯示目前風格的圖示和名稱，並採用該風格的造型（女神異聞錄 5 的紅色斜線、女神異聞錄 3 的月光水面、NieR 的選單板、Red Dead 的筆刷、Cyberpunk 的雜訊閃爍）。可在「設定 → 主題 → 起始畫面」關閉。'],
+      ['Checkmate for Chrome and Edge: the whole app as a browser extension that works offline and syncs like the others. Its toolbar button (Alt+Shift+C) adds tasks with the same typing as Add task and shows what’s due today; Alt+Shift+O opens Checkmate.', 'Chrome 和 Edge 版 Checkmate：以瀏覽器擴充功能提供完整的應用程式，可離線使用，並像其他版本一樣同步。工具列按鈕（Alt+Shift+C）可用與「新增任務」相同的寫法加入任務，並顯示今天到期的任務；Alt+Shift+O 開啟 Checkmate。'],
+      ['In the extension, reminders arrive as browser notifications even with Checkmate closed, calendar subscriptions and Docs & Sheets links are read directly, and the toolbar button follows your style.', '在擴充功能中，即使關閉了 Checkmate，提醒也會以瀏覽器通知送達；日曆訂閱和 Docs 及 Sheets 連結可直接讀取，工具列按鈕亦會跟隨風格。'],
+    ],
+  },
+  {
     v: '3.0.1',
     date: '2026-10',
     notes: [

@@ -85,7 +85,7 @@ function SouthernCross() {
 
 export function AboutPanel() {
   useStoreVersion();
-  const where = tr(platform() === 'android' ? 'Android app' : platform() === 'windows' ? 'Windows app' : 'web app');
+  const where = tr(platform() === 'android' ? 'Android app' : platform() === 'windows' ? 'Windows app' : platform() === 'extension' ? 'browser extension' : 'web app');
   return (
     <div class="panel-stack about-panel">
       <div class="ab-head">

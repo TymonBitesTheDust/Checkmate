@@ -341,6 +341,16 @@ export default {
   'Android app': 'Android 應用程式',
   'Windows app': 'Windows 應用程式',
   'web app': '網頁版',
+  'browser extension': '瀏覽器擴充功能',
+  'Open Checkmate': '開啟 Checkmate',
+  'It syncs when you next open Checkmate.': '下次開啟 Checkmate 時會同步。',
+  'Completed “{name}”': '已完成「{name}」',
+  'Complete “{name}”': '完成「{name}」',
+  'Nothing left for today.': '今天的任務都完成了。',
+  '{key} opens this from any page.': '在任何網頁按 {key} 都可打開這裡。',
+  'Start screen': '起始畫面',
+  'Shows the style’s icon and the Checkmate name for a moment while the app opens.': '開啟應用程式時，短暫顯示目前風格的圖示和 Checkmate 名稱。',
+  'The Checkmate button in your browser’s toolbar changes straight away.': '瀏覽器工具列上的 Checkmate 按鈕會即時更換。',
 
   // ---------- settings: sound ----------
   'Sound effects': '音效',

@@ -4,6 +4,8 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cursorCss } from './src/cursors.js';
+import { ICON_STYLES, iconParts } from './src/brand-icons.js';
+import { ACCENTS } from './src/theme.js';
 import { buildConnector } from '../connector/build.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -29,27 +31,56 @@ const connectorPlugin = {
   },
 };
 
-const js = await build({
-  entryPoints: [join(root, 'src/main.jsx')],
-  bundle: true,
-  minify: true,
-  format: 'iife',
-  target: ['es2020', 'chrome90'],
-  jsx: 'automatic',
-  jsxImportSource: 'preact',
-  write: false,
-  legalComments: 'none',
-  charset: 'utf8',
-  define: { 'process.env.NODE_ENV': '"production"' },
-  logLevel: 'warning',
-  plugins: mock ? [mockPlugin, connectorPlugin] : [connectorPlugin],
-});
-let code = js.outputFiles[0].text;
+// The browser extension's copy uses Firebase's web-extension auth build, which leaves out
+// the sign-in-with-Google popup code (it loads scripts from the web, which extensions may not).
+const extAuthPlugin = {
+  name: 'firebase-auth-web-extension',
+  setup(b) {
+    b.onResolve({ filter: /^firebase\/auth$/ }, () => ({ path: join(root, 'src/ext-auth.js') }));
+  },
+};
+const bundle = async (plugins) =>
+  (
+    await build({
+      entryPoints: [join(root, 'src/main.jsx')],
+      bundle: true,
+      minify: true,
+      format: 'iife',
+      target: ['es2020', 'chrome90'],
+      jsx: 'automatic',
+      jsxImportSource: 'preact',
+      write: false,
+      legalComments: 'none',
+      charset: 'utf8',
+      define: { 'process.env.NODE_ENV': '"production"' },
+      logLevel: 'warning',
+      plugins,
+    })
+  ).outputFiles[0].text;
+const rawCode = await bundle(mock ? [mockPlugin, connectorPlugin] : [connectorPlugin]);
 // keep the inline script from closing early
-code = code.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--');
+const inline = (c) => c.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--');
+const code = inline(rawCode);
+
+// The start screen: every style's app icon (with its own gradient ids) and the theme colours,
+// for splash-boot.js.
+const splashData = {
+  icons: Object.fromEntries(
+    ICON_STYLES.map((s) => {
+      const p = iconParts(s, { uid: `sp${s}` });
+      return [s, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">${p.bg('rounded')}${p.fg}</svg>`];
+    }),
+  ),
+  accents: Object.fromEntries(ACCENTS.map((a) => [a.id, a.hex])),
+  accent: '#f46b25',
+};
+const minifyJs = async (file, replace = (x) => x) => (await transform(replace(readFileSync(join(root, 'src', file), 'utf8')), { loader: 'js', minify: true, target: ['es2017'] })).code.trim();
+const bootJs = await minifyJs('boot.js');
+const splashJs = await minifyJs('splash-boot.js', (x) => x.replace('/*__SPLASH_DATA__*/ { icons: {}, accents: {}, accent: \'\' }', () => JSON.stringify(splashData)));
+if (!splashJs.includes('viewBox')) throw new Error('splash-boot.js: the icon placeholder was not filled in');
 
 // skin-riot.css comes last: the Persona 5 (Calling Card) rules sit on top of the shared calendar rules
-const cssSource = ['styles.css', 'skin-archive.css', 'skin-tide.css', 'skin-frontier.css', 'skin-neon.css', 'cal.css', 'skin-riot.css'].map((f) => readFileSync(join(root, 'src', f), 'utf8')).join('\n') + '\n' + cursorCss();
+const cssSource = ['styles.css', 'skin-archive.css', 'skin-tide.css', 'skin-frontier.css', 'skin-neon.css', 'cal.css', 'skin-riot.css', 'splash.css'].map((f) => readFileSync(join(root, 'src', f), 'utf8')).join('\n') + '\n' + cursorCss();
 const css = (await transform(cssSource, { loader: 'css', minify: true, target: ['chrome90'] })).code;
 
 const face = (family, style, weight, file) =>
@@ -83,7 +114,30 @@ const font = [
   face('Special Elite', 'normal', 400, 'special-elite/files/special-elite-latin-400-normal.woff2'),
 ].join('');
 
-let html = readFileSync(join(root, 'src/index.html'), 'utf8');
-html = html.replace('/*__FONT__*/', () => font).replace('/*__CSS__*/', () => css).replace('/*__JS__*/', () => code);
+const page = readFileSync(join(root, 'src/index.html'), 'utf8');
+let html = page.replace('/*__FONT__*/', () => font).replace('/*__CSS__*/', () => css).replace('/*__BOOT__*/', () => inline(bootJs)).replace('/*__SPLASH__*/', () => inline(splashJs)).replace('/*__JS__*/', () => code);
 writeFileSync(join(out, 'Checkmate.html'), html);
 console.log(`dist/Checkmate.html  ${(html.length / 1024).toFixed(0)} KB (js ${(code.length / 1024).toFixed(0)} KB, css ${(css.length / 1024).toFixed(0)} KB)`);
+
+// The browser extension's app page (../extension/build.mjs packs it): the same app, but
+// extension pages may only run scripts from files, so every script is its own file. The
+// fonts are a file too, shared with the toolbar popup.
+if (!mock) {
+  const ext = join(root, 'dist-ext');
+  mkdirSync(ext, { recursive: true });
+  const extCode = await bundle([connectorPlugin, extAuthPlugin]);
+  if (/apis\.google\.com\/js/.test(extCode)) throw new Error('the extension build still carries code that loads scripts from the web');
+  writeFileSync(join(ext, 'app.js'), extCode);
+  writeFileSync(join(ext, 'boot.js'), bootJs);
+  writeFileSync(join(ext, 'splash.js'), splashJs);
+  writeFileSync(join(ext, 'fonts.css'), font);
+  const extHtml = page
+    .replace('<style>/*__FONT__*/</style>', '<link rel="stylesheet" href="fonts.css">')
+    .replace('/*__CSS__*/', () => css)
+    .replace('<script>/*__BOOT__*/</script>', '<script src="boot.js"></script>')
+    .replace('<script>/*__SPLASH__*/</script>', '<script src="splash.js"></script>')
+    .replace('<script>/*__JS__*/</script>', '<script src="app.js"></script>');
+  if (/<script>/.test(extHtml)) throw new Error('index.html has an inline script the extension can\'t run');
+  writeFileSync(join(ext, 'app.html'), extHtml);
+  console.log(`dist-ext/app.html + app.js ${(extCode.length / 1024).toFixed(0)} KB (for the browser extension)`);
+}
