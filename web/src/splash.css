@@ -1,0 +1,262 @@
+/* The start screen (起始畫面): splash-boot.js shows it, splash.js fades it out. One look per
+   style, using that style's colours and fonts; Reduced motion keeps it still. */
+#splash {
+  display: none;
+}
+#splash.on {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  pointer-events: none;
+  transition: opacity 0.42s ease, visibility 0.42s;
+}
+#splash.out {
+  opacity: 0;
+  visibility: hidden;
+}
+#splash .sp-fx {
+  position: absolute;
+  inset: 0;
+}
+#splash .sp-mark {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+#splash .sp-icon svg {
+  display: block;
+  width: 112px;
+  height: 112px;
+}
+#splash .sp-icon {
+  animation: sp-pop 0.62s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+#splash .sp-name {
+  font: 700 36px/1 'Bricolage Grotesque', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  animation: sp-up 0.5s 0.14s ease-out both;
+}
+#splash .sp-bar {
+  width: 140px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(128, 128, 128, 0.2);
+}
+#splash .sp-bar i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  animation: sp-load 1s 0.1s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+#splash.out .sp-mark {
+  transform: scale(1.04);
+  transition: transform 0.42s ease;
+}
+
+@keyframes sp-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-8deg);
+  }
+}
+@keyframes sp-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes sp-load {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Persona 5 (Calling Card): a black slash across a red page, the name on a tilted black card */
+[data-skin='riot'] #splash.on {
+  background: #e5191c;
+  color: #fff;
+}
+[data-skin='riot'] #splash .sp-fx::before {
+  content: '';
+  position: absolute;
+  top: 34%;
+  left: -20%;
+  width: 140%;
+  height: 34%;
+  background: #0b0a0a;
+  transform: rotate(-12deg);
+  animation: sp-slash 0.45s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+[data-skin='riot'] #splash .sp-icon {
+  animation-name: sp-pop-riot;
+}
+[data-skin='riot'] #splash .sp-name {
+  padding: 8px 16px 6px;
+  background: #0b0a0a;
+  color: #fff;
+  font: 400 34px/1 'Bowlby One', Impact, sans-serif;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  box-shadow: 6px 6px 0 #fff;
+}
+[data-skin='riot'] #splash .sp-bar {
+  display: none;
+}
+@keyframes sp-slash {
+  from {
+    transform: rotate(-12deg) translateX(-110%);
+  }
+}
+@keyframes sp-pop-riot {
+  0% {
+    opacity: 0;
+    transform: scale(1.6) rotate(-14deg);
+  }
+  60% {
+    transform: scale(0.94) rotate(-4deg);
+  }
+  to {
+    transform: rotate(-6deg);
+  }
+}
+
+/* Persona 3 Reload: deep water with light moving on it, the name in heavy italics */
+[data-skin='tide'] #splash.on {
+  background: radial-gradient(120% 90% at 30% 20%, #1d3f96, #0a1846 70%);
+  color: #fff;
+}
+[data-skin='tide'] #splash .sp-fx {
+  background: repeating-linear-gradient(170deg, transparent 0 22px, rgba(63, 220, 255, 0.07) 22px 24px);
+  animation: sp-water 3s linear infinite;
+}
+[data-skin='tide'] #splash .sp-icon {
+  animation-name: sp-slide;
+}
+[data-skin='tide'] #splash .sp-name {
+  font: italic 900 44px/1 Montserrat, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  transform: skewX(-6deg);
+}
+[data-skin='tide'] #splash .sp-bar {
+  height: 3px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+[data-skin='tide'] #splash .sp-bar i {
+  background: #3fdcff;
+}
+@keyframes sp-water {
+  to {
+    background-position: 0 48px;
+  }
+}
+@keyframes sp-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-60px) skewX(-10deg);
+  }
+}
+
+/* NieR: Automata: the YoRHa plate with thin rules sliding in above and below */
+[data-skin='archive'] #splash .sp-mark::before,
+[data-skin='archive'] #splash .sp-mark::after {
+  content: '';
+  position: absolute;
+  left: -60px;
+  right: -60px;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  animation: sp-load 0.7s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+[data-skin='archive'] #splash .sp-mark::before {
+  top: -22px;
+}
+[data-skin='archive'] #splash .sp-mark::after {
+  bottom: -22px;
+  animation-delay: 0.12s;
+}
+[data-skin='archive'] #splash .sp-name {
+  font: 600 22px/1 Manrope, system-ui, sans-serif;
+  letter-spacing: 0.42em;
+  margin-right: -0.42em;
+  text-transform: uppercase;
+}
+[data-skin='archive'] #splash .sp-bar {
+  height: 6px;
+  border-radius: 0;
+}
+[data-skin='archive'] #splash .sp-bar i {
+  background: var(--ink);
+  animation-timing-function: steps(8);
+}
+
+/* Red Dead Redemption 2: woodtype name over a red brush stroke on parchment */
+[data-skin='frontier'] #splash .sp-name {
+  font: 400 40px/1 Rye, Georgia, serif;
+}
+[data-skin='frontier'] #splash .sp-bar {
+  width: 190px;
+  height: 9px;
+  border-radius: 40% 8% 50% 10% / 70% 30% 60% 40%;
+  background: transparent;
+}
+[data-skin='frontier'] #splash .sp-bar i {
+  background: #b3120c;
+}
+[data-skin='frontier'][data-theme='dark'] #splash .sp-bar i {
+  background: #e0342a;
+}
+
+/* Cyberpunk 2077: wide uppercase name with a red and cyan glitch, a hard cyan bar */
+[data-skin='neon'] #splash .sp-name {
+  font: 700 38px/1 Rajdhani, system-ui, sans-serif;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;
+  text-transform: uppercase;
+  animation: sp-up 0.3s 0.1s ease-out both, sp-glitch 1.1s 0.3s steps(1) both;
+}
+[data-skin='neon'] #splash .sp-bar {
+  border-radius: 0;
+}
+[data-skin='neon'] #splash .sp-bar i {
+  background: #5ef6ff;
+}
+[data-skin='neon'][data-theme='light'] #splash .sp-bar i {
+  background: #000;
+}
+@keyframes sp-glitch {
+  0%,
+  30%,
+  60%,
+  100% {
+    text-shadow: none;
+    transform: none;
+  }
+  10% {
+    text-shadow: -3px 0 #ff003c, 3px 0 #5ef6ff;
+    transform: translateX(2px);
+  }
+  45% {
+    text-shadow: 3px 0 #ff003c, -3px 0 #5ef6ff;
+    transform: translateX(-2px) skewX(-8deg);
+  }
+  75% {
+    text-shadow: -2px 0 #ff003c;
+  }
+}
+
+[data-motion='reduced'] #splash *,
+[data-motion='reduced'] #splash *::before,
+[data-motion='reduced'] #splash *::after {
+  animation: none !important;
+}

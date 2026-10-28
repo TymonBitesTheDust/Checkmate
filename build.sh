@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Builds all three versions of Checkmate from the web app in ./web.
+# Builds all four versions of Checkmate from the web app in ./web.
 #   dist/Checkmate.html  - the app as one file (open in any browser, or host it)
 #   dist/Checkmate.exe   - Windows 10/11 app (WebView2)
 #   dist/Checkmate.apk   - Android 7+ app (WebView)
+#   dist/Checkmate-extension.zip - Chrome/Edge extension (Manifest V3); unpacked in extension/dist/Checkmate
 #
 # Needs: Node 18+, Go 1.22+, JDK 17+, Python 3 with Pillow and cairosvg, plus the tools listed below.
 set -euo pipefail
@@ -28,6 +29,9 @@ cp web/dist/Checkmate.html dist/Checkmate.html
 echo "==> Icons (one set per style)"
 node brand/export-svgs.mjs >/dev/null
 python3 brand/make_icons.py brand/out >/dev/null
+
+echo "==> Chrome/Edge extension"
+node extension/build.mjs
 
 echo "==> Windows .exe"
 mkdir -p desktop/assets && cp web/dist/Checkmate.html desktop/assets/index.html

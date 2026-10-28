@@ -1,0 +1,336 @@
+/* The toolbar popup, in the colours and fonts of the style picked in the app (boot.js sets
+   data-skin and data-theme on <html>, and the theme colour for the Checkmate style). */
+:root {
+  --bg: #ffffff;
+  --raise: #f6f4f1;
+  --ink: #1c231f;
+  --muted: #6b736e;
+  --line: #e6e3de;
+  --accent: #f46b25;
+  --on-accent: #ffffff;
+  --overdue: #d1453b;
+  --font: 'Bricolage Grotesque', system-ui, sans-serif;
+  --title-font: var(--font);
+  --radius: 10px;
+}
+[data-theme='dark'] {
+  --bg: #151917;
+  --raise: #1d2320;
+  --ink: #e5ebe8;
+  --muted: #94a09a;
+  --line: #2c3430;
+  --overdue: #ff7a6e;
+}
+[data-skin='riot'] {
+  --bg: #0b0a0a;
+  --raise: #1a1717;
+  --ink: #ffffff;
+  --muted: #b9b3ae;
+  --line: #3a3434;
+  --accent: #e5191c;
+  --overdue: #ff5a5d;
+  --font: Arsenal, system-ui, sans-serif;
+  --title-font: 'Bowlby One', Impact, sans-serif;
+  --radius: 0;
+}
+[data-skin='tide'] {
+  --bg: #0a1846;
+  --raise: #112458;
+  --ink: #ffffff;
+  --muted: #9fb1dd;
+  --line: #24397a;
+  --accent: #3fdcff;
+  --on-accent: #071442;
+  --overdue: #ff7a8a;
+  --font: Montserrat, system-ui, sans-serif;
+  --radius: 0;
+}
+[data-skin='archive'] {
+  --bg: #d1cdb7;
+  --raise: #c8c3aa;
+  --ink: #4e4b42;
+  --muted: #7a766a;
+  --line: #b5b09a;
+  --accent: #57544a;
+  --on-accent: #dad4bb;
+  --overdue: #9b3a2c;
+  --font: Manrope, system-ui, sans-serif;
+  --radius: 0;
+}
+[data-skin='archive'][data-theme='dark'] {
+  --bg: #1f1e1a;
+  --raise: #2a2924;
+  --ink: #dad4bb;
+  --muted: #9b967f;
+  --line: #3b3a33;
+  --accent: #dad4bb;
+  --on-accent: #1f1e1a;
+  --overdue: #e08a6e;
+}
+[data-skin='frontier'] {
+  --bg: #e6d7b6;
+  --raise: #dccaa3;
+  --ink: #1f150c;
+  --muted: #6a5a45;
+  --line: #c7b48c;
+  --accent: #b3120c;
+  --overdue: #b3120c;
+  --font: 'Libre Caslon Text', Georgia, serif;
+  --title-font: Rye, Georgia, serif;
+  --radius: 2px;
+}
+[data-skin='frontier'][data-theme='dark'] {
+  --bg: #0d0b09;
+  --raise: #1a1612;
+  --ink: #f5f5f5;
+  --muted: #a8a097;
+  --line: #2f2a24;
+  --accent: #e0342a;
+  --overdue: #ff6a5e;
+}
+[data-skin='neon'] {
+  --bg: #fcee0a;
+  --raise: #f2e200;
+  --ink: #000000;
+  --muted: #4a4600;
+  --line: #000000;
+  --accent: #000000;
+  --on-accent: #fcee0a;
+  --overdue: #c8102e;
+  --font: Rajdhani, system-ui, sans-serif;
+  --radius: 0;
+}
+[data-skin='neon'][data-theme='dark'] {
+  --bg: #0a0b11;
+  --raise: #12141d;
+  --ink: #ff8174;
+  --muted: #a3625b;
+  --line: #3a1f22;
+  --accent: #5ef6ff;
+  --on-accent: #0a0b11;
+  --overdue: #ff003c;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.35 var(--font);
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+.pop {
+  width: 360px;
+  padding: 14px 14px 10px;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.logo {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+}
+.logo svg {
+  width: 26px;
+  height: 26px;
+}
+.name {
+  flex: 1;
+  font: 700 17px/1 var(--title-font);
+}
+[data-skin='riot'] .name,
+[data-skin='neon'] .name,
+[data-skin='archive'] .name {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 400;
+}
+[data-skin='tide'] .name {
+  font-style: italic;
+  font-weight: 900;
+}
+.open {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raise);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.open:hover {
+  border-color: var(--accent);
+}
+.add {
+  display: flex;
+  gap: 6px;
+}
+.add input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raise);
+  outline: none;
+}
+.add input:focus {
+  border-color: var(--accent);
+}
+.add input::placeholder {
+  color: var(--muted);
+  text-overflow: ellipsis;
+}
+.add button {
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+.add button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 7px;
+}
+.chip {
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: var(--raise);
+  border: 1px solid var(--line);
+  font-size: 12px;
+}
+.chip.date {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 16px 0 4px;
+  font: 700 13px/1 var(--title-font);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+[data-skin='frontier'] h2,
+[data-skin='riot'] h2 {
+  font-weight: 400;
+}
+.count {
+  color: var(--muted);
+  font-family: var(--font);
+}
+.tasks {
+  max-height: 330px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.tasks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+}
+.check {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  padding: 0;
+  border: 1.6px solid var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.p1 .check {
+  border-color: #d1453b;
+}
+.p2 .check {
+  border-color: #eb8909;
+}
+.p3 .check {
+  border-color: #246fe0;
+}
+.check:hover {
+  background: var(--raise);
+  box-shadow: inset 0 0 0 3px var(--bg);
+  border-color: var(--accent);
+}
+[data-skin]:not([data-skin='tickwise']) .check {
+  border-radius: 0;
+}
+.title {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.title .t {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.title:hover .t {
+  text-decoration: underline;
+}
+.meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.due.today,
+.due.tomorrow {
+  color: var(--accent);
+}
+.due.overdue {
+  color: var(--overdue);
+}
+.proj {
+  margin-left: auto;
+}
+.empty {
+  margin: 14px 0;
+  color: var(--muted);
+}
+footer {
+  min-height: 22px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.link {
+  margin-left: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}

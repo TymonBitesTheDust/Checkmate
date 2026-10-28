@@ -96,8 +96,12 @@ const pass = (m) => console.log('  ✓ ' + m);
   await p.waitForSelector('.ab-card');
   const about = await p.textContent('.about-panel');
   for (const s of ['Tymon Ng', 'Claude AI', 'Proudly made in Australia', `Version ${require('fs').readFileSync(path.join(__dirname, '../web/src/version.js'), 'utf8').match(/'([\d.]+)'/)[1]}`]) assert(about.includes(s), s);
+  assert(about.includes('github.com/TymonBitesTheDust/Checkmate'), 'source code link');
+  await p.evaluate(() => { window.__opened = []; window.open = (u) => window.__opened.push(u); });
+  await p.click('.about-panel a.ab-link');
+  assert.deepStrictEqual(await p.evaluate(() => window.__opened), ['https://github.com/TymonBitesTheDust/Checkmate']);
   await p.screenshot({ path: `${OUT}/more-about.png` });
-  pass('About: made by Tymon Ng with Claude AI, proudly made in Australia, with the version');
+  pass('About: made by Tymon Ng with Claude AI, proudly made in Australia, with the version and a source code link');
 
   // Donate
   await p.click('.settings-tabs button[data-tab="donate"]');
@@ -106,17 +110,27 @@ const pass = (m) => console.log('  ✓ ' + m);
   assert(dn.includes('Donate with Stripe'), 'Stripe card');
   for (const s of ['PayID', 'BSB', 'Account number', 'tymonng0903']) assert(!dn.includes(s), 'no PayID or bank details: ' + s);
   await p.evaluate(() => { window.__opened = []; window.open = (u) => window.__opened.push(u); });
-  await p.click('.dn-card button.btn.primary');
-  assert.deepStrictEqual(await p.evaluate(() => window.__opened), [require('fs').readFileSync(path.join(__dirname, '../web/src/settings-more.jsx'), 'utf8').match(/stripeUrl: '([^']+)'/)[1]]);
+  const LINKS = [
+    ['A cup of coffee', 'https://buy.stripe.com/dRm3cu44SgGo7M10wnco001'],
+    ['A lunch money', 'https://buy.stripe.com/6oU14m1WKfCk0jz4MDco002'],
+    ['A month of Claude member', 'https://buy.stripe.com/eVqbJ0eJw3TCeap0wnco003'],
+    ['A big thank!', 'https://buy.stripe.com/aFa6oG30O75Oeap6ULco004'],
+    ['A lunch money (per month)', 'https://buy.stripe.com/5kQ4gy0SGai02rH4MDco005'],
+  ];
+  assert.deepStrictEqual(await p.$$eval('.dn-opt .dn-opt-label', (x) => x.map((e) => e.textContent)), LINKS.map((l) => l[0]));
+  for (let i = 0; i < LINKS.length; i++) await p.click(`.dn-opt >> nth=${i}`);
+  assert.deepStrictEqual(await p.evaluate(() => window.__opened), LINKS.map((l) => l[1]));
+  assert.deepStrictEqual(await p.$$eval('.dn-opt', (x) => x.map((e) => !!e.querySelector('.dn-tag'))), [false, false, false, false, true], 'only the last is monthly');
+  assert(!(await p.isVisible('.dn-pic')), 'no picture outside Frontier');
   await p.screenshot({ path: `${OUT}/more-donate.png` });
-  pass('Donate: a Stripe button that opens the Payment Link, and no PayID or bank details');
+  pass('Donate: five Stripe choices, each opening its own Payment Link, and no PayID or bank details');
 
   // Chinese
   await p.evaluate(() => { const k = 'tickwise.prefs.v1'; const v = JSON.parse(localStorage.getItem(k)); v.language = 'zh-Hant'; localStorage.setItem(k, JSON.stringify(v)); });
   await p.reload();
   await p.waitForSelector('.view-title');
   await p.click('.sb-foot .nav-item');
-  const OK = new Set(['Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Stripe', 'Apple', 'Pay', 'Checkmate', 'Tymon', 'Ng', 'Claude', 'AI', 'Todoist', 'Google']);
+  const OK = new Set(['Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Stripe', 'Apple', 'Pay', 'Checkmate', 'Tymon', 'Ng', 'Claude', 'AI', 'Todoist', 'Google', 'github', 'com', 'TymonBitesTheDust']);
   for (const t of ['theme', 'sidebar', 'about', 'donate']) {
     await p.click(`.settings-tabs button[data-tab="${t}"]`);
     await p.waitForTimeout(150);
@@ -138,6 +152,12 @@ const pass = (m) => console.log('  ✓ ' + m);
       await p.click(`.settings-tabs button[data-tab="${t}"]`);
       await p.waitForTimeout(200);
       await p.screenshot({ path: `${OUT}/more-${t}-${skin}.png` });
+    }
+    // the Donate picture is Frontier's alone, and loads
+    assert.strictEqual(await p.isVisible('.dn-pic'), skin === 'frontier', `Donate picture in ${skin}`);
+    if (skin === 'frontier') {
+      assert(await p.$eval('.dn-pic img', (i) => i.complete && i.naturalWidth === 560), 'picture loaded');
+      assert((await p.textContent('.dn-pic figcaption')).includes('I just need money'), 'caption');
     }
   }
   const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();

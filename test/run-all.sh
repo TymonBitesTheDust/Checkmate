@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs every test and prints PASS/FAIL for each. Logs and screenshots go to $OUT
-# (default /tmp/checkmate-tests). Build first: ./build.sh, then
+# (default /tmp/checkmate-tests). Build first: ./build.sh (extension.cjs needs extension/dist), then
 #   (cd web && MOCK_FIREBASE=1 node build.mjs)   # the copy the sync test uses (web/dist-test)
 #
 # The browser tests load Playwright from /opt/node-tools/node_modules/playwright, and the
@@ -31,7 +31,7 @@ run connector-tz node test/connector-tz.mjs
 run connector-node node test/connector.cjs
 run connector-workerd env RUNTIME=workerd node test/connector.cjs
 run claude node test/claude.cjs "$OUT/shots"
-for t in frame settings-more examples v22 hide-done files smoke dnd accent archive riot tide icons sound docs frontier neon sync calendar chinese; do
+for t in frame settings-more examples v22 hide-done splash extension files smoke dnd accent archive riot tide icons sound docs frontier neon sync calendar chinese; do
   run $t node test/$t.cjs "$OUT/shots"
 done
 run calendar-styles node test/calendar-styles.cjs "$OUT/shots"

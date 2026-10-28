@@ -6,6 +6,8 @@ import { wireSounds } from './sound.js';
 import * as docsync from './docsync.js';
 import * as calsync from './calsync.js';
 import * as files from './files.js';
+import { hideSplash } from './splash.js';
+import { wireExtension } from './ext.js';
 
 store.init();
 // Hooks for the Android/Windows hosts.
@@ -20,7 +22,9 @@ sync.start();
 docsync.start();
 calsync.start();
 files.start();
+wireExtension();
 render(<App />, document.getElementById('app'));
+hideSplash();
 
 // Only the app's own panes scroll (lists, sidebar, calendar grid, dialogs). If a browser
 // ever scrolls the page or the app's frame (older WebViews without overflow: clip, find in

@@ -69,7 +69,7 @@
       "0409": {
         "identity": {
           "name": "Checkmate.Desktop",
-          "version": "3.0.2.0"
+          "version": "3.1.2.0"
         },
         "description": "Checkmate",
         "minimum-os": "win10",
@@ -93,20 +93,20 @@
     "#1": {
       "0000": {
         "fixed": {
-          "file_version": "3.0.2.0",
-          "product_version": "3.0.2.0"
+          "file_version": "3.1.2.0",
+          "product_version": "3.1.2.0"
         },
         "info": {
           "0409": {
             "Comments": "Tasks, projects and reminders that sync across your devices.",
             "CompanyName": "Checkmate",
             "FileDescription": "Checkmate",
-            "FileVersion": "3.0.2",
+            "FileVersion": "3.1.2",
             "InternalName": "Checkmate",
             "LegalCopyright": "",
             "OriginalFilename": "Checkmate.exe",
             "ProductName": "Checkmate",
-            "ProductVersion": "3.0.2"
+            "ProductVersion": "3.1.2"
           }
         }
       }

@@ -1,6 +1,25 @@
 // What changed in each version, newest first (Settings → What’s new). [English, 繁體中文]
 export const CHANGELOG = [
   {
+    v: '3.1.2',
+    date: '2026-10',
+    notes: [
+      ['Brings in everything from 3.0.2: donations through Stripe, the new style names (Archive, Riot, Tide, Frontier and Neon) and no colour note in Settings → Theme.', '加入 3.0.2 的所有改動：透過 Stripe 捐款、新的風格名稱（Archive、Riot、Tide、Frontier 和 Neon），以及「設定 → 主題」不再顯示配色說明。'],
+      ['Settings → Donate has five choices, each with its own Stripe page: a cup of coffee, a lunch money, a month of Claude member, a big thank, or a lunch money every month.', '「設定 → 捐款支持」提供五個選項，各有自己的 Stripe 付款頁面：一杯咖啡、一頓午餐錢、一個月的 Claude 會員、大大的感謝，或每月一頓午餐錢。'],
+      ['Settings → About links to Checkmate’s source code on GitHub.', '「設定 → 關於」新增 Checkmate 在 GitHub 上的原始碼連結。'],
+      ['In Frontier, Settings → Donate shows an old photograph in the red brush frame: “I have a plan. I just need money.”', '在 Frontier 風格中，「設定 → 捐款支持」會在紅色筆刷框中顯示一張舊照片：「我有個計劃，只差一筆錢。」'],
+    ],
+  },
+  {
+    v: '3.1.0',
+    date: '2026-10',
+    notes: [
+      ['A start screen: Checkmate opens with your style’s icon and name for a moment, in that style’s look (Riot’s red slash, Tide’s moonlit water, Archive’s plates, Frontier’s brush stroke, Neon’s glitch). Turn it off in Settings → Theme → Start screen.', '起始畫面：開啟 Checkmate 時會短暫顯示目前風格的圖示和名稱，並採用該風格的造型（Riot 的紅色斜線、Tide 的月光水面、Archive 的選單板、Frontier 的筆刷、Neon 的雜訊閃爍）。可在「設定 → 主題 → 起始畫面」關閉。'],
+      ['Checkmate for Chrome and Edge: the whole app as a browser extension that works offline and syncs like the others. Its toolbar button (Alt+Shift+C) adds tasks with the same typing as Add task and shows what’s due today; Alt+Shift+O opens Checkmate.', 'Chrome 和 Edge 版 Checkmate：以瀏覽器擴充功能提供完整的應用程式，可離線使用，並像其他版本一樣同步。工具列按鈕（Alt+Shift+C）可用與「新增任務」相同的寫法加入任務，並顯示今天到期的任務；Alt+Shift+O 開啟 Checkmate。'],
+      ['In the extension, reminders arrive as browser notifications even with Checkmate closed, calendar subscriptions and Docs & Sheets links are read directly, and the toolbar button follows your style.', '在擴充功能中，即使關閉了 Checkmate，提醒也會以瀏覽器通知送達；日曆訂閱和 Docs 及 Sheets 連結可直接讀取，工具列按鈕亦會跟隨風格。'],
+    ],
+  },
+  {
     v: '3.0.2',
     date: '2026-10',
     notes: [

@@ -79,6 +79,8 @@ const DEFAULT_PREFS = {
   accentVars: null,
   // the app's own icon (Windows shortcuts and .exe, Android home screen) follows the style
   iconFollowsStyle: true,
+  // the start screen (起始畫面) while the app opens, in the style's look
+  splash: true,
   // Persona 5 style: animations ('system' follows the device, 'full' or 'reduced') and the star field
   motion: 'system',
   stars: true,
