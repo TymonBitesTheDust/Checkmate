@@ -839,6 +839,7 @@ export default {
   'Made in': '產地',
   'Proudly made in Australia': '澳洲自豪製作',
   'Source code': '原始碼',
+  'Website': '網站',
   'Checkmate is free, with no ads and no subscription. If it makes your days a little easier and you’d like to say thanks, you can chip in towards its development.': 'Checkmate 是免費的，沒有廣告，也不用訂閱。如果它令你的生活輕鬆了一點，而你想表示謝意，歡迎捐款支持它的開發。',
   'Donate with Stripe': '透過 Stripe 捐款',
   'Each one opens Stripe’s secure page in your browser. Pay by card, Apple Pay or Google Pay.': '每個選項都會在瀏覽器中打開 Stripe 的安全付款頁面，可用信用卡、Apple Pay 或 Google Pay 付款。',
