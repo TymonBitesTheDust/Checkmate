@@ -6,17 +6,17 @@ const OUT = process.argv[2];
 const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
 
 // Latin words that are fine to see in the Chinese interface.
-const ALLOWED = new Set(['MB', 'KB', 'Live', 'Aid', 'Claude', 'Docs', 'Sheets', 'B', 'Checkmate', 'checkmate', 'Tickwise', 'NieR', 'Automata', 'Persona', 'Firebase', 'Firestore', 'Authentication', 'Database', 'Google', 'Analytics',
+const ALLOWED = new Set(['MB', 'KB', 'Live', 'Aid', 'Claude', 'Docs', 'Sheets', 'B', 'Checkmate', 'checkmate', 'Tickwise', 'Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Firebase', 'Firestore', 'Authentication', 'Database', 'Google', 'Analytics',
   'API', 'Windows', 'Android', 'TW', 'or', 'const', 'firebaseConfig', 'apiKey', 'Q', 'G', 'T', 'I', 'U', 'F', 'C', 'M', 'Enter', 'Ctrl', 'Esc',
   'p', 'P', 'Hosting', 'Create', 'a', 'project', 'Build', 'Get', 'started', 'Email', 'Password', 'database', 'production', 'mode', 'Rules', 'Publish',
-  'Project', 'overview', 'settings', 'Your', 'apps', 'console', 'firebase', 'google', 'com', 'tickwise', 'sync', 'Sign', 'in', 'method', 'ok', 'Drive', 'Red', 'Dead', 'Redemption', 'Cyberpunk',
+  'Project', 'overview', 'settings', 'Your', 'apps', 'console', 'firebase', 'google', 'com', 'tickwise', 'sync', 'Sign', 'in', 'method', 'ok', 'Drive',
   // calendar: Google's own menu names in the setup steps, file types and keys
   'GMT', 'ics', 'iCal', 'Outlook', 'Apple', 'calendar', 'Settings', 'for', 'my', 'calendars', 'Integrate', 'Secret', 'address', 'format', 'webcal', 'https',
   'D', 'X', 'W', 'Y', 'A', 'J', 'K', 'L',
   // Claude connector: product names
   'Claude', 'Todoist', 'Cloudflare',
-  // the Persona 5 design's name, in What's new
-  'Calling', 'Card']);
+  // Settings → Donate
+  'Stripe', 'Pay']);
 
 function leftovers(text) {
   const words = text.match(/[A-Za-z]{2,}/g) || [];

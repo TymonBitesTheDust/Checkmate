@@ -57,7 +57,7 @@ All downloads are on the [Releases page](https://github.com/TymonBitesTheDust/Ch
 
 **Pick a look you like.** Six styles, each with light and dark mode, its own sounds and its own app icon.
 
-<p align="center"><img src="docs/images/styles.jpg" alt="The six styles: Checkmate, NieR: Automata, Persona 5, Persona 3, Red Dead Redemption 2 and Cyberpunk 2077" width="860"></p>
+<p align="center"><img src="docs/images/styles.jpg" alt="The six styles: Checkmate, Archive, Riot, Tide, Frontier and Neon" width="860"></p>
 
 **And more:** projects and sections, a board layout, subtasks, labels, filters, comments, files on tasks (up to 100 MB), birthdays (including lunar birthdays), a productivity page, turning Google Docs and Sheets into task lists, backups, and English or Traditional Chinese (繁體中文).
 
@@ -87,9 +87,9 @@ Ask Claude to manage your tasks and calendar for you: *"what's due today?"*, *"m
 
 ## About
 
-Made by **Tymon Ng** in Australia, built with Claude AI. If you'd like to support it, see **Settings → Donate** in the app. Checkmate used to be called *Tickwise* — updating from it keeps all your data.
+Made by **Tymon Ng** in Australia, built with Claude AI. If you'd like to support it, see **Settings → Donate** in the app (donations go through Stripe). Checkmate used to be called *Tickwise* — updating from it keeps all your data.
 
-The styles are fan-made tributes. Checkmate isn't affiliated with or endorsed by the makers of NieR: Automata, Persona, Red Dead Redemption or Cyberpunk 2077, and all their names belong to their owners.
+The styles are Checkmate's own designs. Checkmate isn't affiliated with or endorsed by any game publisher.
 
 ## License
 

@@ -40,7 +40,8 @@ const js = await build({
   write: false,
   legalComments: 'none',
   charset: 'utf8',
-  define: { 'process.env.NODE_ENV': '"production"' },
+  // CHECKMATE_STORE=play builds the Google Play version (no Donate tab).
+  define: { 'process.env.NODE_ENV': '"production"', 'process.env.CHECKMATE_STORE': JSON.stringify(process.env.CHECKMATE_STORE || '') },
   logLevel: 'warning',
   plugins: mock ? [mockPlugin, connectorPlugin] : [connectorPlugin],
 });

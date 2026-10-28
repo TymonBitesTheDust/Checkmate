@@ -15,7 +15,7 @@ const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
   await p.click('.sb-foot .nav-item');
   await p.click('.settings-tabs button[data-tab="theme"]');
   await p.waitForSelector('.skin-card');
-  await p.click('.skin-card:has-text("Persona 3")');
+  await p.click('.skin-card:has-text("Tide")');
   await p.waitForTimeout(300);
   await p.screenshot({ path: `${OUT}/tide-1-settings.png` });
   await p.keyboard.press('Escape');

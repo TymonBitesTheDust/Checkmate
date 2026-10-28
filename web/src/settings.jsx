@@ -12,7 +12,7 @@ import { tr, isZh, LANGUAGES } from './i18n.js';
 import { DocsPanel } from './docs-settings.jsx';
 import { CalendarPanel } from './cal-settings.jsx';
 import { ClaudePanel } from './claude-settings.jsx';
-import { SidebarPanel, AboutPanel, DonatePanel, WhatsNewPanel } from './settings-more.jsx';
+import { SidebarPanel, AboutPanel, DonatePanel, WhatsNewPanel, showDonate } from './settings-more.jsx';
 import { RemindersPanel } from './reminders-ui.jsx';
 
 export const RULES = `rules_version = '2';
@@ -26,20 +26,13 @@ service cloud.firestore {
 
 const SKINS = [
   { id: 'tickwise', name: 'Checkmate' },
-  { id: 'archive', name: 'NieR: Automata' },
-  { id: 'riot', name: 'Persona 5' },
-  { id: 'tide', name: 'Persona 3' },
-  { id: 'frontier', name: 'Red Dead Redemption 2' },
-  { id: 'neon', name: 'Cyberpunk 2077' },
+  { id: 'archive', name: 'Archive' },
+  { id: 'riot', name: 'Riot' },
+  { id: 'tide', name: 'Tide' },
+  { id: 'frontier', name: 'Frontier' },
+  { id: 'neon', name: 'Neon' },
 ];
-const THEME_NAMES = { archive: ['Parchment', 'Ink'], tide: ['Surface', 'Depths'], frontier: ['Journal', 'Campfire'], neon: ['Yellow', 'Neon'] };
-const OWN_COLOURS = {
-  archive: 'NieR: Automata uses its own ink-and-parchment colours.',
-  riot: 'Persona 5 uses its own red, black and white.',
-  tide: 'Persona 3 uses its own ocean blues.',
-  frontier: 'Red Dead Redemption 2 uses its own paper, ink and red.',
-  neon: 'Cyberpunk 2077 uses its own yellow, red and cyan.',
-};
+const THEME_NAMES = { archive: ['Parchment', 'Ink'], tide: ['Surface', 'Depths'], frontier: ['Journal', 'Campfire'], neon: ['Yellow', 'Night'] };
 
 const TABS = [
   ['general', 'General', 'settings'],
@@ -55,7 +48,7 @@ const TABS = [
   ['whatsnew', 'What’s new', 'history'],
   ['about', 'About', 'info'],
   ['donate', 'Donate', 'heart'],
-];
+].filter(([k]) => k !== 'donate' || showDonate());
 
 export function Settings({ tab: initial = 'general', onClose }) {
   const [first, focus] = String(initial).split(':');
@@ -207,11 +200,8 @@ function ThemePanel() {
           <Seg label={tr('Theme')} value={p.theme} onChange={(v) => store.setPrefs({ theme: v })} options={[['system', tr('Match device')], ['light', tr((THEME_NAMES[p.skin] || ['Light'])[0])], ['dark', tr((THEME_NAMES[p.skin] || [0, 'Dark'])[1])]]} />
         </Field>
       )}
-      {OWN_COLOURS[p.skin] ? (
-        <Field group label={tr('Theme colour')}>
-          <p class="accent-locked">{tr(OWN_COLOURS[p.skin])} {tr('Switch the style to Checkmate to choose a theme colour.')}</p>
-        </Field>
-      ) : (
+      {(p.skin || 'tickwise') === 'tickwise' && (
+        // The other styles bring their own colours.
         <Field group label={tr('Theme colour')} hint={tr('Used for buttons, highlights and the Checkmate mark. Colours are adjusted slightly in light and dark mode so text stays readable.')}>
           <AccentPicker
             value={p.accent || DEFAULT_ACCENT}

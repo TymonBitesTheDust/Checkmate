@@ -592,7 +592,6 @@
 .skin-preview.archive .pv-main i:nth-child(1) { height: 9px; width: 62%; background: #57544a; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.18); }
 .skin-preview.archive .pv-main i:nth-child(2) { height: 3px; background: linear-gradient(to right, #57544a 14%, transparent 0) 0 0 / 22px 3px repeat-x; }
 .skin-preview.archive .pv-main i:nth-child(n+3) { height: 7px; background: linear-gradient(#57544a, #57544a) 2px 50% / 4px 4px no-repeat, rgba(180, 175, 154, 0.7); }
-.accent-locked { margin: 0; color: var(--muted); font-size: 13px; }
 
 /* keep the mark legible on light ink, and mute project/label colours to sit with the palette */
 [data-skin="archive"] .pdot,

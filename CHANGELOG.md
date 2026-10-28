@@ -4,6 +4,22 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 <!-- Made from web/src/changelog.js by `node web/changelog-md.mjs`. Edit that file, then run the script. -->
 
+## [3.0.2](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.2) — October 2026
+
+- Settings → Donate now takes donations through Stripe: pick any amount and pay by card, Apple Pay or Google Pay.
+- The styles have new names: Archive, Riot, Tide, Frontier and Neon. They look and sound the same, and the one you picked stays picked.
+- Settings → Theme no longer shows a note about colours in the styles that bring their own.
+- Neon’s dark mode is now called Night.
+
+<details><summary>繁體中文</summary>
+
+- 「設定 → 捐款支持」改用 Stripe 收取捐款：金額由你決定，可用信用卡、Apple Pay 或 Google Pay 付款。
+- 各風格換上新名稱：Archive、Riot、Tide、Frontier 和 Neon。外觀和音效不變，你選用的風格也保持不變。
+- 「設定 → 主題」在自帶配色的風格中，不再顯示有關配色的說明。
+- Neon 風格的深色模式改稱「夜色」。
+
+</details>
+
 ## [3.0.1](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.1) — October 2026
 
 - Settings → General → Hide completed tasks: ticked tasks leave your projects, even ones set to show completed tasks. They stay on the Completed page.
@@ -20,21 +36,21 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 ## [3.0.0](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.0) — October 2026
 
-- Persona 5 has a new look, the Calling Card design: a blood-red page over a field of pulsing stars, menu words and page titles in cut-out letters, a red and cyan highlight that wiggles behind what you pick, black menus and white paper dialogs.
-- In Persona 5, the menu shows today’s date and how many tasks are due. Finishing a task slashes it in red and stamps it “Clear!”, changing page sweeps a wipe across and shakes the screen, and new sounds follow the Persona 5 menu.
-- New app icons to match the new looks: Persona 5 is a red star with a white tick on black; NieR: Automata is the picked menu plate with its square marker between thin rules; Persona 3 is the red and white cursor under a black tick on deep water, with the moon; Red Dead Redemption 2 is a rough red brush frame round an ink tick. They show in the app, the browser tab, and on Windows and Android when the icon follows the style.
-- Settings → Theme, with Persona 5 picked: choose how much moves (Match device, Full or Reduced) and turn the star field on or off. Persona 5 is always dark.
-- Persona 3 now follows the Persona 3 Reload pause menu: light dancing on the water’s surface, a tilted stack of command words with the page you’re on in white over the red and white cursor, the page name standing huge on a white ribbon (long names shrink to fit), white boxes for today’s numbers and a help line with button prompts.
-- NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 look more like their games: NieR’s beige menu plates that fill dark from the left with lines above and below; Red Dead’s black ink-roller menu with brush banners, a red brush frame around the chosen item and a “3 of 9” counter; Cyberpunk’s salmon-red rows on black with cut-corner frames, cyan for what’s chosen and “‹ ON ›” switches.
+- Riot has a new look: a blood-red page over a field of pulsing stars, menu words and page titles in cut-out letters, a red and cyan highlight that wiggles behind what you pick, black menus and white paper dialogs.
+- In Riot, the menu shows today’s date and how many tasks are due. Finishing a task slashes it in red and stamps it “Clear!”, changing page sweeps a wipe across and shakes the screen, and it has new menu sounds.
+- New app icons to match the new looks: Riot is a red star with a white tick on black; Archive is the picked menu plate with its square marker between thin rules; Tide is the red and white cursor under a black tick on deep water, with the moon; Frontier is a rough red brush frame round an ink tick. They show in the app, the browser tab, and on Windows and Android when the icon follows the style.
+- Settings → Theme, with Riot picked: choose how much moves (Match device, Full or Reduced) and turn the star field on or off. Riot is always dark.
+- Tide has a new pause-menu look: light dancing on the water’s surface, a tilted stack of command words with the page you’re on in white over the red and white cursor, the page name standing huge on a white ribbon (long names shrink to fit), white boxes for today’s numbers and a help line with button prompts.
+- Archive, Frontier and Neon have new looks: Archive’s beige menu plates that fill dark from the left with lines above and below; Frontier’s black ink-roller menu with brush banners, a red brush frame around the chosen item and a “3 of 9” counter; Neon’s salmon-red rows on black with cut-corner frames, cyan for what’s chosen and “‹ ON ›” switches.
 
 <details><summary>繁體中文</summary>
 
-- 女神異聞錄 5 風格換上新造型，名為 Calling Card 的設計：血紅色的畫面配上一片脈動的星星，選單和頁面標題用剪貼字母，選中的項目背後有紅色和青色的高光晃動，黑色選單和白紙對話框。
-- 在女神異聞錄 5 風格中，選單會顯示今天的日期和到期任務的數目。完成任務時會劃上一道紅線並蓋上「搞定！」印章，切換頁面時畫面會掃過一道轉場並震動一下，新的音效仿照女神異聞錄 5 的選單。
-- 配合新造型的應用程式圖示：女神異聞錄 5 是黑底上一顆紅星和白色剔號；NieR: Automata 是夾在細線之間、帶方形標記的選中選單板；女神異聞錄 3 是深藍水面上的紅白游標和黑色剔號，旁邊有月亮；Red Dead Redemption 2 是一個粗糙的紅色筆刷框圍著墨色剔號。圖示用於應用程式內、瀏覽器分頁，以及圖示跟隨風格時的 Windows 和 Android。
-- 「設定 → 主題」（選了女神異聞錄 5 時）：選擇動畫多少（跟隨裝置、完整或減少），並可開關星空。女神異聞錄 5 風格一律使用深色。
-- 女神異聞錄 3 風格改為參照重製版女神異聞錄 3 的暫停選單：水面上跳動的光影、傾斜疊放的指令文字，目前頁面以白色顯示在紅白游標上、頁面名稱以巨大字體豎立在白色緞帶上（較長的名稱會縮小以完整顯示）、以白色方框顯示今天的數字，還有附按鍵提示的說明列。
-- NieR: Automata、Red Dead Redemption 2 和 Cyberpunk 2077 風格更接近各自的遊戲：NieR 的米色選單板，由左至右填滿深色並在上下滑出細線；Red Dead 的黑色墨輥選單，配上筆刷標題、選中項目的紅色筆刷框和「第 3 項，共 9 項」計數；Cyberpunk 的黑底鮭紅色列、切角框、以青色標示選中項目和「‹ 開 ›」開關。
+- Riot 風格換上新造型：血紅色的畫面配上一片脈動的星星，選單和頁面標題用剪貼字母，選中的項目背後有紅色和青色的高光晃動，黑色選單和白紙對話框。
+- 在 Riot 風格中，選單會顯示今天的日期和到期任務的數目。完成任務時會劃上一道紅線並蓋上「搞定！」印章，切換頁面時畫面會掃過一道轉場並震動一下，還有新的選單音效。
+- 配合新造型的應用程式圖示：Riot 是黑底上一顆紅星和白色剔號；Archive 是夾在細線之間、帶方形標記的選中選單板；Tide 是深藍水面上的紅白游標和黑色剔號，旁邊有月亮；Frontier 是一個粗糙的紅色筆刷框圍著墨色剔號。圖示用於應用程式內、瀏覽器分頁，以及圖示跟隨風格時的 Windows 和 Android。
+- 「設定 → 主題」（選了 Riot 時）：選擇動畫多少（跟隨裝置、完整或減少），並可開關星空。Riot 風格一律使用深色。
+- Tide 風格換上新的暫停選單造型：水面上跳動的光影、傾斜疊放的指令文字，目前頁面以白色顯示在紅白游標上、頁面名稱以巨大字體豎立在白色緞帶上（較長的名稱會縮小以完整顯示）、以白色方框顯示今天的數字，還有附按鍵提示的說明列。
+- Archive、Frontier 和 Neon 風格換上新造型：Archive 的米色選單板，由左至右填滿深色並在上下滑出細線；Frontier 的黑色墨輥選單，配上筆刷標題、選中項目的紅色筆刷框和「第 3 項，共 9 項」計數；Neon 的黑底鮭紅色列、切角框、以青色標示選中項目和「‹ 開 ›」開關。
 
 </details>
 
@@ -45,7 +61,7 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 - Reminders: choose when each task reminds you, set your defaults in Settings → Reminders, and pick any custom time for tasks, birthdays and events.
 - Typing a time in a new task keeps it in the name (“Watch Live Aid at 12pm”) while still setting the due time.
 - A new default colour: Checkmate orange (#F46B25). Pine is still there in Settings → Theme.
-- The Persona 3 app icon’s moon no longer overlaps the tick.
+- The Tide app icon’s moon no longer overlaps the tick.
 - This page: Settings → What’s new.
 
 <details><summary>繁體中文</summary>
@@ -55,7 +71,7 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 - 提醒：為每個任務選擇提醒時間，在「設定 → 提醒」設定預設值，任務、生日和活動都可以自訂任何提醒時間。
 - 新增任務時輸入的時間會保留在名稱中（例如「中午12點 看 Live Aid」），同時照樣設定到期時間。
 - 新的預設顏色：Checkmate 橙（#F46B25）。松綠仍可在「設定 → 主題」選用。
-- 女神異聞錄 3 圖示中的月亮不再與剔號重疊。
+- Tide 圖示中的月亮不再與剔號重疊。
 - 新增此頁：「設定 → 更新內容」。
 
 </details>
@@ -94,11 +110,11 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 ## 2.1.4 — October 2026
 
-- Calendar: in Persona 3 the toolbar no longer disappears after picking a day in the month view, and Persona 5 scrolls back up properly.
+- Calendar: in Tide the toolbar no longer disappears after picking a day in the month view, and Riot scrolls back up properly.
 
 <details><summary>繁體中文</summary>
 
-- 日曆：女神異聞錄 3 在月檢視選擇日子後，工具列不再消失；女神異聞錄 5 可以正常向上捲動。
+- 日曆：Tide 在月檢視選擇日子後，工具列不再消失；Riot 可以正常向上捲動。
 
 </details>
 
@@ -114,21 +130,21 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 ## 2.1.2 — October 2026
 
-- Cyberpunk 2077: the drag handle is visible again, and hovering the subtask arrow no longer repeats the page sound.
+- Neon: the drag handle is visible again, and hovering the subtask arrow no longer repeats the page sound.
 
 <details><summary>繁體中文</summary>
 
-- 電馭叛客 2077：拖曳手柄重新出現，滑鼠移到子任務箭咀時不再重複播放換頁音效。
+- Neon：拖曳手柄重新出現，滑鼠移到子任務箭咀時不再重複播放換頁音效。
 
 </details>
 
 ## 2.1.1 — October 2026
 
-- The subtask arrow no longer overlaps the drag handle, and shows on Persona 3’s white hover bar.
+- The subtask arrow no longer overlaps the drag handle, and shows on Tide’s white hover bar.
 
 <details><summary>繁體中文</summary>
 
-- 子任務箭咀不再與拖曳手柄重疊，在女神異聞錄 3 的白色懸停列上也看得見。
+- 子任務箭咀不再與拖曳手柄重疊，在Tide 的白色懸停列上也看得見。
 
 </details>
 
