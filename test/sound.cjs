@@ -62,7 +62,7 @@ const url = 'file://' + path.resolve(__dirname, '../web/dist/Checkmate.html');
   await p.click('.sb-foot .nav-item');
   await p.click('.settings-tabs button[data-tab="theme"]');
   await p.waitForSelector('.skin-card');
-  await p.click('.skin-card:has-text("Persona 5")');
+  await p.click('.skin-card:has-text("Riot")');
   await p.waitForTimeout(150);
   await p.click('.settings-tabs button[data-tab="general"]');
   await p.waitForSelector('.sound-tests');

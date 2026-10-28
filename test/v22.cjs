@@ -295,7 +295,7 @@ const at = (s) => new Date(s).getTime();
   // ---------- Chinese ----------
   {
     const p = await open({ lang: 'zh-Hant' });
-    const english = async () => ((await p.innerText('.settings-panel')).match(/[A-Za-z]{3,}/g) || []).filter((w) => !['Checkmate', 'Live', 'Aid', 'Claude', 'Firebase', 'Persona', 'Tickwise', 'Google', 'Docs', 'Sheets', 'ics', 'Sam', 'Tymon', 'Windows', 'Android', 'Calling', 'Card', 'NieR', 'Automata', 'Red', 'Dead', 'Redemption', 'Cyberpunk'].includes(w));
+    const english = async () => ((await p.innerText('.settings-panel')).match(/[A-Za-z]{3,}/g) || []).filter((w) => !['Checkmate', 'Live', 'Aid', 'Claude', 'Firebase', 'Tickwise', 'Google', 'Docs', 'Sheets', 'ics', 'Sam', 'Tymon', 'Windows', 'Android', 'Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Stripe', 'Apple', 'Pay'].includes(w));
     await settings(p, 'reminders');
     assert.deepStrictEqual(await english(), []);
     await p.click('.settings-tabs button[data-tab="whatsnew"]');

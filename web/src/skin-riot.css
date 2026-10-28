@@ -818,7 +818,6 @@
 [data-skin="riot"] .skin-card.on { border-color: var(--red); box-shadow: inset 0 0 0 2px var(--red); background: #fff0f0; }
 [data-skin="riot"] .skin-card strong { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.04em; font-size: 15px; }
 [data-skin="riot"] .skin-preview { border-radius: 0; border-color: #0b0a0a; }
-[data-skin="riot"] .accent-locked { color: #55524e; }
 
 /* the Persona 5 preview card, seen from every style */
 .skin-preview.riot { background: #4b0007; position: relative; }

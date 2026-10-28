@@ -2,9 +2,11 @@
 
 **Current version: 3.0.1** (Android versionCode 31). Last updated 27 October 2026.
 
+**3.0.2:** Settings → Donate is a button that opens the Stripe Payment Link in `DONATION.stripeUrl` (`settings-more.jsx`) with `openExternal`; the PayID is gone. `CHECKMATE_STORE=play node build.mjs` builds the Google Play version: `build.mjs` defines `process.env.CHECKMATE_STORE`, and `showDonate()` drops the Donate tab from `TABS`, because Google Play doesn't allow paying the developer outside Play billing. The styles' names shown in the app are their ids, capitalised: Archive, Riot, Tide, Frontier and Neon (the game names are gone from the app, What's new and the docs, so store listings don't use other companies' trademarks). Settings → Theme shows Theme colour only in the Checkmate style, with no note in the others. Neon's dark mode is called Night.
+
 **3.0.1:** Settings → General has **Hide completed tasks** (`prefs.hideDoneTasks`) and **Hide completed subtasks** (`prefs.hideDoneSubtasks`), both off by default and kept per device. `ProjectView` works out `showDone` (the project's own ⋯ → Show completed tasks, unless Hide completed tasks is on, which also drops that menu item) and `showDoneSubs` (`showDone` unless Hide completed subtasks is on) for the list and board. The task panel lists finished subtasks unless Hide completed subtasks is on; its "Subtasks 1/3" heading and each row's "2/4" still count every subtask. `TaskRow` takes `canExpand`: `TaskTree` passes it only when a task has subtasks left to show, so a task whose subtasks are all hidden gets no empty arrow. The calendar keeps its own switch (`calShowDone`, Settings → Calendar). Tested by `test/hide-done.cjs`.
 
-**3.0.0:** the Persona 5 style is now the Calling Card design (always dark; in Settings → Theme it shows Animations and Show the star field instead of light/dark), and the other game styles were redesigned after reference material: Persona 3 after the Persona 3 Reload pause menu (Montserrat italic, a tilted command stack with a triangle cursor and the current page in white, a page-name ribbon at ≥1320px whose font size comes from `--len` = `ribbonEms(title)` in `tide.jsx` so long names fit the window's height, wallet boxes, a Command help line from `KeyHints({view})`), NieR: Automata after the YoRHa menus (Manrope, wiping plates with sliding lines), Red Dead Redemption 2 after the native menu (ink-roller sidebar, red brush frame, `MenuCounter` in `frontier.jsx`), and Cyberpunk 2077 after the settings menus (red rows, cut corners, cyan selection). New app icons for Persona 5, NieR, Persona 3 and Red Dead: `brand-icons.js` gained `rng`/`roughRect` for brush edges, and `iconSvg` gives each icon unique gradient and clip ids. In Chinese, the Persona 3 ribbon stacks one character per line (horizontal text) because upright vertical text depends on the font's vertical metrics.
+**3.0.0:** the Riot style has a new design (always dark; in Settings → Theme it shows Animations and Show the star field instead of light/dark), and the other game styles were redesigned: Tide as a pause menu (Montserrat italic, a tilted command stack with a triangle cursor and the current page in white, a page-name ribbon at ≥1320px whose font size comes from `--len` = `ribbonEms(title)` in `tide.jsx` so long names fit the window's height, wallet boxes, a Command help line from `KeyHints({view})`), Archive with menu plates (Manrope, wiping plates with sliding lines), Frontier with an ink-roller menu (ink-roller sidebar, red brush frame, `MenuCounter` in `frontier.jsx`), and Neon with terminal menus (red rows, cut corners, cyan selection). New app icons for Riot, Archive, Tide and Frontier: `brand-icons.js` gained `rng`/`roughRect` for brush edges, and `iconSvg` gives each icon unique gradient and clip ids. In Chinese, the Tide ribbon stacks one character per line (horizontal text) because upright vertical text depends on the font's vertical metrics.
 
 Checkmate (formerly Tickwise) is a personal to-do app in the spirit of Todoist, with a calendar in the spirit of Google Calendar. It was created by **Tymon Ng**, built with Claude AI and proudly made in Australia. One web app is shipped three ways, and all three sync through the user's own Firebase project:
 
@@ -143,7 +145,7 @@ checkmate/
 | Tab | Holds |
 | --- | --- |
 | general | Language, start page, week start, time format, date order, sounds |
-| theme | Style, app icon follows style, light/dark (Persona 5: Animations and Show the star field instead), theme colour |
+| theme | Style, app icon follows style, light/dark (Riot: Animations and Show the star field instead), theme colour (Checkmate style only) |
 | sidebar | Which pages show in the sidebar, and task counts |
 | reminders | Default reminders for timed tasks, date-only tasks and birthdays |
 | sync | Firebase setup and account |
@@ -154,11 +156,11 @@ checkmate/
 | keys | Shortcuts |
 | whatsnew | Every version's changes, from `changelog.js` |
 | about | Version and credits |
-| donate | Donation details |
+| donate | The Stripe donation button (left out when built with `CHECKMATE_STORE=play`) |
 
 Each tab button has `data-tab=<key>`. `ui.openSettings('tab:focus')` deep-links into a tab. Panel code lives in these files:
 
-- `settings-more.jsx`: Sidebar, What’s new, About and Donate. Donation details are in the `DONATION` constant.
+- `settings-more.jsx`: Sidebar, What’s new, About and Donate. The Stripe Payment Link is `DONATION.stripeUrl`.
 - `cal-settings.jsx`, `docs-settings.jsx` and `claude-settings.jsx`: one tab each.
 - `nav-items.jsx`: the sidebar's page list.
 - `theme.js`: accent colours, with presets and custom colours adjusted for light and dark.
@@ -171,11 +173,11 @@ Each style has its id, its own CSS, sounds, icon and cursor, and sometimes its o
 | id | Name | Files |
 | --- | --- | --- |
 | tickwise | Checkmate (default) | `styles.css` |
-| archive | NieR: Automata (YoRHa menus; Manrope) | `skin-archive.css` |
-| riot | Persona 5 (the Calling Card design, always dark) | `skin-riot.css` (loaded last, after `cal.css`), `riot.jsx`: `Ransom`/`StyledTitle` cut-out letters, `Shards` (red and cyan highlight), `Stamp`, `DateBox`, `HeroCount`, `StarField`, `RiotDate`, `PageWipe` (wipe + `.shake`), `reducedMotion()` from `prefs.motion`. Each returns nothing in other styles |
-| tide | Persona 3 Reload (pause menu; Montserrat italic) | `skin-tide.css`, `tide.jsx` (moon date, wallet-box stats, shatter, `KeyHints` help line, `ribbonEms` for the page-name ribbon; `test/tide.cjs` checks long names fit in English and Chinese) |
-| frontier | Red Dead Redemption 2 (native menu) | `skin-frontier.css`, `frontier.jsx` (almanac, tally, `MenuCounter` "3 of 9") |
-| neon | Cyberpunk 2077 (settings menus) | `skin-neon.css`, `neon.jsx` (date readout) |
+| archive | Archive (beige menu plates; Manrope) | `skin-archive.css` |
+| riot | Riot (always dark) | `skin-riot.css` (loaded last, after `cal.css`), `riot.jsx`: `Ransom`/`StyledTitle` cut-out letters, `Shards` (red and cyan highlight), `Stamp`, `DateBox`, `HeroCount`, `StarField`, `RiotDate`, `PageWipe` (wipe + `.shake`), `reducedMotion()` from `prefs.motion`. Each returns nothing in other styles |
+| tide | Tide (pause menu; Montserrat italic) | `skin-tide.css`, `tide.jsx` (moon date, wallet-box stats, shatter, `KeyHints` help line, `ribbonEms` for the page-name ribbon; `test/tide.cjs` checks long names fit in English and Chinese) |
+| frontier | Frontier (ink-roller menu) | `skin-frontier.css`, `frontier.jsx` (almanac, tally, `MenuCounter` "3 of 9") |
+| neon | Neon (terminal menus) | `skin-neon.css`, `neon.jsx` (date readout) |
 
 `cal.css` styles the calendar. `sound.js` synthesises every sound with WebAudio, with a set per style. **Every UI change has to look right in all six styles, in light and dark, and at phone width (390px).**
 
@@ -199,7 +201,7 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
   - A task is `{title, desc, projectId ('inbox' by default), sectionId, parentId, priority 1–4 (4 = none), labels[], due {date, time, recur}, done, order, reminders (null = defaults, or a minute list), files [{id, name, size, type, addedAt}]}`.
   - A birthday is `{name, month, day, year (optional), lunar, me, note, reminders}`. Lunar birthdays keep the lunar month and day.
   - Seed items `inbox` and `cal-main` have `updatedAt: 1` and never upload.
-- **Prefs.** These are device-local and never synced: `tickwise.prefs.v1`, read with `store.getPrefs()` and written with `store.setPrefs()`. They include the style, theme, accent, the Persona 5 `motion` (system/full/reduced) and `stars` choices, sidebar choices, sound, calendar view and the Firebase config.
+- **Prefs.** These are device-local and never synced: `tickwise.prefs.v1`, read with `store.getPrefs()` and written with `store.setPrefs()`. They include the style, theme, accent, the Riot `motion` (system/full/reduced) and `stars` choices, sidebar choices, sound, calendar view and the Firebase config.
 - **Firestore.**
   - Documents live at `users/{uid}/items/{id}`. Each write adds `srv` = the server timestamp.
   - Task files live outside the items, so they aren't streamed to every device: `users/{uid}/files/{fileId}` `{name, size, type, parts, done}` and `users/{uid}/files/{fileId}/parts/{n}` `{i, data: Bytes}` (768 KB pieces, 8 per commit to stay under Firestore's 1 MiB document and 10 MiB request limits). Cloud Storage isn't used because it needs the paid Blaze plan. The bytes are also kept in IndexedDB (`checkmate-files`); queues are in localStorage (`tickwise.filequeue.v1`, `tickwise.filedelete.v1`). A file whose task is gone is cleaned up after 3 days (Undo can bring the task back).
@@ -308,7 +310,7 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Layout | `frame` (hover, handles, scroll guard; `FRAME_HTML` env picks the file) |
 | Settings | `settings-more` (Theme, Sidebar, About, Donate, all styles, phone) |
 | Task name hint | `examples` (dated, random, Chinese, phone ellipsis) |
-| 2.2.0 features | `v22` (orange default, Persona 3 icon, time kept in names, reminders and custom times, birthdays and lunar dates, What’s new, Chinese, phone) |
+| 2.2.0 features | `v22` (orange default, Tide icon, time kept in names, reminders and custom times, birthdays and lunar dates, What’s new, Chinese, phone) |
 | Completed tasks | `hide-done` (Settings → General → Hide completed tasks and Hide completed subtasks: task panel, project list and board, the project menu, Chinese, phone) |
 | Task files | `files` (two devices through the fake Firestore: pieces, download on open, save, removal, the 100 MB limit) |
 | Language | `chinese` |
@@ -356,13 +358,13 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 ## 10. Lessons learned (don't re-break these)
 
 - **Scrolling.**
-  - `.app` uses `overflow: hidden; overflow: clip;`. With plain `hidden`, focus or script can scroll it, which once pushed the Persona 3 calendar toolbar off screen.
+  - `.app` uses `overflow: hidden; overflow: clip;`. With plain `hidden`, focus or script can scroll it, which once pushed the Tide calendar toolbar off screen.
   - The scroll guard is in `main.jsx`.
   - Modal and Menu focus uses `focus({preventScroll: true})`.
 - **Task row hover.**
   - The drag handle (`.grip`, left at `calc(var(--indent) - 44px)`) and the subtask arrow (`.twisty`) must not overlap.
   - The `.row-gutter` span keeps hover steady across the gap.
-  - In Cyberpunk the hover bar is drawn on `::after`. A `clip-path` on the row hid the handle and caused a hover/sound flicker loop. The bar uses `--gutter-ink`.
+  - In Neon the hover bar is drawn on `::after`. A `clip-path` on the row hid the handle and caused a hover/sound flicker loop. The bar uses `--gutter-ink`.
 - **Hover sound.** It is debounced (600ms) in `sound.js`.
 - **CSS names.** Generic class names collide (for example `.dn` with the week view's `.week-day .dn`). Give panels specific names such as `.donate-panel` and `.about-panel`.
 - **Quick add.** Q closes after adding (`keepOpen={false}`), while the inline "Add task" box stays open. Long hints are cut at a word with "…" by `fitHint` in `editor.jsx`, because the browser won't put an ellipsis on a focused input.
@@ -381,15 +383,16 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Version | Change |
 | --- | --- |
 | 2.1.0 | Claude connector (Settings → Claude, Cloudflare Worker, OAuth, 16 tools) |
-| 2.1.1 | The subtask arrow no longer overlaps the drag handle; the arrow is visible on the Persona 3 white hover bar |
-| 2.1.2 | Cyberpunk 2077: the drag handle is visible again, and hovering the arrow no longer repeats the page sound |
+| 2.1.1 | The subtask arrow no longer overlaps the drag handle; the arrow is visible on the Tide white hover bar |
+| 2.1.2 | Neon: the drag handle is visible again, and hovering the arrow no longer repeats the page sound |
 | 2.1.3 | The app icon follows the style in the EXE (shortcuts and exe) and the APK (launcher) |
-| 2.1.4 | Calendar month → day: the Persona 3 toolbar no longer disappears, and Persona 5 can scroll back up |
+| 2.1.4 | Calendar month → day: the Tide toolbar no longer disappears, and Riot can scroll back up |
 | 2.1.5 | Settings: Sidebar (choose pages, task counts), About, Donate |
 | 2.1.6 | Task name examples by date, otherwise random. English and Chinese, with an ellipsis on phones |
 | 2.1.7 | New Settings → Theme tab (style, app icon switch, light/dark, theme colour) |
-| 2.2.0 | Birthdays (optional lunar dates), task files up to 100 MB, reminder timing (per task, defaults, custom), the typed time stays in task names, Checkmate orange (#F46B25) default colour, Persona 3 icon fix, Settings → What’s new |
-| 3.0.0 | Persona 5 becomes the Calling Card design (star field, cut-out menu and titles, highlight, CLEAR! stamp, wipe and shake, new sounds; Settings → Theme: Animations and the star field), Persona 3, NieR: Automata, Red Dead Redemption 2 and Cyberpunk 2077 redesigned after their games, new icons for Persona 5, NieR, Persona 3 and Red Dead |
+| 2.2.0 | Birthdays (optional lunar dates), task files up to 100 MB, reminder timing (per task, defaults, custom), the typed time stays in task names, Checkmate orange (#F46B25) default colour, Tide icon fix, Settings → What’s new |
+| 3.0.0 | Riot gets a new design (star field, cut-out menu and titles, highlight, CLEAR! stamp, wipe and shake, new sounds; Settings → Theme: Animations and the star field), Tide, Archive, Frontier and Neon redesigned, new icons for Riot, Archive, Tide and Frontier |
 | 3.0.1 | Settings → General: Hide completed tasks and Hide completed subtasks; no expand arrow when every subtask is hidden |
+| 3.0.2 | Donations through Stripe (no Donate tab in the Google Play build); styles renamed Archive, Riot, Tide, Frontier and Neon; no colour note in Settings → Theme for the game styles |
 
 Earlier releases built the core: tasks, projects, filters, the calendar, sync, six styles, sounds, Traditional Chinese, Docs & Sheets, and the rename from Tickwise to Checkmate.

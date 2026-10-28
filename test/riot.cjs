@@ -28,7 +28,7 @@ const pass = (m) => console.log('  ✓ ' + m);
   assert(/Light/.test(theme) && !/Animations/i.test(theme) && !/star field/i.test(theme), 'Checkmate keeps light/dark and has no animation settings');
   assert(!(await p.$('canvas.starfield')), 'no stars in Checkmate');
   // pick Persona 5
-  await p.click('.skin-card:has-text("Persona 5")');
+  await p.click('.skin-card:has-text("Riot")');
   await p.waitForTimeout(300);
   theme = await p.innerText('.theme-panel');
   for (const has of ['Animations', 'Match device', 'Full', 'Reduced', 'Reduced turns off the screen shake, the page wipe and the moving stars.', 'Show the star field']) assert(theme.toLowerCase().includes(has.toLowerCase()), `Persona 5 Theme has ${has}`);
@@ -139,7 +139,7 @@ const pass = (m) => console.log('  ✓ ' + m);
   // switching to another style puts its light/dark back and takes the stars away
   await p.click('.sb-foot .nav-item');
   await p.click('.settings-tabs button[data-tab="theme"]');
-  await p.click('.skin-card:has-text("Persona 3")');
+  await p.click('.skin-card:has-text("Tide")');
   await p.waitForTimeout(300);
   assert(!/Animations/i.test(await p.innerText('.theme-panel')), 'Persona 3 has no animation settings');
   await p.keyboard.press('Escape');

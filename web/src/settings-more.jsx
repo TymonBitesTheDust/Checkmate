@@ -2,12 +2,11 @@
 import * as store from './store.js';
 import * as A from './actions.js';
 import { Icon, Logo } from './icons.jsx';
-import { Field, Switch, toast, useStoreVersion } from './ui.jsx';
-import { copyText, platform } from './native.js';
+import { Field, Switch, useStoreVersion } from './ui.jsx';
+import { openExternal, platform } from './native.js';
 import { StyledTitle } from './riot.jsx';
 import { NAV_ITEMS } from './nav-items.jsx';
 import { VERSION } from './version.js';
-import { play } from './sound.js';
 import { tr, pick, isZh } from './i18n.js';
 import { CHANGELOG } from './changelog.js';
 
@@ -125,28 +124,14 @@ export function AboutPanel() {
 
 // ---------------------------------------------------------------- Donate
 
+// Donations go through a Stripe Payment Link (Stripe Dashboard → Payment Links, with
+// "Customers choose what to pay"). Builds for Google Play leave the Donate tab out, as Play
+// doesn't allow paying the developer outside Google Play billing.
 export const DONATION = {
-  name: 'Tsz Chun Ng',
-  payId: 'tymonng0903@gmail.com',
+  stripeUrl: 'https://donate.stripe.com/REPLACE_WITH_YOUR_LINK',
 };
 
-function CopyLine({ label, value, copy = value }) {
-  const doCopy = async () => {
-    if (await copyText(copy)) {
-      play('pop');
-      toast(tr('Copied {what}', { what: label }));
-    }
-  };
-  return (
-    <div class="dn-line">
-      <span class="dn-label">{label}</span>
-      <span class="dn-value" translate="no">{value}</span>
-      <button type="button" class="btn ghost xs" onClick={doCopy} aria-label={tr('Copy {what}', { what: label })}>
-        <Icon name="copy" size={14} /> {tr('Copy')}
-      </button>
-    </div>
-  );
-}
+export const showDonate = () => process.env.CHECKMATE_STORE !== 'play';
 
 export function DonatePanel() {
   return (
@@ -157,12 +142,16 @@ export function DonatePanel() {
       <div class="dn-card">
         <div class="dn-head">
           <Icon name="heart" size={20} />
-          <strong>PayID</strong>
+          <strong>{tr('Donate with Stripe')}</strong>
         </div>
-        <CopyLine label={tr('PayID (email)')} value={DONATION.payId} />
-        <span class="field-hint">{tr('In your banking app, choose to pay a PayID and paste this email. The name that shows should be {name}.', { name: DONATION.name })}</span>
+        <div class="dn-body">
+          <button type="button" class="btn primary" onClick={() => openExternal(DONATION.stripeUrl)}>
+            <Icon name="heart" size={16} /> {tr('Donate')}
+          </button>
+          <span class="field-hint">{tr('Opens Stripe’s secure page in your browser. Choose any amount and pay by card, Apple Pay or Google Pay.')}</span>
+        </div>
       </div>
-      <p class="about">{tr('Adding “Checkmate” as the description helps Tymon know what it’s for. Thank you!')}</p>
+      <p class="about">{tr('Thank you for supporting Checkmate!')}</p>
     </div>
   );
 }
