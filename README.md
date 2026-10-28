@@ -27,6 +27,17 @@
 
 All downloads are on the [Releases page](https://github.com/TymonBitesTheDust/Checkmate/releases/latest).
 
+## New in 3.1.2
+
+- **Five ways to say thanks.** **Settings → Donate** has *A cup of coffee*, *A lunch money*, *A month of Claude member*, *A big thank!* and *A lunch money (per month)*. Each one opens its own secure Stripe page (card, Apple Pay or Google Pay).
+- **Find the source code.** **Settings → About** links to this repository.
+- **A picture on the Donate page in Frontier**, in the style's red brush frame.
+- **From 3.1.0:** a start screen in every style, and Checkmate for Chrome and Edge.
+
+<p align="center"><img src="docs/images/donate-frontier.jpg" alt="Settings → Donate in the Frontier style, with the five Stripe choices" width="560"></p>
+
+See [CHANGELOG.md](CHANGELOG.md) for every version.
+
 ## Install
 
 **Windows** — Open `Checkmate.exe`. There's no installer. If Windows says *"Windows protected your PC"*, choose **More info → Run anyway** (the app isn't code-signed yet).
@@ -92,7 +103,7 @@ Ask Claude to manage your tasks and calendar for you: *"what's due today?"*, *"m
 
 ## About
 
-Made by **Tymon Ng** in Australia, built with Claude AI. If you'd like to support it, see **Settings → Donate** in the app (donations go through Stripe). Checkmate used to be called *Tickwise* — updating from it keeps all your data.
+Made by **Tymon Ng** in Australia, built with Claude AI. If you'd like to support it, see **Settings → Donate** in the app: pick one of five choices, paid securely through Stripe. Checkmate used to be called *Tickwise* — updating from it keeps all your data.
 
 The styles are Checkmate's own designs. Checkmate isn't affiliated with or endorsed by any game publisher.
 
