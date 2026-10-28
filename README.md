@@ -34,8 +34,6 @@ All downloads are on the [Releases page](https://github.com/TymonBitesTheDust/Ch
 - **A picture on the Donate page in Frontier**, in the style's red brush frame.
 - **From 3.1.0:** a start screen in every style, and Checkmate for Chrome and Edge.
 
-<p align="center"><img src="docs/images/donate-frontier.jpg" alt="Settings → Donate in the Frontier style, with the five Stripe choices" width="560"></p>
-
 See [CHANGELOG.md](CHANGELOG.md) for every version.
 
 ## Install
