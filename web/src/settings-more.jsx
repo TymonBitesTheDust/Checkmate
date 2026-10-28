@@ -62,6 +62,7 @@ export function SidebarPanel() {
 // ---------------------------------------------------------------- About
 
 export const SOURCE_URL = 'https://github.com/TymonBitesTheDust/Checkmate';
+export const WEBSITE_URL = 'https://tymon.website/';
 
 // The Southern Cross, as on the Australian flag.
 function SouthernCross() {
@@ -117,6 +118,15 @@ export function AboutPanel() {
           <div>
             <span class="muted">{tr('Made in')}</span>
             <strong>{tr('Proudly made in Australia')}</strong>
+          </div>
+        </div>
+        <div class="ab-row">
+          <span class="ab-ic"><Icon name="globe" size={22} /></span>
+          <div>
+            <span class="muted">{tr('Website')}</span>
+            <a class="ab-link" href={WEBSITE_URL} translate="no" onClick={(e) => { e.preventDefault(); openExternal(WEBSITE_URL); }}>
+              tymon.website
+            </a>
           </div>
         </div>
         <div class="ab-row">
