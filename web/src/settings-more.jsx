@@ -9,6 +9,7 @@ import { NAV_ITEMS } from './nav-items.jsx';
 import { VERSION } from './version.js';
 import { tr, pick, isZh } from './i18n.js';
 import { CHANGELOG } from './changelog.js';
+import frontierDonatePic from './img/donate-frontier.jpg';
 
 // ---------------------------------------------------------------- Sidebar
 
@@ -60,6 +61,8 @@ export function SidebarPanel() {
 
 // ---------------------------------------------------------------- About
 
+export const SOURCE_URL = 'https://github.com/TymonBitesTheDust/Checkmate';
+
 // The Southern Cross, as on the Australian flag.
 function SouthernCross() {
   const star = (cx, cy, r, points = 7) => {
@@ -84,7 +87,7 @@ function SouthernCross() {
 
 export function AboutPanel() {
   useStoreVersion();
-  const where = tr(platform() === 'android' ? 'Android app' : platform() === 'windows' ? 'Windows app' : 'web app');
+  const where = tr(platform() === 'android' ? 'Android app' : platform() === 'windows' ? 'Windows app' : platform() === 'extension' ? 'browser extension' : 'web app');
   return (
     <div class="panel-stack about-panel">
       <div class="ab-head">
@@ -116,6 +119,15 @@ export function AboutPanel() {
             <strong>{tr('Proudly made in Australia')}</strong>
           </div>
         </div>
+        <div class="ab-row">
+          <span class="ab-ic"><Icon name="code" size={22} /></span>
+          <div>
+            <span class="muted">{tr('Source code')}</span>
+            <a class="ab-link" href={SOURCE_URL} translate="no" onClick={(e) => { e.preventDefault(); openExternal(SOURCE_URL); }}>
+              github.com/TymonBitesTheDust/Checkmate
+            </a>
+          </div>
+        </div>
       </div>
       <p class="about">© 2026 Tymon Ng</p>
     </div>
@@ -124,11 +136,17 @@ export function AboutPanel() {
 
 // ---------------------------------------------------------------- Donate
 
-// Donations go through a Stripe Payment Link (Stripe Dashboard → Payment Links, with
-// "Customers choose what to pay"). Builds for Google Play leave the Donate tab out, as Play
-// doesn't allow paying the developer outside Google Play billing.
+// Donations go through Stripe Payment Links (Stripe Dashboard → Payment Links), one per
+// choice. Builds for Google Play leave the Donate tab out, as Play doesn't allow paying the
+// developer outside Google Play billing.
 export const DONATION = {
-  stripeUrl: 'https://donate.stripe.com/REPLACE_WITH_YOUR_LINK',
+  options: [
+    { id: 'coffee', label: 'A cup of coffee', icon: 'coffee', url: 'https://buy.stripe.com/dRm3cu44SgGo7M10wnco001' },
+    { id: 'lunch', label: 'A lunch money', icon: 'sun', url: 'https://buy.stripe.com/6oU14m1WKfCk0jz4MDco002' },
+    { id: 'claude', label: 'A month of Claude member', icon: 'spark', url: 'https://buy.stripe.com/eVqbJ0eJw3TCeap0wnco003' },
+    { id: 'thanks', label: 'A big thank!', icon: 'heart', url: 'https://buy.stripe.com/aFa6oG30O75Oeap6ULco004' },
+    { id: 'lunch-monthly', label: 'A lunch money (per month)', icon: 'repeat', url: 'https://buy.stripe.com/5kQ4gy0SGai02rH4MDco005', monthly: true },
+  ],
 };
 
 export const showDonate = () => process.env.CHECKMATE_STORE !== 'play';
@@ -139,17 +157,27 @@ export function DonatePanel() {
       <p class="lead">
         {tr('Checkmate is free, with no ads and no subscription. If it makes your days a little easier and you’d like to say thanks, you can chip in towards its development.')}
       </p>
+      {/* Frontier only (hidden in the other styles by .dn-pic's CSS). */}
+      <figure class="dn-pic">
+        <img src={frontierDonatePic} alt="" width="560" height="467" loading="lazy" />
+        <figcaption>{tr('I have a plan. I just need money.')}</figcaption>
+      </figure>
       <div class="dn-card">
         <div class="dn-head">
           <Icon name="heart" size={20} />
           <strong>{tr('Donate with Stripe')}</strong>
         </div>
-        <div class="dn-body">
-          <button type="button" class="btn primary" onClick={() => openExternal(DONATION.stripeUrl)}>
-            <Icon name="heart" size={16} /> {tr('Donate')}
-          </button>
-          <span class="field-hint">{tr('Opens Stripe’s secure page in your browser. Choose any amount and pay by card, Apple Pay or Google Pay.')}</span>
+        <div class="dn-opts">
+          {DONATION.options.map((o) => (
+            <button type="button" class="dn-opt" data-donate={o.id} key={o.id} onClick={() => openExternal(o.url)}>
+              <span class="ab-ic"><Icon name={o.icon} size={20} /></span>
+              <span class="dn-opt-label">{tr(o.label)}</span>
+              {o.monthly && <span class="dn-tag">{tr('Monthly')}</span>}
+              <Icon name="open" size={16} />
+            </button>
+          ))}
         </div>
+        <span class="field-hint dn-hint">{tr('Each one opens Stripe’s secure page in your browser. Pay by card, Apple Pay or Google Pay.')}</span>
       </div>
       <p class="about">{tr('Thank you for supporting Checkmate!')}</p>
     </div>

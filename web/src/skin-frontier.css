@@ -600,6 +600,23 @@
 [data-skin="frontier"] .settings-tabs button.on { color: var(--ink); font-weight: 700; }
 [data-skin="frontier"] .settings-tabs button.on::after { inset: -4px -6px; border-width: 10px; }
 [data-skin="frontier"] .lead { font-style: italic; }
+
+/* Settings → Donate: an old photograph pinned in the red brush frame, its caption in woodtype */
+[data-skin="frontier"] .dn-pic {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  align-self: center; width: min(100%, 400px); margin: 4px 0 2px;
+}
+[data-skin="frontier"] .dn-pic img {
+  display: block; width: 100%; height: auto; aspect-ratio: 560 / 467;
+  border: 12px solid transparent; border-image: var(--fr-frame) 30 stretch;
+  background: #1a1410; background-clip: padding-box;
+  box-shadow: 0 10px 24px rgba(30, 14, 4, 0.35);
+  transform: rotate(-1.2deg);
+}
+[data-skin="frontier"] .dn-pic figcaption {
+  font-family: var(--display); font-size: 19px; line-height: 1.25; text-align: center; color: var(--ink);
+  padding: 0 8px;
+}
 [data-skin="frontier"] .sync-card { background: var(--accent-soft); border-left: 3px solid #cc0000; }
 [data-skin="frontier"] .skin-card { background: transparent; border: 1px solid var(--line-strong); }
 [data-skin="frontier"] .skin-card.on { border-color: #cc0000; box-shadow: 0 0 0 2px #cc0000; }

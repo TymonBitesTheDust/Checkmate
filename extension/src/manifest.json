@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Checkmate",
+  "version": "__VERSION__",
+  "description": "Tasks, projects, reminders and a calendar that sync across your devices. Quick add from the toolbar.",
+  "minimum_chrome_version": "116",
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_title": "Checkmate",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" }
+  },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["alarms", "notifications", "storage"],
+  "host_permissions": [
+    "https://docs.google.com/*",
+    "https://calendar.google.com/*",
+    "https://*.googleusercontent.com/*",
+    "https://outlook.office365.com/*",
+    "https://outlook.office.com/*",
+    "https://outlook.live.com/*",
+    "https://*.icloud.com/*"
+  ],
+  "commands": {
+    "_execute_action": { "suggested_key": { "default": "Alt+Shift+C" }, "description": "Quick add and today’s tasks" },
+    "open-app": { "suggested_key": { "default": "Alt+Shift+O" }, "description": "Open Checkmate" }
+  }
+}

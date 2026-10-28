@@ -180,10 +180,16 @@ function ThemePanel() {
           <span class="field-hint">
             {platform() === 'windows'
               ? tr('Checkmate’s shortcuts on the desktop, in Start and on the taskbar change straight away. Checkmate.exe itself changes when you close Checkmate.')
-              : tr('The new icon appears after you leave the app. Some launchers move the home-screen shortcut back to the app drawer when the icon changes, so you may need to add it again.')}
+              : platform() === 'extension'
+                ? tr('The Checkmate button in your browser’s toolbar changes straight away.')
+                : tr('The new icon appears after you leave the app. Some launchers move the home-screen shortcut back to the app drawer when the icon changes, so you may need to add it again.')}
           </span>
         </div>
       )}
+      <div class="field">
+        <Switch label={tr('Start screen')} checked={p.splash !== false} onChange={(v) => store.setPrefs({ splash: v })} />
+        <span class="field-hint">{tr('Shows the style’s icon and the Checkmate name for a moment while the app opens.')}</span>
+      </div>
       {p.skin === 'riot' ? (
         // Persona 5 (the Calling Card design) is always dark; instead it chooses how much moves.
         <>

@@ -73,6 +73,8 @@ const P = {
   image: <><rect x="4" y="5" width="16" height="14" rx="2" /><circle cx="9" cy="10" r="1.6" /><path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5" /></>,
   history: <><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.6" /><path d="M4 4.5v4.1h4.1" /><path d="M12 8v4.3l3 1.8" /></>,
   rss: <><path d="M5 5a14 14 0 0 1 14 14M5 11a8 8 0 0 1 8 8" /><circle cx="6" cy="18" r="1.2" fill="currentColor" /></>,
+  coffee: <><path d="M5 9.5h11v4.5a4.5 4.5 0 0 1-4.5 4.5h-2A4.5 4.5 0 0 1 5 14z" /><path d="M16 10.5h1.5a2.3 2.3 0 0 1 0 4.6H16M5 21h11M8.5 3.5c-.6.8-.6 1.6 0 2.4M12 3.5c-.6.8-.6 1.6 0 2.4" /></>,
+  code: <path d="M8.5 7.5 4 12l4.5 4.5M15.5 7.5 20 12l-4.5 4.5M13.4 5.5l-2.8 13" />,
 };
 
 export function Icon({ name, size = 20, class: cls = '', title, style }) {

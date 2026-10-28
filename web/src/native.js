@@ -1,8 +1,12 @@
 // Thin layer over the host app (Android WebView bridge, Windows WebView2 host, or a plain browser).
 const android = () => (typeof window !== 'undefined' ? window.TickwiseNative : null);
+// The Chrome/Edge extension: the app runs as one of the extension's own pages.
+const ext = () => (typeof location !== 'undefined' && location.protocol === 'chrome-extension:' && typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id ? chrome : null);
+export const isExtension = () => !!ext();
 
 export function platform() {
   if (android()) return 'android';
+  if (ext()) return 'extension';
   if (window.chrome && window.chrome.webview) return 'windows';
   return 'web';
 }
@@ -113,6 +117,11 @@ export function scheduleReminders(list) {
       return true;
     } catch {}
   }
+  if (ext()) {
+    // the extension's service worker sets an alarm for each and shows the notifications
+    ext().runtime.sendMessage({ type: 'checkmate:reminders', list }).catch(() => {});
+    return true;
+  }
   if (window.twScheduleReminders) {
     try {
       window.twScheduleReminders(JSON.stringify(list));
@@ -157,6 +166,30 @@ export function setAppIcon(skin, { tabIconSvg, follow }) {
       a.setLauncherIcon(follow ? skin : 'tickwise');
     } catch {}
   }
+  if (ext()) setToolbarIcon(follow ? tabIconSvg : null);
+}
+
+// The extension's toolbar button: drawn from the style's icon, or back to the packaged one.
+async function setToolbarIcon(svg) {
+  const action = ext().action;
+  try {
+    if (!svg) {
+      await action.setIcon({ path: { 16: 'icons/icon16.png', 32: 'icons/icon32.png' } });
+      return;
+    }
+    const img = new Image();
+    img.src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    await img.decode();
+    const imageData = {};
+    for (const n of [16, 32]) {
+      const c = document.createElement('canvas');
+      c.width = c.height = n;
+      const g = c.getContext('2d');
+      g.drawImage(img, 0, 0, n, n);
+      imageData[n] = g.getImageData(0, 0, n, n);
+    }
+    await action.setIcon({ imageData });
+  } catch {}
 }
 
 // Lets the Android app word its own toasts and notification channel the same way.
@@ -182,9 +215,18 @@ if (typeof window !== 'undefined') {
     done(status ? { status, text: text || '' } : null);
   };
 }
-export const hasNativeFetch = () => !!(window.twFetch || (android() && android().fetchText));
+export const hasNativeFetch = () => !!(window.twFetch || (android() && android().fetchText) || ext());
 
 export function nativeFetchText(url) {
+  // The extension's pages may read the calendar and Docs hosts listed in its manifest.
+  if (ext()) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 30000);
+    return fetch(url, { credentials: 'omit', cache: 'no-store', redirect: 'follow', referrerPolicy: 'no-referrer', signal: ctl.signal })
+      .then(async (r) => ({ status: r.status, text: await r.text() }))
+      .catch(() => ({ status: 0, text: '' }))
+      .finally(() => clearTimeout(timer));
+  }
   const a = android();
   const start = window.twFetch ? (id) => window.twFetch(id, url) : a && a.fetchText ? (id) => a.fetchText(id, url) : null;
   if (!start) return null;
@@ -207,9 +249,9 @@ export function nativeFetchText(url) {
   });
 }
 
-export const canSwitchAppIcon = () => !!((android() && android().setLauncherIcon) || window.twSetIcon);
+export const canSwitchAppIcon = () => !!((android() && android().setLauncherIcon) || window.twSetIcon || ext());
 
 export function hasNativeReminders() {
   const a = android();
-  return !!(a && a.scheduleReminders);
+  return !!((a && a.scheduleReminders) || ext());
 }
