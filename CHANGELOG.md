@@ -6,14 +6,14 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 ## [3.0.2](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.0.2) — October 2026
 
-- Settings → Donate now takes donations through Stripe: pick any amount and pay by card, Apple Pay or Google Pay.
+- Settings → Donate now takes donations through Stripe: choose a cup of coffee, lunch money, a month of Claude, a big thank you or lunch money every month, and pay by card, Apple Pay or Google Pay.
 - The styles have new names: Archive, Riot, Tide, Frontier and Neon. They look and sound the same, and the one you picked stays picked.
 - Settings → Theme no longer shows a note about colours in the styles that bring their own.
 - Neon’s dark mode is now called Night.
 
 <details><summary>繁體中文</summary>
 
-- 「設定 → 捐款支持」改用 Stripe 收取捐款：金額由你決定，可用信用卡、Apple Pay 或 Google Pay 付款。
+- 「設定 → 捐款支持」改用 Stripe 收取捐款：可選一杯咖啡、一頓午餐、一個月的 Claude、衷心感謝或每月一頓午餐，並用信用卡、Apple Pay 或 Google Pay 付款。
 - 各風格換上新名稱：Archive、Riot、Tide、Frontier 和 Neon。外觀和音效不變，你選用的風格也保持不變。
 - 「設定 → 主題」在自帶配色的風格中，不再顯示有關配色的說明。
 - Neon 風格的深色模式改稱「夜色」。

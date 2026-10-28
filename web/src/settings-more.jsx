@@ -124,12 +124,16 @@ export function AboutPanel() {
 
 // ---------------------------------------------------------------- Donate
 
-// Donations go through a Stripe Payment Link (Stripe Dashboard → Payment Links, with
-// "Customers choose what to pay"). Builds for Google Play leave the Donate tab out, as Play
-// doesn't allow paying the developer outside Google Play billing.
-export const DONATION = {
-  stripeUrl: 'https://donate.stripe.com/REPLACE_WITH_YOUR_LINK',
-};
+// Donations go through Stripe Payment Links (Stripe Dashboard → Payment Links), one per
+// option. Builds for Google Play leave the Donate tab out, as Play doesn't allow paying the
+// developer outside Google Play billing.
+export const DONATION = [
+  { label: 'A cup of coffee', url: 'https://buy.stripe.com/dRm3cu44SgGo7M10wnco001' },
+  { label: 'Lunch money', url: 'https://buy.stripe.com/6oU14m1WKfCk0jz4MDco002' },
+  { label: 'A month of Claude', url: 'https://buy.stripe.com/eVqbJ0eJw3TCeap0wnco003' },
+  { label: 'A big thank you', url: 'https://buy.stripe.com/aFa6oG30O75Oeap6ULco004' },
+  { label: 'Lunch money every month', url: 'https://buy.stripe.com/5kQ4gy0SGai02rH4MDco005', monthly: true },
+];
 
 export const showDonate = () => process.env.CHECKMATE_STORE !== 'play';
 
@@ -144,12 +148,16 @@ export function DonatePanel() {
           <Icon name="heart" size={20} />
           <strong>{tr('Donate with Stripe')}</strong>
         </div>
-        <div class="dn-body">
-          <button type="button" class="btn primary" onClick={() => openExternal(DONATION.stripeUrl)}>
-            <Icon name="heart" size={16} /> {tr('Donate')}
-          </button>
-          <span class="field-hint">{tr('Opens Stripe’s secure page in your browser. Choose any amount and pay by card, Apple Pay or Google Pay.')}</span>
+        <div class="dn-options">
+          {DONATION.map((d) => (
+            <button type="button" key={d.url} class="dn-option" onClick={() => openExternal(d.url)}>
+              <span>{tr(d.label)}</span>
+              {d.monthly && <span class="dn-tag">{tr('Monthly')}</span>}
+              <Icon name="chevron" size={16} />
+            </button>
+          ))}
         </div>
+        <span class="field-hint dn-hint">{tr('Opens Stripe’s secure page in your browser, where you can pay by card, Apple Pay or Google Pay. You can cancel a monthly donation at any time from the link in your Stripe receipt.')}</span>
       </div>
       <p class="about">{tr('Thank you for supporting Checkmate!')}</p>
     </div>

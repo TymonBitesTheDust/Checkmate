@@ -106,10 +106,13 @@ const pass = (m) => console.log('  ✓ ' + m);
   assert(dn.includes('Donate with Stripe'), 'Stripe card');
   for (const s of ['PayID', 'BSB', 'Account number', 'tymonng0903']) assert(!dn.includes(s), 'no PayID or bank details: ' + s);
   await p.evaluate(() => { window.__opened = []; window.open = (u) => window.__opened.push(u); });
-  await p.click('.dn-card button.btn.primary');
-  assert.deepStrictEqual(await p.evaluate(() => window.__opened), [require('fs').readFileSync(path.join(__dirname, '../web/src/settings-more.jsx'), 'utf8').match(/stripeUrl: '([^']+)'/)[1]]);
+  for (const b of await p.$$('.dn-option')) await b.click();
+  const links = [...require('fs').readFileSync(path.join(__dirname, '../web/src/settings-more.jsx'), 'utf8').matchAll(/url: '(https:\/\/buy\.stripe\.com\/[^']+)'/g)].map((m) => m[1]);
+  assert.strictEqual(links.length, 5);
+  assert.deepStrictEqual(await p.evaluate(() => window.__opened), links);
+  for (const s of ['A cup of coffee', 'Lunch money', 'A month of Claude', 'A big thank you', 'Lunch money every month', 'Monthly']) assert(dn.includes(s), s);
   await p.screenshot({ path: `${OUT}/more-donate.png` });
-  pass('Donate: a Stripe button that opens the Payment Link, and no PayID or bank details');
+  pass('Donate: five Stripe options that open their Payment Links, and no PayID or bank details');
 
   // Chinese
   await p.evaluate(() => { const k = 'tickwise.prefs.v1'; const v = JSON.parse(localStorage.getItem(k)); v.language = 'zh-Hant'; localStorage.setItem(k, JSON.stringify(v)); });

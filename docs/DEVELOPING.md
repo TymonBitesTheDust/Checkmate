@@ -2,7 +2,7 @@
 
 **Current version: 3.0.1** (Android versionCode 31). Last updated 27 October 2026.
 
-**3.0.2:** Settings → Donate is a button that opens the Stripe Payment Link in `DONATION.stripeUrl` (`settings-more.jsx`) with `openExternal`; the PayID is gone. `CHECKMATE_STORE=play node build.mjs` builds the Google Play version: `build.mjs` defines `process.env.CHECKMATE_STORE`, and `showDonate()` drops the Donate tab from `TABS`, because Google Play doesn't allow paying the developer outside Play billing. The styles' names shown in the app are their ids, capitalised: Archive, Riot, Tide, Frontier and Neon (the game names are gone from the app, What's new and the docs, so store listings don't use other companies' trademarks). Settings → Theme shows Theme colour only in the Checkmate style, with no note in the others. Neon's dark mode is called Night.
+**3.0.2:** Settings → Donate lists the Stripe Payment Links in `DONATION` (`settings-more.jsx`: label, url, `monthly`), each opened with `openExternal`; the PayID is gone. `CHECKMATE_STORE=play node build.mjs` builds the Google Play version: `build.mjs` defines `process.env.CHECKMATE_STORE`, and `showDonate()` drops the Donate tab from `TABS`, because Google Play doesn't allow paying the developer outside Play billing. The styles' names shown in the app are their ids, capitalised: Archive, Riot, Tide, Frontier and Neon (the game names are gone from the app, What's new and the docs, so store listings don't use other companies' trademarks). Settings → Theme shows Theme colour only in the Checkmate style, with no note in the others. Neon's dark mode is called Night.
 
 **3.0.1:** Settings → General has **Hide completed tasks** (`prefs.hideDoneTasks`) and **Hide completed subtasks** (`prefs.hideDoneSubtasks`), both off by default and kept per device. `ProjectView` works out `showDone` (the project's own ⋯ → Show completed tasks, unless Hide completed tasks is on, which also drops that menu item) and `showDoneSubs` (`showDone` unless Hide completed subtasks is on) for the list and board. The task panel lists finished subtasks unless Hide completed subtasks is on; its "Subtasks 1/3" heading and each row's "2/4" still count every subtask. `TaskRow` takes `canExpand`: `TaskTree` passes it only when a task has subtasks left to show, so a task whose subtasks are all hidden gets no empty arrow. The calendar keeps its own switch (`calShowDone`, Settings → Calendar). Tested by `test/hide-done.cjs`.
 
@@ -156,11 +156,11 @@ checkmate/
 | keys | Shortcuts |
 | whatsnew | Every version's changes, from `changelog.js` |
 | about | Version and credits |
-| donate | The Stripe donation button (left out when built with `CHECKMATE_STORE=play`) |
+| donate | The Stripe donation options (left out when built with `CHECKMATE_STORE=play`) |
 
 Each tab button has `data-tab=<key>`. `ui.openSettings('tab:focus')` deep-links into a tab. Panel code lives in these files:
 
-- `settings-more.jsx`: Sidebar, What’s new, About and Donate. The Stripe Payment Link is `DONATION.stripeUrl`.
+- `settings-more.jsx`: Sidebar, What’s new, About and Donate. The Stripe Payment Links are in `DONATION`.
 - `cal-settings.jsx`, `docs-settings.jsx` and `claude-settings.jsx`: one tab each.
 - `nav-items.jsx`: the sidebar's page list.
 - `theme.js`: accent colours, with presets and custom colours adjusted for light and dark.

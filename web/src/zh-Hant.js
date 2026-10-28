@@ -830,7 +830,13 @@ export default {
   'Proudly made in Australia': '澳洲自豪製作',
   'Checkmate is free, with no ads and no subscription. If it makes your days a little easier and you’d like to say thanks, you can chip in towards its development.': 'Checkmate 是免費的，沒有廣告，也不用訂閱。如果它令你的生活輕鬆了一點，而你想表示謝意，歡迎捐款支持它的開發。',
   'Donate with Stripe': '透過 Stripe 捐款',
-  'Opens Stripe’s secure page in your browser. Choose any amount and pay by card, Apple Pay or Google Pay.': '會在瀏覽器中打開 Stripe 的安全付款頁面。金額由你決定，可用信用卡、Apple Pay 或 Google Pay 付款。',
+  'Opens Stripe’s secure page in your browser, where you can pay by card, Apple Pay or Google Pay. You can cancel a monthly donation at any time from the link in your Stripe receipt.': '會在瀏覽器中打開 Stripe 的安全付款頁面，可用信用卡、Apple Pay 或 Google Pay 付款。每月捐款可隨時透過 Stripe 收據中的連結取消。',
+  'A cup of coffee': '一杯咖啡',
+  'Lunch money': '一頓午餐',
+  'A month of Claude': '一個月的 Claude',
+  'A big thank you': '衷心感謝',
+  'Lunch money every month': '每月一頓午餐',
+  Monthly: '每月',
   'Thank you for supporting Checkmate!': '多謝你支持 Checkmate！',
 
   // ---------- 2.2.0: reminders ----------
