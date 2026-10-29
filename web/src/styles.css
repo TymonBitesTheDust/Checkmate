@@ -1025,3 +1025,5 @@ body.is-dragging .zone > .task-list:empty, body.is-dragging .day-zone > .task-li
 .wn-item ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 3px; }
 .wn-item li { font-size: 13.5px; line-height: 1.45; }
 .reminders-panel .field .btn { align-self: flex-start; }
+/* Settings → General → Open links with, in a browser page where it can't be changed */
+.field select:disabled { opacity: 0.6; cursor: not-allowed; }

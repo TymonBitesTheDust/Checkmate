@@ -123,6 +123,17 @@ function General() {
           <option value="calendar">{tr('Calendar')}</option>
         </select>
       </Field>
+      {/* a browser page can't pick another browser, so there the choice only explains itself */}
+      <Field
+        label={tr('Open links with')}
+        hint={canPickBrowser() ? tr('For links in tasks, events, locations and comments.') : tr('Here links open in a new tab of this browser. The Windows and Android apps can open them in Chrome, Edge or Firefox, or ask every time.')}
+      >
+        <select class="link-browser" value={canPickBrowser() ? p.linkBrowser || 'default' : 'default'} disabled={!canPickBrowser()} onChange={(e) => store.setPrefs({ linkBrowser: e.currentTarget.value })}>
+          {LINK_CHOICES.map(([v, l]) => (
+            <option value={v} key={v}>{tr(l)}</option>
+          ))}
+        </select>
+      </Field>
       <Field group label={tr('Week starts on')}>
         <Seg label={tr('Week starts on')} value={String(p.weekStart)} onChange={(v) => store.setPrefs({ weekStart: +v })} options={[['1', tr('Monday')], ['0', tr('Sunday')], ['6', tr('Saturday')]]} />
       </Field>
@@ -144,15 +155,6 @@ function General() {
         <Switch label={tr('Hide completed subtasks')} checked={!!p.hideDoneSubtasks} onChange={(v) => store.setPrefs({ hideDoneSubtasks: v })} />
         <span class="field-hint">{tr('Ticked subtasks leave the task panel and your project lists. Counts such as 3/5 still include them.')}</span>
       </div>
-      {canPickBrowser() && (
-        <Field label={tr('Open links with')} hint={tr('For links in tasks, events, locations and comments.')}>
-          <select value={p.linkBrowser || 'default'} onChange={(e) => store.setPrefs({ linkBrowser: e.currentTarget.value })}>
-            {LINK_CHOICES.map(([v, l]) => (
-              <option value={v} key={v}>{tr(l)}</option>
-            ))}
-          </select>
-        </Field>
-      )}
       <SoundSettings />
     </div>
   );

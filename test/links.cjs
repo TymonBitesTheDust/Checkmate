@@ -36,7 +36,7 @@ async function open(b, host) {
 }
 
 const opened = (p) => p.evaluate(() => window.__opened.splice(0));
-const setPref = (p, v) => p.selectOption('.settings-panel select:near(:text("Open links with"))', v);
+const setPref = (p, v) => p.selectOption('.settings-panel select.link-browser', v);
 
 async function addTask(p, text) {
   await p.keyboard.press('q');
@@ -56,10 +56,11 @@ async function addTask(p, text) {
   await p.waitForSelector('.modal.settings');
   const general = await p.innerText('.settings-panel');
   assert(general.includes('Open links with'), 'the setting is in General on Windows');
-  const choices = await p.$$eval('.settings-panel select:near(:text("Open links with")) option', (x) => x.map((o) => [o.value, o.textContent]));
+  assert(general.indexOf('Open links with') < general.indexOf('Week starts on'), 'near the top, without scrolling');
+  const choices = await p.$$eval('.settings-panel select.link-browser option', (x) => x.map((o) => [o.value, o.textContent]));
   assert.deepStrictEqual(choices, [['default', 'Default browser'], ['chrome', 'Google Chrome'], ['edge', 'Microsoft Edge'], ['firefox', 'Firefox'], ['ask', 'Ask every time']]);
   await setPref(p, 'chrome');
-  await p.locator('.settings-panel select:near(:text("Open links with"))').scrollIntoViewIfNeeded();
+  await p.locator('.settings-panel select.link-browser').scrollIntoViewIfNeeded();
   await p.waitForTimeout(400);
   await p.screenshot({ path: `${OUT}/links-setting.png` });
   assert.strictEqual(await p.evaluate(() => JSON.parse(localStorage.getItem('tickwise.prefs.v1')).linkBrowser), 'chrome');
@@ -142,14 +143,16 @@ async function addTask(p, text) {
   const web = await open(b, 'web');
   await web.p.click('.sb-foot .nav-item');
   await web.p.waitForSelector('.modal.settings');
-  assert(!(await web.p.innerText('.settings-panel')).includes('Open links with'), 'no browser choice in a browser');
+  const webGeneral = await web.p.innerText('.settings-panel');
+  assert(webGeneral.includes('Open links with') && webGeneral.includes('The Windows and Android apps can open them'), 'a browser explains where the choice is');
+  assert(await web.p.isDisabled('.settings-panel select.link-browser'), 'and can’t change it');
   await web.p.keyboard.press('Escape');
   await web.p.evaluate(() => (location.hash = '#/inbox'));
   await addTask(web.p, 'See https://example.org/x');
   await web.p.click('.task-row a[href="https://example.org/x"]');
   assert.deepStrictEqual(await opened(web.p), [['https://example.org/x', 'window.open']]);
   assert.deepStrictEqual(web.errs, []);
-  pass('in a browser there is no choice, and links open in a new tab as before');
+  pass('in a browser the setting explains itself and can’t be changed, and links open in a new tab as before');
 
   await b.close();
   console.log('links: all passed');

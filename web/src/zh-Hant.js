@@ -762,6 +762,7 @@ export default {
   'Ask every time': '每次詢問',
   'Open link with': '用以下方式開啟連結',
   'Copy link': '複製連結',
+  'Here links open in a new tab of this browser. The Windows and Android apps can open them in Chrome, Edge or Firefox, or ask every time.': '在這裡，連結會在此瀏覽器的新分頁中開啟。Windows 和 Android 版可用 Chrome、Edge 或 Firefox 開啟，或每次詢問。',
   'This browser can’t read the link itself. The Windows and Android apps check it and sync the events here.': '這個瀏覽器無法自行讀取連結。Windows 和 Android 應用程式會檢查它，並把活動同步到這裡。',
   'Couldn’t reach the calendar link. Checkmate will try again later.': '無法連上日曆連結，Checkmate 稍後會再試。',
   'That calendar link no longer works. In Google Calendar, copy the secret address again.': '這個日曆連結已失效。請在 Google 日曆重新複製私密網址。',
