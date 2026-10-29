@@ -3,6 +3,8 @@ package app.tickwise;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 import org.json.JSONObject;
@@ -116,6 +118,42 @@ class Bridge {
                 });
             }
         }, "tickwise-fetch").start();
+    }
+
+    /**
+     * Opens a web link in the browser picked in Settings → General → Open links with
+     * ("chrome", "edge" or "firefox"); anything else, or a browser that isn't installed,
+     * uses the phone's default.
+     */
+    @JavascriptInterface
+    public void openUrl(final String url, final String browser) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String pkg = browserPackage(browser);
+                if (pkg != null && open(url, pkg)) return;
+                open(url, null);
+            }
+        });
+    }
+
+    static String browserPackage(String browser) {
+        if ("chrome".equals(browser)) return "com.android.chrome";
+        if ("edge".equals(browser)) return "com.microsoft.emmx";
+        if ("firefox".equals(browser)) return "org.mozilla.firefox";
+        return null;
+    }
+
+    private boolean open(String url, String pkg) {
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (pkg != null) i.setPackage(pkg);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(i);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @JavascriptInterface

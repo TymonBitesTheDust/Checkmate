@@ -5,6 +5,7 @@ import { Icon } from './icons.jsx';
 import { COLORS } from './actions.js';
 import { play } from './sound.js';
 import { tr } from './i18n.js';
+import { openExternal } from './native.js';
 
 // ---------- store subscription ----------
 
@@ -403,7 +404,18 @@ export function Linkify({ text }) {
     <>
       {parts.map((p, i) =>
         /^https?:\/\//.test(p) ? (
-          <a key={i} href={p} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+          <a
+            key={i}
+            href={p}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              // opens in the browser chosen in Settings → General, without also opening the task
+              e.stopPropagation();
+              e.preventDefault();
+              openExternal(p);
+            }}
+          >
             {p.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)}
           </a>
         ) : (

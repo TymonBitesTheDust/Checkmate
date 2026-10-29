@@ -17,7 +17,7 @@ import {
 import { today, dueTimestamp, formatTime, dueLabel } from './dates.js';
 import { taskReminderTimes } from './reminders.js';
 import { birthdayReminders } from './birthdays.js';
-import { setSystemBars, scheduleReminders, hasNativeReminders, nativeNotify, platform, setAppIcon } from './native.js';
+import { setSystemBars, scheduleReminders, hasNativeReminders, nativeNotify, platform, setAppIcon, openExternal } from './native.js';
 import { iconSvg } from './brand-icons.js';
 import { applyAccent, parseHex, contrast, accentHex } from './theme.js';
 import { StyledTitle, PageWipe, Ransom, Shards, StarField, DateBox, HeroCount, reducedMotion } from './riot.jsx';
@@ -29,6 +29,7 @@ import { seedTexts } from './seeds.js';
 import { setNativeLanguage } from './native.js';
 import { CalendarView, CalendarSidebar } from './calendar.jsx';
 import { EventLayer } from './event-ui.jsx';
+import { LinkPickerHost } from './links.jsx';
 import { CalendarDialog } from './cal-settings.jsx';
 import { BirthdaysView, BirthdayDialog } from './birthdays-ui.jsx';
 import { upcomingEventReminders, findOccurrence } from './events.js';
@@ -481,14 +482,15 @@ export function App() {
   // drawer acts as a layer on phones, so Back closes it first
   useLayer(() => setDrawer(false), drawer && narrow);
 
-  // In the Windows app, open web links in the default browser instead of a popup window.
+  // Web links open in the browser chosen in Settings → General (in the Windows app, never
+  // in a popup window). Links that handle their own click are left alone.
   useEffect(() => {
-    if (!window.chrome || !window.chrome.webview) return;
     const onClick = (e) => {
+      if (e.defaultPrevented || e.button !== 0) return;
       const a = e.target.closest && e.target.closest('a[href^="http"]');
-      if (!a || !window.twOpenExternal) return;
+      if (!a) return;
       e.preventDefault();
-      window.twOpenExternal(a.href);
+      openExternal(a.href);
     };
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
@@ -621,6 +623,7 @@ export function App() {
       {dialog && dialog.kind === 'birthday' && <BirthdayDialog key={dialog.id || 'new'} id={dialog.id} preset={dialog.preset} onClose={() => setDialog(null)} />}
       <EventLayer />
       <ConfirmHost />
+      <LinkPickerHost />
       <Toasts />
       <PageWipe routeKey={routeKey(route)} />
     </div>

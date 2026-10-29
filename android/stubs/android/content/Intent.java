@@ -16,6 +16,7 @@ public class Intent {
   public String getStringExtra(String name) { return null; }
   public String getAction() { return null; }
   public Intent setFlags(int flags) { return this; }
+  public Intent setPackage(String p) { return this; }
   public Intent addCategory(String c) { return this; }
   public Intent setType(String t) { return this; }
   public Intent setAction(String a) { return this; }

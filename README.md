@@ -27,6 +27,12 @@
 
 All downloads are on the [Releases page](https://github.com/TymonBitesTheDust/Checkmate/releases/latest).
 
+## New in 3.1.3
+
+- **Choose how links open.** **Settings → General → Open links with** opens links from your tasks and events in your default browser, Google Chrome, Microsoft Edge or Firefox, or asks every time (Windows and Android).
+- **Map links in locations work.** Paste a Google Maps link into an event's location and **Open in Maps** takes you to that place. Typing an address still searches Google Maps.
+- **Settings → About** links to [tymon.website](https://tymon.website/).
+
 ## New in 3.1.2
 
 - **Five ways to say thanks.** **Settings → Donate** has *A cup of coffee*, *A lunch money*, *A month of Claude member*, *A big thank!* and *A lunch money (per month)*. Each one opens its own secure Stripe page (card, Apple Pay or Google Pay).

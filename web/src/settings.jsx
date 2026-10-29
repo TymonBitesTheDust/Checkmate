@@ -3,7 +3,8 @@ import * as store from './store.js';
 import * as sync from './sync.js';
 import { Icon } from './icons.jsx';
 import { Modal, Field, Switch, confirmDialog, toast } from './ui.jsx';
-import { saveFile, copyText, platform, openExternal, canSwitchAppIcon } from './native.js';
+import { saveFile, copyText, platform, openExternal, canSwitchAppIcon, canPickBrowser } from './native.js';
+import { LINK_CHOICES } from './links.jsx';
 import { ymd } from './dates.js';
 import { StyledTitle } from './riot.jsx';
 import { play, soundLevel } from './sound.js';
@@ -120,6 +121,17 @@ function General() {
           <option value="inbox">{tr('Inbox')}</option>
           <option value="upcoming">{tr('Upcoming')}</option>
           <option value="calendar">{tr('Calendar')}</option>
+        </select>
+      </Field>
+      {/* a browser page can't pick another browser, so there the choice only explains itself */}
+      <Field
+        label={tr('Open links with')}
+        hint={canPickBrowser() ? tr('For links in tasks, events, locations and comments.') : tr('Here links open in a new tab of this browser. The Windows and Android apps can open them in Chrome, Edge or Firefox, or ask every time.')}
+      >
+        <select class="link-browser" value={canPickBrowser() ? p.linkBrowser || 'default' : 'default'} disabled={!canPickBrowser()} onChange={(e) => store.setPrefs({ linkBrowser: e.currentTarget.value })}>
+          {LINK_CHOICES.map(([v, l]) => (
+            <option value={v} key={v}>{tr(l)}</option>
+          ))}
         </select>
       </Field>
       <Field group label={tr('Week starts on')}>
