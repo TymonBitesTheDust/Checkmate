@@ -98,6 +98,7 @@ Ask Claude to manage your tasks and calendar for you: *"what's due today?"*, *"m
 - 📖 **[User guide](docs/GUIDE.md)** — every feature explained step by step
 - 🐞 **Found a bug or have an idea?** [Open an issue](https://github.com/TymonBitesTheDust/Checkmate/issues)
 - 🛠️ **Want to build it yourself?** See [docs/DEVELOPING.md](docs/DEVELOPING.md)
+- 🔒 **Privacy:** Checkmate collects no data. See the [privacy policy](PRIVACY.md).
 
 ## About
 
