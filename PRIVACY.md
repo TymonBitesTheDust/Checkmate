@@ -56,7 +56,18 @@ The developer doesn't collect your data, so it's never shared with or sold to an
 2. To delete everything at once, open **Project settings** and choose **Delete project**.
 3. Or, to delete just one account: in **Authentication → Users**, delete the user; then in **Firestore Database**, delete that user's data.
 
-Deleted data is removed by Google according to Firebase's data deletion terms. If you need help, email me at [tymonai0903@gmail.com](mailto:tymonai0903@gmail.com).
+### Deleting some of your data (without deleting your account)
+
+- In Checkmate, delete any task, project, event, comment or attached file. If sync is on, it's also deleted from your Firebase project.
+- Or, in the [Firebase console](https://console.firebase.google.com), open **Firestore Database** in your project and delete any of the data there.
+
+### What is deleted and what is kept
+
+- Deleting your account deletes your email address, password and all your synced data: tasks, projects, events, comments, files and settings. Deleting the whole Firebase project deletes everything in it.
+- The developer doesn't keep any copy of your data, so nothing is kept by Checkmate.
+- Google may keep deleted data in its backups for a limited time before it is permanently erased, as described on [Google Cloud's data deletion](https://cloud.google.com/docs/security/deletion) page.
+
+If you need help, email me at [tymonai0903@gmail.com](mailto:tymonai0903@gmail.com).
 
 ## Children
 
