@@ -5,4 +5,9 @@ public class View {
   public void setSystemUiVisibility(int v) {}
   public int getSystemUiVisibility() { return 0; }
   public void setBackgroundColor(int c) {}
+  public void setPadding(int left, int top, int right, int bottom) {}
+  public void setOnApplyWindowInsetsListener(OnApplyWindowInsetsListener l) {}
+  public interface OnApplyWindowInsetsListener {
+    WindowInsets onApplyWindowInsets(View v, WindowInsets insets);
+  }
 }
