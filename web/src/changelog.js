@@ -1,6 +1,15 @@
 // What changed in each version, newest first (Settings → What’s new). [English, 繁體中文]
 export const CHANGELOG = [
   {
+    v: '3.1.3',
+    date: '2026-10',
+    notes: [
+      ['Settings → General → Open links with: open links from tasks and events in your default browser, Google Chrome, Microsoft Edge or Firefox, or choose each time. On Windows, links no longer open in a small Checkmate window.', '「設定 → 一般 → 開啟連結的方式」：任務和活動中的連結可用預設瀏覽器、Google Chrome、Microsoft Edge 或 Firefox 開啟，或每次選擇。在 Windows 上，連結不再在 Checkmate 的小視窗中開啟。'],
+      ['A map link in an event’s location (such as a Google Maps share link) now opens that place. Typing an address still looks it up in Google Maps.', '活動地點中的地圖連結（例如 Google 地圖的分享連結）現在會開啟該地點。輸入地址仍會在 Google 地圖中搜尋。'],
+      ['Settings → About links to tymon.website, the developer’s website.', '「設定 → 關於」新增開發者網站 tymon.website 的連結。'],
+    ],
+  },
+  {
     v: '3.1.2',
     date: '2026-10',
     notes: [

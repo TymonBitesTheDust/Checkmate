@@ -11,8 +11,8 @@ packageInfo:
   forcedPackageId: '127'
   renameManifestPackage: null
 versionInfo:
-  versionCode: '33'
-  versionName: 3.1.2
+  versionCode: '34'
+  versionName: 3.1.3
 sparseResources: false
 doNotCompress:
 - resources.arsc

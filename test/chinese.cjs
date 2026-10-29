@@ -16,7 +16,9 @@ const ALLOWED = new Set(['MB', 'KB', 'Live', 'Aid', 'Claude', 'Docs', 'Sheets', 
   // Claude connector: product names
   'Claude', 'Todoist', 'Cloudflare',
   // Settings → Donate
-  'Stripe', 'Pay']);
+  'Stripe', 'Pay',
+  // What's new: browser names and the developer's website
+  'Microsoft', 'Firefox', 'tymon', 'website']);
 
 function leftovers(text) {
   const words = text.match(/[A-Za-z]{2,}/g) || [];

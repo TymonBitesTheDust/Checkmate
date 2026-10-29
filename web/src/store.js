@@ -102,6 +102,9 @@ const DEFAULT_PREFS = {
   // project's ⋯ menu shows them); finished subtasks leave the task panel and project lists
   hideDoneTasks: false,
   hideDoneSubtasks: false,
+  // Settings → General → Open links with (Windows and Android): 'default', 'chrome', 'edge',
+  // 'firefox' or 'ask'
+  linkBrowser: 'default',
   sound: true,
   soundLevel: null,
   soundVolume: 0.6,

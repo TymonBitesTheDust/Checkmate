@@ -19,6 +19,7 @@ import {
 } from './dates.js';
 import { setNav, nav } from './calnav.js';
 import { saveFile } from './native.js';
+import { locationUrl } from './links.jsx';
 import { toIcs } from './ics.js';
 
 const MIN = 60000;
@@ -670,10 +671,8 @@ export function EventCard({ occ, anchor, onClose }) {
           <div class="evc-row">
             <Icon name="pin" size={18} />
             <div class="evc-text">
-              <span>{item.location}</span>
-              {!/^https?:\/\//.test(item.location) && (
-                <a class="evc-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`} target="_blank" rel="noopener noreferrer">{tr('Open in Maps')}</a>
-              )}
+              <span class="evc-loc"><Linkify text={item.location} /></span>
+              <a class="evc-link" href={locationUrl(item.location)} target="_blank" rel="noopener noreferrer">{tr('Open in Maps')}</a>
             </div>
           </div>
         )}

@@ -3,7 +3,8 @@ import * as store from './store.js';
 import * as sync from './sync.js';
 import { Icon } from './icons.jsx';
 import { Modal, Field, Switch, confirmDialog, toast } from './ui.jsx';
-import { saveFile, copyText, platform, openExternal, canSwitchAppIcon } from './native.js';
+import { saveFile, copyText, platform, openExternal, canSwitchAppIcon, canPickBrowser } from './native.js';
+import { LINK_CHOICES } from './links.jsx';
 import { ymd } from './dates.js';
 import { StyledTitle } from './riot.jsx';
 import { play, soundLevel } from './sound.js';
@@ -143,6 +144,15 @@ function General() {
         <Switch label={tr('Hide completed subtasks')} checked={!!p.hideDoneSubtasks} onChange={(v) => store.setPrefs({ hideDoneSubtasks: v })} />
         <span class="field-hint">{tr('Ticked subtasks leave the task panel and your project lists. Counts such as 3/5 still include them.')}</span>
       </div>
+      {canPickBrowser() && (
+        <Field label={tr('Open links with')} hint={tr('For links in tasks, events, locations and comments.')}>
+          <select value={p.linkBrowser || 'default'} onChange={(e) => store.setPrefs({ linkBrowser: e.currentTarget.value })}>
+            {LINK_CHOICES.map(([v, l]) => (
+              <option value={v} key={v}>{tr(l)}</option>
+            ))}
+          </select>
+        </Field>
+      )}
       <SoundSettings />
     </div>
   );

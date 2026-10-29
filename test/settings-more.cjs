@@ -98,10 +98,11 @@ const pass = (m) => console.log('  ✓ ' + m);
   for (const s of ['Tymon Ng', 'Claude AI', 'Proudly made in Australia', `Version ${require('fs').readFileSync(path.join(__dirname, '../web/src/version.js'), 'utf8').match(/'([\d.]+)'/)[1]}`]) assert(about.includes(s), s);
   assert(about.includes('github.com/TymonBitesTheDust/Checkmate'), 'source code link');
   await p.evaluate(() => { window.__opened = []; window.open = (u) => window.__opened.push(u); });
-  await p.click('.about-panel a.ab-link');
-  assert.deepStrictEqual(await p.evaluate(() => window.__opened), ['https://github.com/TymonBitesTheDust/Checkmate']);
+  await p.click('.about-panel a.ab-link[href="https://tymon.website/"]');
+  await p.click('.about-panel a.ab-link[href="https://github.com/TymonBitesTheDust/Checkmate"]');
+  assert.deepStrictEqual(await p.evaluate(() => window.__opened), ['https://tymon.website/', 'https://github.com/TymonBitesTheDust/Checkmate']);
   await p.screenshot({ path: `${OUT}/more-about.png` });
-  pass('About: made by Tymon Ng with Claude AI, proudly made in Australia, with the version and a source code link');
+  pass('About: made by Tymon Ng with Claude AI, proudly made in Australia, with the version, a website link and a source code link');
 
   // Donate
   await p.click('.settings-tabs button[data-tab="donate"]');
@@ -130,7 +131,7 @@ const pass = (m) => console.log('  ✓ ' + m);
   await p.reload();
   await p.waitForSelector('.view-title');
   await p.click('.sb-foot .nav-item');
-  const OK = new Set(['Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Stripe', 'Apple', 'Pay', 'Checkmate', 'Tymon', 'Ng', 'Claude', 'AI', 'Todoist', 'Google', 'github', 'com', 'TymonBitesTheDust']);
+  const OK = new Set(['Archive', 'Riot', 'Tide', 'Frontier', 'Neon', 'Stripe', 'Apple', 'Pay', 'Checkmate', 'Tymon', 'Ng', 'Claude', 'AI', 'Todoist', 'Google', 'github', 'com', 'TymonBitesTheDust', 'tymon', 'website']);
   for (const t of ['theme', 'sidebar', 'about', 'donate']) {
     await p.click(`.settings-tabs button[data-tab="${t}"]`);
     await p.waitForTimeout(150);

@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -79,12 +80,18 @@ func main() {
 	tray := &trayIcon{hwnd: hwnd}
 	defer tray.remove()
 
-	_ = w.Bind("twOpenExternal", func(raw string) {
+	// browser is the choice in Settings → General → Open links with (optional, so an
+	// older page calling with just the link still works).
+	_ = w.Bind("twOpenExternal", func(raw string, browser ...string) {
 		u, err := url.Parse(raw)
 		if err != nil || (u.Scheme != "https" && u.Scheme != "http" && u.Scheme != "mailto") {
 			return
 		}
-		openURL(u.String())
+		b := ""
+		if len(browser) > 0 && u.Scheme != "mailto" {
+			b = browser[0]
+		}
+		openURLWith(u.String(), b)
 	})
 	// The app asks for the icon that matches the current style; follow says whether the
 	// shortcuts and Checkmate.exe should change too (Settings → General).
@@ -176,10 +183,31 @@ func focusExisting() {
 	procSetFg.Call(hwnd)
 }
 
-func openURL(u string) {
+// The browsers Settings → General → Open links with can pick. Windows finds each
+// program through its App Paths entry, so the install folder doesn't matter.
+var browserExe = map[string]string{"chrome": "chrome.exe", "edge": "msedge.exe", "firefox": "firefox.exe"}
+
+func openURL(u string) { openURLWith(u, "") }
+
+// openURLWith opens u in the named browser, or in the default one when the name is
+// empty, unknown or that browser isn't installed.
+func openURLWith(u, browser string) {
+	if exe, ok := browserExe[browser]; ok {
+		if shellExecute(exe, `"`+strings.ReplaceAll(u, `"`, "%22")+`"`) == nil {
+			return
+		}
+	}
+	_ = shellExecute(u, "")
+}
+
+func shellExecute(file, args string) error {
 	verb, _ := windows.UTF16PtrFromString("open")
-	target, _ := windows.UTF16PtrFromString(u)
-	_ = windows.ShellExecute(0, verb, target, nil, nil, windows.SW_SHOWNORMAL)
+	target, _ := windows.UTF16PtrFromString(file)
+	var params *uint16
+	if args != "" {
+		params, _ = windows.UTF16PtrFromString(args)
+	}
+	return windows.ShellExecute(0, verb, target, params, nil, windows.SW_SHOWNORMAL)
 }
 
 func messageBox(text, caption string, flags uintptr) uintptr {

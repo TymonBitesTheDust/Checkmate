@@ -4,6 +4,20 @@ Every version of Checkmate, newest first. The same notes are in the app under **
 
 <!-- Made from web/src/changelog.js by `node web/changelog-md.mjs`. Edit that file, then run the script. -->
 
+## [3.1.3](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.1.3) — October 2026
+
+- Settings → General → Open links with: open links from tasks and events in your default browser, Google Chrome, Microsoft Edge or Firefox, or choose each time. On Windows, links no longer open in a small Checkmate window.
+- A map link in an event’s location (such as a Google Maps share link) now opens that place. Typing an address still looks it up in Google Maps.
+- Settings → About links to tymon.website, the developer’s website.
+
+<details><summary>繁體中文</summary>
+
+- 「設定 → 一般 → 開啟連結的方式」：任務和活動中的連結可用預設瀏覽器、Google Chrome、Microsoft Edge 或 Firefox 開啟，或每次選擇。在 Windows 上，連結不再在 Checkmate 的小視窗中開啟。
+- 活動地點中的地圖連結（例如 Google 地圖的分享連結）現在會開啟該地點。輸入地址仍會在 Google 地圖中搜尋。
+- 「設定 → 關於」新增開發者網站 tymon.website 的連結。
+
+</details>
+
 ## [3.1.2](https://github.com/TymonBitesTheDust/Checkmate/releases/tag/v3.1.2) — October 2026
 
 - Brings in everything from 3.0.2: donations through Stripe, the new style names (Archive, Riot, Tide, Frontier and Neon) and no colour note in Settings → Theme.

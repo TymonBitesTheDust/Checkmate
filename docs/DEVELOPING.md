@@ -1,6 +1,8 @@
 # Developing Checkmate
 
-**Current version: 3.1.2** (Android versionCode 33). Last updated 28 October 2026.
+**Current version: 3.1.3** (Android versionCode 34). Last updated 29 October 2026.
+
+**3.1.3:** links. Every outside link goes through `openExternal` (`native.js`), which hands web links to `openLink` in `links.jsx` (registered with `setLinkOpener`). On Windows and Android (`canPickBrowser()`), **Settings → General → Open links with** (`prefs.linkBrowser`: `default`, `chrome`, `edge`, `firefox` or `ask`) picks the browser; `ask` shows `LinkPickerHost` (the browsers plus Copy link). `openWith(url, browser)` calls the Windows binding `twOpenExternal(url, browser)` (`desktop/main.go`: `openURLWith` runs `chrome.exe`, `msedge.exe` or `firefox.exe` through ShellExecute and App Paths, falling back to the default browser; the browser argument is variadic so a one-argument call still works) or the Android bridge `openUrl(url, browser)` (`Bridge.java`: an `ACTION_VIEW` intent with `setPackage` for com.android.chrome, com.microsoft.emmx or org.mozilla.firefox, falling back to no package). A browser page has no choice and uses `window.open`. `Linkify` (`ui.jsx`) calls `openExternal` itself (it used to only stop the click, so in the Windows app task links skipped `App`'s document click handler and opened in a WebView2 popup window); that handler now sends every other `http(s)` link through `openExternal` on all platforms unless the link already handled its click. An event's **Open in Maps** uses `locationUrl` (`links.jsx`): the first `http(s)` link in the location as it is, a bare map link (`maps.app.goo.gl/…`, `google.com/maps/…`, `www.…`) with `https://` added, otherwise a Google Maps search; the location text itself is linkified. Settings → About also has a **Website** row (`WEBSITE_URL`, https://tymon.website/). Tested by `test/links.cjs`.
 
 **3.1.2:** 3.1.0 plus everything from 3.0.2 (Stripe donations, the renamed styles, no colour note). Settings → Donate lists five Stripe Payment Links from `DONATION.options` (`settings-more.jsx`: id, label, icon, url and `monthly` for the subscription one, which gets a Monthly tag); each `.dn-opt` row opens its link with `openExternal`. Settings → About has a **Source code** row linking to `SOURCE_URL` (`settings-more.jsx`, https://github.com/TymonBitesTheDust/Checkmate), opened with `openExternal`. In the Frontier style only, Settings → Donate shows `donate-frontier.jpg` (`web/src/img/`, inlined by esbuild's `dataurl` loader) as a framed wanted-poster picture with its caption as real text; `.dn-pic` is hidden in the other styles. Tested by `test/settings-more.cjs`.
 
@@ -329,6 +331,7 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | Settings | `settings-more` (Theme, Sidebar, About, Donate, all styles, phone) |
 | Task name hint | `examples` (dated, random, Chinese, phone ellipsis) |
 | 2.2.0 features | `v22` (orange default, Tide icon, time kept in names, reminders and custom times, birthdays and lunar dates, What’s new, Chinese, phone) |
+| Links | `links` (Settings → General → Open links with on a stand-in Windows host, the Ask every time picker, About's website link, map links and addresses in an event's location, no choice in a browser) |
 | Completed tasks | `hide-done` (Settings → General → Hide completed tasks and Hide completed subtasks: task panel, project list and board, the project menu, Chinese, phone) |
 | Task files | `files` (two devices through the fake Firestore: pieces, download on open, save, removal, the 100 MB limit) |
 | Language | `chinese` |
@@ -417,5 +420,6 @@ Run everything with `OUT=/some/folder test/run-all.sh`. It prints PASS/FAIL for 
 | 3.0.2 | Donations through Stripe (no Donate tab in the Google Play build); styles renamed Archive, Riot, Tide, Frontier and Neon; no colour note in Settings → Theme for the game styles |
 | 3.1.0 | A start screen in every style (Settings → Theme → Start screen), and the Chrome/Edge extension (the app in a tab, a quick-add popup, reminders as notifications) |
 | 3.1.2 | 3.0.2's changes on top of 3.1.0, a source code link in Settings → About, and a picture on Settings → Donate in Frontier |
+| 3.1.3 | Settings → General → Open links with (default browser, Chrome, Edge, Firefox or ask every time; Windows and Android), map links in an event's location open, and a link to tymon.website in Settings → About |
 
 Earlier releases built the core: tasks, projects, filters, the calendar, sync, six styles, sounds, Traditional Chinese, Docs & Sheets, and the rename from Tickwise to Checkmate.

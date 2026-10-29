@@ -141,9 +141,30 @@ export function nativeNotify(title, body) {
   return false;
 }
 
+// Every outside link goes through here. links.jsx sets `linkOpener` so links follow
+// Settings → General → Open links with (it may ask which browser first).
+let linkOpener = null;
+export function setLinkOpener(fn) {
+  linkOpener = fn;
+}
+
 export function openExternal(url) {
+  if (linkOpener && /^https?:/i.test(url)) linkOpener(url);
+  else openWith(url, 'default');
+}
+
+// Windows and Android can open a link in a chosen browser ('chrome', 'edge' or
+// 'firefox'); 'default' is the device's default browser. A browser page can't choose.
+export const canPickBrowser = () => platform() === 'windows' || platform() === 'android';
+
+export function openWith(url, browser) {
   if (window.twOpenExternal) {
-    window.twOpenExternal(url);
+    window.twOpenExternal(url, browser || 'default');
+    return;
+  }
+  const a = android();
+  if (a && a.openUrl) {
+    a.openUrl(url, browser || 'default');
     return;
   }
   window.open(url, '_blank', 'noopener');
