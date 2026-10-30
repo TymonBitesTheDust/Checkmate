@@ -16,8 +16,8 @@ DX=${DX:-$TOOLS/dex2jar/x/dex-tools-2.1/lib/dx-27.0.3.jar} # dx from https://git
 GOWINRES=${GOWINRES:-$TOOLS/go-winres}                    # go install github.com/tc-hib/go-winres@v0.3.3
 # Android signing. The release key is NOT in this repository: keep it somewhere safe and point
 # KEYSTORE at it, with its password in KS_PASS. Without it, a throwaway development key is used.
-KEYSTORE=${KEYSTORE:-android/signing/tickwise-release.jks}
-KS_ALIAS=${KS_ALIAS:-tickwise}
+KEYSTORE=${KEYSTORE:-android/signing/checkmate-release.jks}
+KS_ALIAS=${KS_ALIAS:-checkmate}
 KS_PASS=${KS_PASS:-}
 
 mkdir -p dist
