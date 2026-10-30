@@ -489,6 +489,7 @@ body.is-dragging, body.is-dragging * { cursor: grabbing !important; user-select:
 .sheet .menu-item { min-height: 46px; font-size: 15px; }
 @keyframes fade { from { opacity: 0; } }
 @keyframes slideup { from { transform: translateY(40px); opacity: 0.4; } }
+@keyframes sheetin { from { transform: translateY(24px); } }
 
 .picker-search { padding: 8px 8px 4px; }
 .picker-list { padding: 4px 6px 8px; max-height: 320px; overflow-y: auto; }
@@ -918,7 +919,10 @@ body.is-dragging .zone > .task-list:empty, body.is-dragging .day-zone > .task-li
 
   .modal-wrap { padding: 0; align-items: flex-end; }
   .modal { width: 100%; max-height: 92vh; border-radius: 18px 18px 0 0; border: 0; animation: slideup 0.22s cubic-bezier(.2, .9, .3, 1); padding-bottom: env(safe-area-inset-bottom); }
-  .modal.detail, .modal.settings { height: 100%; max-height: none; border-radius: 0; }
+  /* Full-screen pages come in solid, never see-through, so the page under them can't flash
+     through while they open; the strip they slide over is the page colour, not the shade. */
+  .modal.detail, .modal.settings { height: 100%; max-height: none; border-radius: 0; animation: sheetin 0.2s cubic-bezier(.2, .9, .3, 1); }
+  .modal-wrap:has(> .modal.detail), .modal-wrap:has(> .modal.settings) { background: var(--bg); animation: none; }
   .modal.quick { border-radius: 18px 18px 0 0; }
   .modal.confirm, .modal.dialog { padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); }
   .detail-body { grid-template-columns: 1fr; overflow-y: auto; display: block; }
