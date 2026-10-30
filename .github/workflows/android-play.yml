@@ -58,10 +58,14 @@ jobs:
             echo "TEST_ONLY=1" >> $GITHUB_ENV
           else
             echo "$KEY_B64" | tr -d ' \r\n' | base64 -d > $K
+            PASS=$(printf '%s' "$PASS" | tr -d '\r\n')  # a pasted password can end in a line break
+            echo "::add-mask::$PASS"
+            echo "Key file: $(wc -c < $K) bytes, type $(head -c 4 $K | od -An -tx1 | tr -d ' ')"
+            LIST=$(keytool -list -keystore $K -storepass "$PASS" 2>&1) || { echo "::error::keytool couldn't open the key: $(echo "$LIST" | grep -i -m1 'error\|exception')"; exit 1; }
             if [ -z "$ALIAS" ]; then
-              ALIAS=$(keytool -list -keystore $K -storepass "$PASS" | awk -F, '/PrivateKeyEntry/ {print $1; exit}')
+              ALIAS=$(echo "$LIST" | awk -F, '/PrivateKeyEntry/ {print $1; exit}')
             fi
-            [ -n "$ALIAS" ] || { echo "::error::Couldn't open the key. Check ANDROID_KS_PASS."; exit 1; }
+            [ -n "$ALIAS" ] || { echo "::error::The key file has no private key entry."; echo "$LIST" | grep -v -i pass; exit 1; }
           fi
           echo "Key alias: $ALIAS"
           echo "KEYSTORE=$K" >> $GITHUB_ENV
