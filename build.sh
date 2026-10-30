@@ -35,6 +35,8 @@ echo "==> Icons (one set per style)"
 node brand/export-svgs.mjs >/dev/null
 python3 brand/make_icons.py brand/out >/dev/null
 
+# ONLY=android builds just the web app, the APK and the .aab (no Go or go-winres needed).
+if [ "${ONLY:-}" != android ]; then
 echo "==> Chrome/Edge extension"
 node extension/build.mjs
 
@@ -43,6 +45,7 @@ mkdir -p desktop/assets && cp web/dist/Checkmate.html desktop/assets/index.html
 for s in tickwise archive riot tide frontier neon; do mkdir -p desktop/winres/$s && cp brand/out/win/$s/icon*.png desktop/winres/$s/; done
 (cd desktop && "$GOWINRES" make --in winres/winres.json --out rsrc \
   && GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags "-H windowsgui -s -w" -o "$ROOT/dist/Checkmate.exe" .)
+fi
 
 echo "==> Android .apk"
 A=android
