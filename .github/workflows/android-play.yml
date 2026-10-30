@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -75,6 +77,31 @@ jobs:
 
       - name: Build
         run: ONLY=android ./build.sh
+
+      # Temporary: the same app built three ways, to find what makes it flicker.
+      - name: Flicker test builds
+        if: env.TEST_ONLY != '1'
+        run: |
+          mkdir -p $RUNNER_TEMP/flicker
+          cp dist/Checkmate.apk $RUNNER_TEMP/flicker/3-current.apk
+          for v in 1 2; do
+            W=$RUNNER_TEMP/v$v
+            rm -rf $W && cp -r . $W
+            (cd $W && git checkout -q 9276c3d -- android)   # the Android code of the v3.1.3 release
+            if [ $v = 2 ]; then sed -i "s/targetSdkVersion: '34'/targetSdkVersion: '36'/" $W/android/apk/apktool.yml; fi
+            grep targetSdkVersion $W/android/apk/apktool.yml
+            (cd $W && rm -rf dist && ONLY=android ./build.sh >/dev/null)
+          done
+          cp $RUNNER_TEMP/v1/dist/Checkmate.apk $RUNNER_TEMP/flicker/1-like-release.apk
+          cp $RUNNER_TEMP/v2/dist/Checkmate.apk $RUNNER_TEMP/flicker/2-android16-only.apk
+          ls -la $RUNNER_TEMP/flicker
+
+      - name: Upload flicker test builds
+        if: env.TEST_ONLY != '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flicker-test-3-versions
+          path: ${{ runner.temp }}/flicker/*.apk
 
       - name: Check the bundle
         run: |
