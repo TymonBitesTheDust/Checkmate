@@ -645,6 +645,7 @@
 }
 [data-skin="riot"] .modal { background: #ffffff; border: 3px solid #0b0a0a; box-shadow: 12px 12px 0 var(--red); animation: cc-sheet 0.2s cubic-bezier(.2, .9, .3, 1.1); }
 @keyframes cc-sheet { from { transform: translateX(60px) skewX(-6deg); opacity: 0; } }
+@keyframes cc-page { from { transform: translateX(60px) skewX(-6deg); } }
 [data-skin="riot"] .modal.quick { border: 3px solid #0b0a0a; }
 [data-skin="riot"] .modal.quick .editor { background: #ffffff; box-shadow: none; }
 [data-skin="riot"] .modal.quick::before {
@@ -772,6 +773,8 @@
 /* ---------- phones ---------- */
 
 @media (max-width: 640px) {
+  /* Full-screen pages slide in solid (no fade), so nothing flashes through them */
+  [data-skin="riot"] .modal.detail, [data-skin="riot"] .modal.settings { animation: cc-page 0.2s cubic-bezier(.2, .9, .3, 1.1); }
   [data-skin="riot"] .sidebar { background-color: #4b0007; padding-top: calc(10px + env(safe-area-inset-top)); width: min(88vw, 330px); }
   [data-skin="riot"] .drawer-open .sidebar { box-shadow: 6px 0 0 #0b0a0a; }
   [data-skin="riot"] .content { padding: 0 12px 130px; }
