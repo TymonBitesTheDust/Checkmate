@@ -105,8 +105,11 @@
 [data-skin="tide"] .app::before,
 [data-skin="tide"] .app::after { content: ""; position: absolute; z-index: 0; pointer-events: none; }
 [data-skin="tide"] .app::before {
-  /* light on the water's surface, seen from below */
-  inset: -10% -10% 0 -10%;
+  /* light on the water's surface, seen from below. It drifts by sliding the whole layer (one
+     tile wider and taller than the screen) rather than moving the picture inside it: the
+     texture is drawn once, so phones don't redraw the full screen every frame (which flickered) */
+  inset: calc(-10% - 120px) -10% 0 calc(-10% - 900px);
+  will-change: transform;
   background: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27900%27%20height=%27600%27%3E%3Cfilter%20id=%27f%27%20x=%270%27%20y=%270%27%20width=%27100%25%27%20height=%27100%25%27%3E%3CfeTurbulence%20type=%27fractalNoise%27%20baseFrequency=%270.0085%200.014%27%20numOctaves=%272%27%20seed=%277%27%20stitchTiles=%27stitch%27/%3E%3CfeComponentTransfer%3E%3CfeFuncR%20type=%27table%27%20tableValues=%270%200%200%200.15%201%200.15%200%200%200%27/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix%20values=%270%200%200%200%201%200%200%200%200%201%200%200%200%200%201%201.6%200%200%200%200%27/%3E%3C/filter%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20filter=%27url%28%2523f%29%27/%3E%3C/svg%3E") 0 0 / 900px 600px;
   opacity: var(--caustic-a);
   -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 30%, transparent 62%);
@@ -122,7 +125,7 @@
   mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.45) 55%, transparent 92%);
   animation: tide-rays 8s ease-in-out infinite alternate;
 }
-@keyframes tide-drift { to { background-position: 900px 120px; } }
+@keyframes tide-drift { to { transform: translate(900px, 120px); } }
 @keyframes tide-rays { from { opacity: 0.65; } to { opacity: 1; } }
 [data-skin="tide"] .main { z-index: 1; background: transparent; }
 @media (min-width: 641px) {
