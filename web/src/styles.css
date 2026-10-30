@@ -922,7 +922,9 @@ body.is-dragging .zone > .task-list:empty, body.is-dragging .day-zone > .task-li
   /* Full-screen pages come in solid, never see-through, so the page under them can't flash
      through while they open; the strip they slide over is the page colour, not the shade. */
   .modal.detail, .modal.settings { height: 100%; max-height: none; border-radius: 0; animation: sheetin 0.2s cubic-bezier(.2, .9, .3, 1); }
-  .modal-wrap:has(> .modal.detail), .modal-wrap:has(> .modal.settings) { background: var(--bg); animation: none; }
+  /* No blur behind them either (Persona 3 Reload blurs the shade): it is hidden under the page
+     anyway, and a full-screen blur under a moving layer flickers in Android's WebView. */
+  .modal-wrap:has(> .modal.detail), .modal-wrap:has(> .modal.settings) { background: var(--bg); animation: none; backdrop-filter: none; }
   .modal.quick { border-radius: 18px 18px 0 0; }
   .modal.confirm, .modal.dialog { padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); }
   .detail-body { grid-template-columns: 1fr; overflow-y: auto; display: block; }
