@@ -10,6 +10,7 @@ public class Activity extends android.content.Context {
   protected void onDestroy() {}
   protected void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {}
   public void onBackPressed() {}
+  public android.window.OnBackInvokedDispatcher getOnBackInvokedDispatcher() { return null; }
   public void setContentView(android.view.View v) {}
   public android.view.Window getWindow() { return null; }
   public android.content.Intent getIntent() { return null; }

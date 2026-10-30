@@ -5,18 +5,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import org.json.JSONObject;
 
 import java.io.OutputStream;
@@ -30,6 +36,8 @@ public class AppActivity extends Activity {
     static final int REQ_NOTIFICATIONS = 43;
     static final int REQ_SAVE_BINARY = 44;
 
+    LinearLayout frame;
+    View topBar, bottomBar;
     WebView web;
     ValueCallback<Uri[]> fileCallback;
     String pendingSave;
@@ -44,8 +52,9 @@ public class AppActivity extends Activity {
         Reminders.ensureChannel(this);
 
         boolean dark = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        int bg = Color.parseColor(dark ? "#151917" : "#ffffff");
         web = new WebView(this);
-        web.setBackgroundColor(Color.parseColor(dark ? "#151917" : "#ffffff"));
+        web.setBackgroundColor(bg);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -57,7 +66,46 @@ public class AppActivity extends Activity {
         web.setWebViewClient(new AppWebClient(this));
         web.setWebChromeClient(new AppChromeClient(this));
         web.addJavascriptInterface(new Bridge(this), "TickwiseNative");
-        setContentView(web);
+        // Android 15+ draws the app behind the status and navigation bars. To look as it did
+        // before, the page sits between two strips the size of the bars (the bottom one also
+        // grows with the keyboard), coloured like the bars used to be; behind the page itself
+        // stays the app background, as the window background was.
+        frame = new LinearLayout(this);
+        frame.setOrientation(LinearLayout.VERTICAL);
+        frame.setBackgroundColor(bg);
+        topBar = new View(this);
+        bottomBar = new View(this);
+        topBar.setBackgroundColor(bg);
+        bottomBar.setBackgroundColor(bg);
+        frame.addView(topBar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        frame.addView(web, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
+        frame.addView(bottomBar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        if (Build.VERSION.SDK_INT >= 35) {
+            frame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    Insets i = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+                    v.setPadding(i.left, 0, i.right, 0);
+                    if (topBar.getLayoutParams().height != i.top || bottomBar.getLayoutParams().height != i.bottom) {
+                        topBar.getLayoutParams().height = i.top;
+                        bottomBar.getLayoutParams().height = i.bottom;
+                        topBar.requestLayout();
+                        bottomBar.requestLayout();
+                    }
+                    return WindowInsets.CONSUMED;
+                }
+            });
+        }
+        setContentView(frame);
+        // Android 13+ sends Back here instead of onBackPressed (enableOnBackInvokedCallback in the manifest).
+        if (Build.VERSION.SDK_INT >= 33) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
+                @Override
+                public void onBackInvoked() {
+                    goBack();
+                }
+            });
+        }
 
         if (state != null) web.restoreState(state);
         if (web.getUrl() == null) web.loadUrl(START_URL);
@@ -101,6 +149,14 @@ public class AppActivity extends Activity {
     public void onBackPressed() {
         if (web == null) {
             super.onBackPressed();
+            return;
+        }
+        goBack();
+    }
+
+    void goBack() {
+        if (web == null) {
+            leave();
             return;
         }
         web.evaluateJavascript("(window.appBack && window.appBack()) ? 1 : 0", new ValueCallback<String>() {
@@ -283,6 +339,9 @@ public class AppActivity extends Activity {
         Window w = getWindow();
         w.setStatusBarColor(c);
         w.setNavigationBarColor(c);
+        // On Android 15+ the bars are see-through and these strips show behind them.
+        if (topBar != null) topBar.setBackgroundColor(c);
+        if (bottomBar != null) bottomBar.setBackgroundColor(c);
         if (Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController ic = w.getInsetsController();
             if (ic != null) {

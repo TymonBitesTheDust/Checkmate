@@ -1,0 +1,120 @@
+# Builds the Android app for Google Play (dist/Checkmate.aab) and the APK, signed with the
+# release key from the repository secrets, so nothing needs installing on a computer.
+#
+# Secrets (Settings -> Secrets and variables -> Actions):
+#   ANDROID_KEYSTORE_BASE64  the release .jks file, base64-encoded
+#   ANDROID_KS_PASS          its password
+#   ANDROID_KS_ALIAS         optional; the key's alias (found by itself when left out)
+# Without the key it makes a test build with a throwaway key and uploads nothing.
+name: Android for Google Play
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/gallant-bohr-cyv4wv]
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build tools
+        run: |
+          pip install --quiet Pillow cairosvg
+          T=$RUNNER_TEMP/tools
+          mkdir -p $T/apktool $T/signer $T/dex2jar/x $T/bundletool
+          curl -fsSL -o $T/apktool/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.12.1/apktool_2.12.1.jar
+          curl -fsSL -o $T/signer/uber-apk-signer.jar https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          curl -fsSL -o $RUNNER_TEMP/dex2jar.zip https://github.com/pxb1988/dex2jar/releases/download/v2.1/dex2jar-2.1.zip
+          unzip -q $RUNNER_TEMP/dex2jar.zip -d $T/dex2jar/x
+          curl -fsSL -o $T/bundletool/bundletool.jar https://github.com/google/bundletool/releases/download/1.17.2/bundletool-all-1.17.2.jar
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" >/dev/null
+          echo "TOOLS=$T" >> $GITHUB_ENV
+          echo "AAPT2=$ANDROID_HOME/build-tools/36.0.0/aapt2" >> $GITHUB_ENV
+          echo "ANDROID_JAR=$ANDROID_HOME/platforms/android-36/android.jar" >> $GITHUB_ENV
+
+      - name: Release key
+        env:
+          KEY_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PASS: ${{ secrets.ANDROID_KS_PASS }}
+          ALIAS: ${{ secrets.ANDROID_KS_ALIAS }}
+        run: |
+          K=$RUNNER_TEMP/release.jks
+          if [ -z "$KEY_B64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret, so this is a test build with a throwaway key. Don't upload it."
+            PASS=test-only-key ALIAS=test
+            keytool -genkeypair -keystore $K -storepass $PASS -keypass $PASS -alias $ALIAS -keyalg RSA -keysize 3072 -validity 10950 -dname "CN=Checkmate test" >/dev/null 2>&1
+            echo "TEST_ONLY=1" >> $GITHUB_ENV
+          else
+            echo "$KEY_B64" | tr -d ' \r\n' | base64 -d > $K
+            PASS=$(printf '%s' "$PASS" | tr -d '\r\n')  # a pasted password can end in a line break
+            echo "::add-mask::$PASS"
+            echo "Key file: $(wc -c < $K) bytes, type $(head -c 4 $K | od -An -tx1 | tr -d ' ')"
+            LIST=$(keytool -list -keystore $K -storepass "$PASS" 2>&1) || { echo "::error::keytool couldn't open the key: $(echo "$LIST" | grep -i -m1 'error\|exception')"; exit 1; }
+            if [ -z "$ALIAS" ]; then
+              ALIAS=$(echo "$LIST" | awk -F, '/PrivateKeyEntry/ {print $1; exit}')
+            fi
+            [ -n "$ALIAS" ] || { echo "::error::The key file has no private key entry."; echo "$LIST" | grep -v -i pass; exit 1; }
+          fi
+          echo "Key alias: $ALIAS"
+          echo "KEYSTORE=$K" >> $GITHUB_ENV
+          echo "KS_ALIAS=$ALIAS" >> $GITHUB_ENV
+          echo "::add-mask::$PASS"
+          echo "KS_PASS=$PASS" >> $GITHUB_ENV
+
+      - name: Build
+        run: ONLY=android ./build.sh
+
+      # Temporary: the same app built three ways, to find what makes it flicker.
+      - name: Flicker test builds
+        if: env.TEST_ONLY != '1'
+        run: |
+          mkdir -p $RUNNER_TEMP/flicker
+          cp dist/Checkmate.apk $RUNNER_TEMP/flicker/3-current.apk
+          for v in 1 2; do
+            W=$RUNNER_TEMP/v$v
+            rm -rf $W && cp -r . $W
+            (cd $W && git checkout -q 9276c3d -- android)   # the Android code of the v3.1.3 release
+            if [ $v = 2 ]; then sed -i "s/targetSdkVersion: '34'/targetSdkVersion: '36'/" $W/android/apk/apktool.yml; fi
+            grep targetSdkVersion $W/android/apk/apktool.yml
+            (cd $W && rm -rf dist && ONLY=android ./build.sh >/dev/null)
+          done
+          cp $RUNNER_TEMP/v1/dist/Checkmate.apk $RUNNER_TEMP/flicker/1-like-release.apk
+          cp $RUNNER_TEMP/v2/dist/Checkmate.apk $RUNNER_TEMP/flicker/2-android16-only.apk
+          ls -la $RUNNER_TEMP/flicker
+
+      - name: Upload flicker test builds
+        if: env.TEST_ONLY != '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flicker-test-3-versions
+          path: ${{ runner.temp }}/flicker/*.apk
+
+      - name: Check the bundle
+        run: |
+          java -jar $TOOLS/bundletool/bundletool.jar validate --bundle dist/Checkmate.aab
+          java -jar $TOOLS/bundletool/bundletool.jar dump manifest --bundle dist/Checkmate.aab | grep -E 'package=|versionCode|uses-sdk|targetSdk'
+          keytool -printcert -jarfile dist/Checkmate.aab | grep -E 'SHA256:'
+          rm -f $KEYSTORE
+
+      - name: Upload
+        if: env.TEST_ONLY != '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Checkmate-for-Google-Play
+          path: |
+            dist/Checkmate.aab
+            dist/Checkmate.apk

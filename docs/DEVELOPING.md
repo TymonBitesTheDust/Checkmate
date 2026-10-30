@@ -244,7 +244,9 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 **Android**
 
 - Package `app.tickwise` (kept from the Tickwise days so updates install over the old app).
-- minSdk 24, targetSdk 34.
+- minSdk 24, targetSdk 36 (what Google Play asks of new apps and updates).
+- Edge to edge: from Android 15 the app draws behind the status and navigation bars. `AppActivity` puts the WebView in a vertical `LinearLayout` between two strips sized by the bar, cutout and keyboard insets; `setSystemBars` colours the strips (as `setStatusBarColor` did before, which does nothing there), and behind the page stays the app background, so redraws never flash the bar colour.
+- Back: on Android 13+ Back comes through an `OnBackInvokedCallback` (`android:enableOnBackInvokedCallback="true"`), older versions through `onBackPressed`. Both call `goBack()`, which asks the page's `appBack()` first.
 - Six launcher `activity-alias` entries, one per style. They are switched in `onStop` by `LauncherIcons.applyPending`.
 - Reminders use AlarmManager and survive reboots.
 - `GoogleFetch` reads Google links for calendar subscriptions and Docs.
@@ -275,6 +277,11 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 | uber-apk-signer | 1.3.0 | `$TOOLS/signer/uber-apk-signer.jar` |
 | dx (from dex2jar 2.1) | 27.0.3 | `$TOOLS/dex2jar/x/dex-tools-2.1/lib/dx-27.0.3.jar` |
 | go-winres | v0.3.3 | `$TOOLS/go-winres`; build with `go install github.com/tc-hib/go-winres@v0.3.3` and copy the binary there |
+| aapt2 (Android SDK build-tools) | 36.x | `$TOOLS/aapt2/aapt2` (`AAPT2`); only for the Google Play `.aab` |
+| android.jar (Android SDK platform 36) | 36 | `$TOOLS/android-36/android.jar` (`ANDROID_JAR`); only for the `.aab` |
+| bundletool | 1.17.2+ | `$TOOLS/bundletool/bundletool.jar` (`BUNDLETOOL`); only for the `.aab` |
+
+The last three come with Android Studio's SDK (`build-tools/36.*/aapt2`, `platforms/android-36/android.jar`) or with `sdkmanager "build-tools;36.0.0" "platforms;android-36"`. Without them, or without the release key, `build.sh` skips the `.aab` and builds everything else.
 
 **Go modules.** `desktop/go.mod` replaces `golang.org/x/sys` with `third_party/sys` (v0.33.0, included in the zip). `github.com/jchv/go-webview2` downloads through the Go module proxy.
 
@@ -285,7 +292,7 @@ cd checkmate
 (cd web && npm install)
 TOOLS=~/tools ./build.sh                      # → dist/Checkmate.html, .exe, .apk (dev-signed APK), -extension.zip
 node extension/build.mjs                      # just the extension (after node web/build.mjs)
-KEYSTORE=/path/to/checkmate-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # release-signed APK
+KEYSTORE=/path/to/checkmate-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # release-signed APK, plus dist/Checkmate.aab for Google Play
 (cd web && MOCK_FIREBASE=1 node build.mjs)    # → web/dist-test, needed by test/sync.cjs
 (cd web && node build.mjs)                    # quick rebuild of just the HTML while working
 ```
@@ -314,6 +321,8 @@ java -jar ~/tools/signer/uber-apk-signer.jar -y --apks dist/Checkmate.apk
 ```
 
 The SHA256 it prints must match the value above.
+
+**Google Play.** `dist/Checkmate.aab` is signed with the same key. When setting up Play App Signing, choose to **use your own key** and upload `checkmate-release.jks` the way the Console shows (Export and upload a key from a Java keystore, with Google's PEPK tool), so Play signs phones' copies with this same certificate and the Play app and the GitHub APK can update each other. If Play makes its own key instead, they can't: someone switching has to uninstall first (Settings → Backup keeps their data). Each upload needs a higher `versionCode` than the last. Check the bundle's key with `keytool -printcert -jarfile dist/Checkmate.aab`.
 
 ---
 
