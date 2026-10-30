@@ -245,7 +245,7 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 
 - Package `app.tickwise` (kept from the Tickwise days so updates install over the old app).
 - minSdk 24, targetSdk 36 (what Google Play asks of new apps and updates).
-- Edge to edge: from Android 15 the app draws behind the status and navigation bars. `AppActivity` puts the WebView in a `FrameLayout` padded by the bar, cutout and keyboard insets, and `setSystemBars` colours that frame, since `setStatusBarColor` does nothing there.
+- Edge to edge: from Android 15 the app draws behind the status and navigation bars. `AppActivity` puts the WebView in a vertical `LinearLayout` between two strips sized by the bar, cutout and keyboard insets; `setSystemBars` colours the strips (as `setStatusBarColor` did before, which does nothing there), and behind the page stays the app background, so redraws never flash the bar colour.
 - Back: on Android 13+ Back comes through an `OnBackInvokedCallback` (`android:enableOnBackInvokedCallback="true"`), older versions through `onBackPressed`. Both call `goBack()`, which asks the page's `appBack()` first.
 - Six launcher `activity-alias` entries, one per style. They are switched in `onStop` by `LauncherIcons.applyPending`.
 - Reminders use AlarmManager and survive reboots.

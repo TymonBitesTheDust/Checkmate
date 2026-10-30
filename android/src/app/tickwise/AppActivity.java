@@ -19,7 +19,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
@@ -36,7 +36,8 @@ public class AppActivity extends Activity {
     static final int REQ_NOTIFICATIONS = 43;
     static final int REQ_SAVE_BINARY = 44;
 
-    FrameLayout frame;
+    LinearLayout frame;
+    View topBar, bottomBar;
     WebView web;
     ValueCallback<Uri[]> fileCallback;
     String pendingSave;
@@ -65,17 +66,32 @@ public class AppActivity extends Activity {
         web.setWebViewClient(new AppWebClient(this));
         web.setWebChromeClient(new AppChromeClient(this));
         web.addJavascriptInterface(new Bridge(this), "TickwiseNative");
-        // Android 15+ draws the app behind the status and navigation bars, so the page sits
-        // inside a frame padded by the bars (and the keyboard), and the frame's colour shows behind them.
-        frame = new FrameLayout(this);
+        // Android 15+ draws the app behind the status and navigation bars. To look as it did
+        // before, the page sits between two strips the size of the bars (the bottom one also
+        // grows with the keyboard), coloured like the bars used to be; behind the page itself
+        // stays the app background, as the window background was.
+        frame = new LinearLayout(this);
+        frame.setOrientation(LinearLayout.VERTICAL);
         frame.setBackgroundColor(bg);
-        frame.addView(web, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        topBar = new View(this);
+        bottomBar = new View(this);
+        topBar.setBackgroundColor(bg);
+        bottomBar.setBackgroundColor(bg);
+        frame.addView(topBar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        frame.addView(web, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
+        frame.addView(bottomBar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         if (Build.VERSION.SDK_INT >= 35) {
             frame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
                 @Override
                 public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
                     Insets i = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
-                    v.setPadding(i.left, i.top, i.right, i.bottom);
+                    v.setPadding(i.left, 0, i.right, 0);
+                    if (topBar.getLayoutParams().height != i.top || bottomBar.getLayoutParams().height != i.bottom) {
+                        topBar.getLayoutParams().height = i.top;
+                        bottomBar.getLayoutParams().height = i.bottom;
+                        topBar.requestLayout();
+                        bottomBar.requestLayout();
+                    }
                     return WindowInsets.CONSUMED;
                 }
             });
@@ -323,7 +339,9 @@ public class AppActivity extends Activity {
         Window w = getWindow();
         w.setStatusBarColor(c);
         w.setNavigationBarColor(c);
-        if (frame != null) frame.setBackgroundColor(c); // what shows behind the bars on Android 15+
+        // On Android 15+ the bars are see-through and these strips show behind them.
+        if (topBar != null) topBar.setBackgroundColor(c);
+        if (bottomBar != null) bottomBar.setBackgroundColor(c);
         if (Build.VERSION.SDK_INT >= 30) {
             WindowInsetsController ic = w.getInsetsController();
             if (ic != null) {
