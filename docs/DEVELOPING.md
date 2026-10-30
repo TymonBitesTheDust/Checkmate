@@ -285,7 +285,7 @@ cd checkmate
 (cd web && npm install)
 TOOLS=~/tools ./build.sh                      # → dist/Checkmate.html, .exe, .apk (dev-signed APK), -extension.zip
 node extension/build.mjs                      # just the extension (after node web/build.mjs)
-KEYSTORE=/path/to/tickwise-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # release-signed APK
+KEYSTORE=/path/to/checkmate-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # release-signed APK
 (cd web && MOCK_FIREBASE=1 node build.mjs)    # → web/dist-test, needed by test/sync.cjs
 (cd web && node build.mjs)                    # quick rebuild of just the HTML while working
 ```
@@ -301,10 +301,11 @@ KEYSTORE=/path/to/tickwise-release.jks KS_PASS=… TOOLS=~/tools ./build.sh   # 
 
 ## 7. Signing (important)
 
-- **Keystore:** `tickwise-release.jks`, kept **outside the repository** by the maintainer (back it up; it can't be recreated). Put it in `android/signing/` (git-ignored) or anywhere else and set `KEYSTORE`.
-- **Alias:** `tickwise` (`KS_ALIAS`).
+- **Keystore:** `checkmate-release.jks`, kept **outside the repository** by the maintainer (back it up; it can't be recreated). Put it in `android/signing/` (git-ignored) or anywhere else and set `KEYSTORE`.
+- **Alias:** `checkmate` (`KS_ALIAS`).
 - **Password:** never written in the repository. Pass it as `KS_PASS`.
-- **Certificate SHA-256:** `599a499064521bfb5d98a4fe699c702fea57a0b02d17a762ac314b613b358037`. This is public on purpose: anyone can check that a downloaded APK really is Checkmate.
+- **Certificate SHA-256:** `4aa3cb4cca5b2bb074abbe3fb2b2d6da268fb85df677c93cba8b1d02b2d13fcc` (`CN=Checkmate, C=AU`, valid until 2056). This is public on purpose: anyone can check that a downloaded APK really is Checkmate.
+- **New key in 3.1.3.** The old key (`tickwise-release.jks`, alias `tickwise`, SHA-256 `599a4990…358037`, used up to 3.0.0) was lost, and 3.0.1 went out signed with a throwaway development key. 3.1.3 is the first release signed with `checkmate-release.jks`, so every Android user reinstalls once (sync, uninstall, install). The releases before 3.1.3 were taken down.
 
 Without the key (or without `KS_PASS`), `build.sh` prints a warning and signs with a throwaway development key. That APK works for testing, but phones that have Checkmate will refuse to update to it, so never publish it. To check a build:
 
