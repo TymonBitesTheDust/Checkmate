@@ -19,6 +19,8 @@ GOWINRES=${GOWINRES:-$TOOLS/go-winres}                    # go install github.co
 AAPT2=${AAPT2:-$TOOLS/aapt2/aapt2}                            # from Android SDK build-tools 36.x (sdkmanager "build-tools;36.0.0")
 ANDROID_JAR=${ANDROID_JAR:-$TOOLS/android-36/android.jar}    # from the Android SDK platform 36 (sdkmanager "platforms;android-36")
 BUNDLETOOL=${BUNDLETOOL:-$TOOLS/bundletool/bundletool.jar}   # https://github.com/google/bundletool/releases (1.17.2 or newer)
+# The Google Play app's package name (Play Console fixed it). The APK keeps app.tickwise.
+PLAY_PACKAGE=${PLAY_PACKAGE:-tymonai.android.Checkmate}
 # Android signing. The release key is NOT in this repository: keep it somewhere safe and point
 # KEYSTORE at it, with its password in KS_PASS. Without it, a throwaway development key is used.
 KEYSTORE=${KEYSTORE:-android/signing/checkmate-release.jks}
@@ -86,6 +88,7 @@ else
   TARGETSDK=$(sed -n "s/^ *targetSdkVersion: '\{0,1\}\([0-9]*\)'\{0,1\}$/\1/p" $A/apk/apktool.yml)
   "$AAPT2" compile --dir $A/apk/res -o $B/res.zip
   "$AAPT2" link --proto-format -o $B/linked.zip -I "$ANDROID_JAR" --manifest $A/apk/AndroidManifest.xml \
+    --rename-manifest-package "$PLAY_PACKAGE" \
     --min-sdk-version "$MINSDK" --target-sdk-version "$TARGETSDK" --version-code "$VCODE" --version-name "$VNAME" \
     -A $A/apk/assets --auto-add-overlay $B/res.zip
   (cd $B && unzip -q linked.zip -d linked)

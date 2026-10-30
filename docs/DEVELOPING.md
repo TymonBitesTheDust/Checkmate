@@ -243,7 +243,7 @@ It also provides `canSwitchAppIcon()`, `hasNativeFetch()`, reminders and file sa
 
 **Android**
 
-- Package `app.tickwise` (kept from the Tickwise days so updates install over the old app).
+- Package `app.tickwise` (kept from the Tickwise days so updates install over the old app). The Google Play bundle is `tymonai.android.Checkmate` (`PLAY_PACKAGE` in `build.sh`, fixed by Play Console), so the Play app and the GitHub APK are separate apps. The code stays in `app.tickwise`: the manifest names its classes in full, `LauncherIcons` builds alias names from `app.tickwise`, and `ReminderReceiver` falls back to `app.tickwise` when looking up its icon.
 - minSdk 24, targetSdk 36 (what Google Play asks of new apps and updates).
 - Edge to edge: from Android 15 the app draws behind the status and navigation bars. `AppActivity` puts the WebView in a vertical `LinearLayout` between two strips sized by the bar, cutout and keyboard insets; `setSystemBars` colours the strips (as `setStatusBarColor` did before, which does nothing there), and behind the page stays the app background, so redraws never flash the bar colour.
 - Back: on Android 13+ Back comes through an `OnBackInvokedCallback` (`android:enableOnBackInvokedCallback="true"`), older versions through `onBackPressed`. Both call `goBack()`, which asks the page's `appBack()` first.

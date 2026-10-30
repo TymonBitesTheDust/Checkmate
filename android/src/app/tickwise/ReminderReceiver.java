@@ -30,7 +30,9 @@ public class ReminderReceiver extends BroadcastReceiver {
         PendingIntent tap = PendingIntent.getActivity(c, id.hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Notification.Builder b = Build.VERSION.SDK_INT >= 26 ? new Notification.Builder(c, Reminders.CHANNEL) : new Notification.Builder(c);
+        // The Google Play build has its own package name, and its resources may keep the code's.
         int icon = c.getResources().getIdentifier("ic_stat_tick", "drawable", c.getPackageName());
+        if (icon == 0) icon = c.getResources().getIdentifier("ic_stat_tick", "drawable", "app.tickwise");
         b.setSmallIcon(icon)
                 .setContentTitle(title == null || title.length() == 0 ? Strings.get(c, "task_due") : title)
                 .setContentText(body == null ? "" : body)

@@ -78,7 +78,7 @@ jobs:
       - name: Check the bundle
         run: |
           java -jar $TOOLS/bundletool/bundletool.jar validate --bundle dist/Checkmate.aab
-          java -jar $TOOLS/bundletool/bundletool.jar dump manifest --bundle dist/Checkmate.aab | grep -E 'package=|versionCode|uses-sdk|targetSdk'
+          java -jar $TOOLS/bundletool/bundletool.jar dump manifest --bundle dist/Checkmate.aab | grep -E 'package=|versionCode|uses-sdk|targetSdk|AppActivity|ic_stat'
           keytool -printcert -jarfile dist/Checkmate.aab | grep -E 'SHA256:'
           rm -f $KEYSTORE
 

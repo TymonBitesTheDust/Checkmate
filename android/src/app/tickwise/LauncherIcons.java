@@ -35,17 +35,19 @@ final class LauncherIcons {
         String applied = sp.getString(APPLIED, "tickwise");
         if (wanted.equals(applied)) return;
         PackageManager pm = c.getPackageManager();
+        // The aliases' class names stay app.tickwise.* when the Google Play build renames the package.
         String pkg = c.getPackageName();
+        String cls = "app.tickwise";
         try {
             // Enable the new alias first so there is always one launcher entry.
             for (String[] a : ALIASES) {
                 if (a[0].equals(wanted)) {
-                    pm.setComponentEnabledSetting(new ComponentName(pkg, pkg + a[1]), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                    pm.setComponentEnabledSetting(new ComponentName(pkg, cls + a[1]), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
                 }
             }
             for (String[] a : ALIASES) {
                 if (!a[0].equals(wanted)) {
-                    pm.setComponentEnabledSetting(new ComponentName(pkg, pkg + a[1]), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                    pm.setComponentEnabledSetting(new ComponentName(pkg, cls + a[1]), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
                 }
             }
             sp.edit().putString(APPLIED, wanted).apply();

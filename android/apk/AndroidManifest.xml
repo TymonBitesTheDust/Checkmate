@@ -21,7 +21,7 @@
         android:usesCleartextTraffic="false">
 
         <activity
-            android:name=".AppActivity"
+            android:name="app.tickwise.AppActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|density"
@@ -30,8 +30,8 @@
         <!-- One launcher entry per style; the app enables the one that matches.
              ".MainActivity" is the original launcher name, so existing shortcuts keep working. -->
         <activity-alias
-            android:name=".MainActivity"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.MainActivity"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="true"
             android:label="@string/app_name"
@@ -43,8 +43,8 @@
             </intent-filter>
         </activity-alias>
         <activity-alias
-            android:name=".IconArchive"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.IconArchive"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="false"
             android:label="@string/app_name"
@@ -56,8 +56,8 @@
             </intent-filter>
         </activity-alias>
         <activity-alias
-            android:name=".IconRiot"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.IconRiot"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="false"
             android:label="@string/app_name"
@@ -69,8 +69,8 @@
             </intent-filter>
         </activity-alias>
         <activity-alias
-            android:name=".IconTide"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.IconTide"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="false"
             android:label="@string/app_name"
@@ -82,8 +82,8 @@
             </intent-filter>
         </activity-alias>
         <activity-alias
-            android:name=".IconFrontier"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.IconFrontier"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="false"
             android:label="@string/app_name"
@@ -95,8 +95,8 @@
             </intent-filter>
         </activity-alias>
         <activity-alias
-            android:name=".IconNeon"
-            android:targetActivity=".AppActivity"
+            android:name="app.tickwise.IconNeon"
+            android:targetActivity="app.tickwise.AppActivity"
             android:exported="true"
             android:enabled="false"
             android:label="@string/app_name"
@@ -109,7 +109,7 @@
         </activity-alias>
 
         <receiver
-            android:name=".ReminderReceiver"
+            android:name="app.tickwise.ReminderReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
