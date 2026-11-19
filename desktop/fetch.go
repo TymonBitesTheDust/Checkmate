@@ -1,11 +1,11 @@
 package main
 
-// Docs & Sheets and subscribed calendars: the web page can't read a Google Doc or Sheet
-// export, or a Google Calendar .ics link, itself, because those servers don't let
-// other sites read their answers. The app reads them for it. Only https addresses at
-// docs.google.com and calendar links at Google, Outlook and iCloud are fetched
-// (redirects may only go on to the same company's hosts), no cookies or sign-in are
-// sent, and answers are capped in size.
+// Docs & Sheets, subscribed calendars and Monash: the web page can't read a Google Doc or
+// Sheet export, a Google Calendar .ics link or a Monash calendar link (Moodle, Allocate+)
+// itself, because those servers don't let other sites read their answers. The app reads
+// them for it. Only https addresses at docs.google.com, calendar links at Google,
+// Outlook and iCloud, and links at monash.edu are fetched (redirects may only go on to
+// the same company's hosts), no cookies or sign-in are sent, and answers are capped in size.
 
 import (
 	"encoding/json"
@@ -49,8 +49,15 @@ func fetchAllowed(u *url.URL) bool {
 		return strings.HasPrefix(p, "/owa/calendar/")
 	case strings.HasSuffix(h, ".icloud.com"):
 		return strings.HasPrefix(p, "/published/")
+	case monashHost(h):
+		return true
 	}
 	return false
+}
+
+// monashHost: Monash's own sites, such as lms.monash.edu (Moodle) and my-timetable.monash.edu (Allocate+).
+func monashHost(h string) bool {
+	return h == "monash.edu" || strings.HasSuffix(h, ".monash.edu")
 }
 
 // family groups the hosts a redirect may move between.
@@ -67,6 +74,9 @@ func family(u *url.URL) string {
 	}
 	if strings.HasSuffix(h, ".icloud.com") {
 		return "apple"
+	}
+	if monashHost(h) {
+		return "monash"
 	}
 	return ""
 }

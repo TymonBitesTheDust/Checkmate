@@ -11,6 +11,11 @@ name: Android for Google Play
 
 on:
   workflow_dispatch:
+    inputs:
+      html:
+        description: 'Use this finished Checkmate.html (a path in the repo, such as releases/v3.3.0/Checkmate.html) instead of building ./web'
+        required: false
+        default: ''
 
 jobs:
   android:
@@ -73,6 +78,8 @@ jobs:
           echo "KS_PASS=$PASS" >> $GITHUB_ENV
 
       - name: Build
+        env:
+          PREBUILT_HTML: ${{ inputs.html }}
         run: ONLY=android ./build.sh
 
       - name: Check the bundle
