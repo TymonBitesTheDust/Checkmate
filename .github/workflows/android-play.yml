@@ -16,10 +16,16 @@ on:
         description: 'Use this finished Checkmate.html (a path in the repo, such as releases/v3.3.0/Checkmate.html) instead of building ./web'
         required: false
         default: ''
+      save_to:
+        description: 'Also commit the signed Checkmate.apk to this folder on the branch (such as releases/v3.3.0)'
+        required: false
+        default: ''
 
 jobs:
   android:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -88,6 +94,18 @@ jobs:
           java -jar $TOOLS/bundletool/bundletool.jar dump manifest --bundle dist/Checkmate.aab | grep -E 'package=|versionCode|uses-sdk|targetSdk'
           keytool -printcert -jarfile dist/Checkmate.aab | grep -E 'SHA256:'
           rm -f $KEYSTORE
+
+      - name: Save the APK on the branch
+        if: inputs.save_to != '' && env.TEST_ONLY != '1'
+        env:
+          SAVE_TO: ${{ inputs.save_to }}
+        run: |
+          mkdir -p "$SAVE_TO" && cp dist/Checkmate.apk "$SAVE_TO/Checkmate.apk"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f "$SAVE_TO/Checkmate.apk"
+          git commit -m "Checkmate.apk in $SAVE_TO, signed with the release key"
+          git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Upload
         if: env.TEST_ONLY != '1'
