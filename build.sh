@@ -28,7 +28,14 @@ KS_PASS=${KS_PASS:-}
 mkdir -p dist
 
 echo "==> Web app"
-(cd web && npm install --no-audit --no-fund >/dev/null && node build.mjs)
+# PREBUILT_HTML=path/to/Checkmate.html wraps an app that is already built (such as a file
+# under releases/) in the .exe and .apk instead of building ./web.
+if [ -n "${PREBUILT_HTML:-}" ]; then
+  echo "    using $PREBUILT_HTML"
+  mkdir -p web/dist && cp "$PREBUILT_HTML" web/dist/Checkmate.html
+else
+  (cd web && npm install --no-audit --no-fund >/dev/null && node build.mjs)
+fi
 cp web/dist/Checkmate.html dist/Checkmate.html
 
 echo "==> Icons (one set per style)"
@@ -37,8 +44,12 @@ python3 brand/make_icons.py brand/out >/dev/null
 
 # ONLY=android builds just the web app, the APK and the .aab (no Go or go-winres needed).
 if [ "${ONLY:-}" != android ]; then
-echo "==> Chrome/Edge extension"
-node extension/build.mjs
+if [ -n "${PREBUILT_HTML:-}" ]; then
+  echo "==> Chrome/Edge extension: skipped (it is built from ./web, not from a finished HTML file)"
+else
+  echo "==> Chrome/Edge extension"
+  node extension/build.mjs
+fi
 
 echo "==> Windows .exe"
 mkdir -p desktop/assets && cp web/dist/Checkmate.html desktop/assets/index.html

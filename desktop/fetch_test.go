@@ -14,6 +14,8 @@ func TestFetchAllowed(t *testing.T) {
 		"https://calendar.google.com/calendar/ical/en.hong_kong%23holiday%40group.v.calendar.google.com/public/basic.ics",
 		"https://outlook.office365.com/owa/calendar/abc@example.com/xyz/calendar.ics",
 		"https://p34-caldav.icloud.com/published/2/abc",
+		"https://lms.monash.edu/calendar/export_execute.php?userid=1&authtoken=abc&preset_what=all&preset_time=custom",
+		"https://my-timetable.monash.edu/even/rest/calendar/ical/abc",
 	}
 	bad := []string{
 		"http://docs.google.com/document/d/abc/export?format=md",
@@ -25,6 +27,9 @@ func TestFetchAllowed(t *testing.T) {
 		"https://evil.example/calendar/ical/x.ics",
 		"https://icloud.com.evil.example/published/2/abc",
 		"https://outlook.office365.com/mail/",
+		"https://monash.edu.evil.example/calendar.ics",
+		"https://evilmonash.edu/calendar.ics",
+		"http://lms.monash.edu/calendar/export_execute.php",
 		"https://127.0.0.1:47821/",
 		"file:///C:/Windows/win.ini",
 	}

@@ -6,11 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Docs & Sheets and subscribed calendars: reads a shared Google Doc or Sheet export, or
- * a calendar's .ics link, for the web app, which the page itself can't read because
- * those servers don't allow other sites to. Only https addresses at docs.google.com
- * and calendar links at Google, Outlook and iCloud are fetched (redirects may only go
- * on to the same company's hosts), nothing is signed in, and answers are capped in size.
+ * Docs & Sheets, subscribed calendars and Monash: reads a shared Google Doc or Sheet
+ * export, a calendar's .ics link or a Monash calendar link (Moodle, Allocate+) for the
+ * web app, which the page itself can't read because those servers don't allow other
+ * sites to. Only https addresses at docs.google.com, calendar links at Google, Outlook
+ * and iCloud, and links at monash.edu are fetched (redirects may only go on to the same
+ * company's hosts), nothing is signed in, and answers are capped in size.
  */
 final class GoogleFetch {
     static final int MAX = 8 << 20;
@@ -36,7 +37,13 @@ final class GoogleFetch {
         if (h.equals("calendar.google.com")) return p.startsWith("/calendar/ical/");
         if (h.equals("outlook.office365.com") || h.equals("outlook.office.com") || h.equals("outlook.live.com")) return p.startsWith("/owa/calendar/");
         if (h.endsWith(".icloud.com")) return p.startsWith("/published/");
+        if (monashHost(h)) return true;
         return false;
+    }
+
+    /** Monash's own sites, such as lms.monash.edu (Moodle) and my-timetable.monash.edu (Allocate+). */
+    static boolean monashHost(String h) {
+        return h.equals("monash.edu") || h.endsWith(".monash.edu");
     }
 
     /** Which company a host belongs to; redirects may only stay within one. */
@@ -46,6 +53,7 @@ final class GoogleFetch {
         if (h.equals("google.com") || h.endsWith(".google.com") || h.endsWith(".googleusercontent.com")) return "google";
         if (h.endsWith(".office365.com") || h.endsWith(".office.com") || h.equals("outlook.live.com")) return "microsoft";
         if (h.endsWith(".icloud.com")) return "apple";
+        if (monashHost(h)) return "monash";
         return "";
     }
 
