@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://tymon.website/theWorks/checkmate#demo"><b>▶ Try it in your browser</b></a> (nothing to install) ·
+  <a href="https://tymon.website/demo/checkmate"><b>▶ Try it in your browser</b></a> (nothing to install) ·
   <a href="#download">Download</a> ·
   <a href="#how-its-built">How it's built</a>
 </p>
@@ -93,7 +93,7 @@ The full build also needs Go 1.24, JDK 17+ and a few Android tools. [docs/DEVELO
 
 | | Download | Works on |
 | --- | --- | --- |
-| 🌐 **Browser** | [**Try it now**](https://tymon.website/theWorks/checkmate#demo), or download [**Checkmate.html**](https://github.com/TymonBitesTheDust/Checkmate/releases/latest/download/Checkmate.html) | Any modern browser, also offline |
+| 🌐 **Browser** | [**Try it now**](https://tymon.website/demo/checkmate), or download [**Checkmate.html**](https://github.com/TymonBitesTheDust/Checkmate/releases/latest/download/Checkmate.html) | Any modern browser, also offline |
 | 🪟 **Windows** | [**Checkmate.exe**](https://github.com/TymonBitesTheDust/Checkmate/releases/latest/download/Checkmate.exe) | Windows 10 and 11 (64-bit) |
 | 🤖 **Android** | [**Checkmate.apk**](https://github.com/TymonBitesTheDust/Checkmate/releases/latest/download/Checkmate.apk) | Android 7.0 and newer |
 | 🧩 **Chrome / Edge** | [**Checkmate-extension.zip**](https://github.com/TymonBitesTheDust/Checkmate/releases/latest/download/Checkmate-extension.zip) | Chrome or Edge 116 and newer |
